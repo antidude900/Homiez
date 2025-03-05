@@ -2,6 +2,7 @@ import { ThemeProvider } from "@/context/theme-provider";
 import LeftSideBar from "@/components/shared/LeftSideBar";
 import RightSideBar from "@/components/shared/RightSideBar";
 import "./globals.css";
+import ThemeToogle from "@/components/ThemeToogle";
 
 export default function RootLayout({
 	children,
@@ -14,22 +15,25 @@ export default function RootLayout({
 				<head>
 					<title>Social Media App</title>
 				</head>
-				<body className="bg-background text-foreground">
+				<body className="bg-[#F3EDE9] dark:bg-[#05141C] text-foreground">
 					<ThemeProvider
 						attribute="class"
 						defaultTheme="system"
-						enableSystem
 						disableTransitionOnChange
 					>
-						<div className="flex h-screen">
-							<div className="w-1/4 border">
+						<div className="flex min-h-screen">
+							<div className="w-1/4 flex-none border">
 								<LeftSideBar />
 							</div>
 
-							<div className="w-1/2 border">{children}</div>
+							<div className="w-1/2 flex-none	p-2 border">{children}</div>
 
-							<div className="w-1/4 border">
+							<div className="w-1/4 flex-none border">
 								<RightSideBar />
+							</div>
+
+							<div className="absolute right-4 top-0">
+								<ThemeToogle />
 							</div>
 						</div>
 					</ThemeProvider>
