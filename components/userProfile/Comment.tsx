@@ -3,13 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import {
-	EllipsisVertical,
-	Heart,
-	MessageCircle,
-	SquareArrowOutUpRight,
-} from "lucide-react";
-import Image from "next/image";
+import { EllipsisVertical, Heart } from "lucide-react";
 
 interface CommentProps {
 	username: string;
@@ -57,7 +51,7 @@ const Comment = ({
 					</div>
 
 					<div className="text-[14px] text-muted-foreground mb-2 flex">
-						<span>{likesCount} likes &nbsp;|    </span>
+						<span>{likesCount} likes &nbsp;| </span>
 
 						<div
 							className="flex justify-between px-2"
