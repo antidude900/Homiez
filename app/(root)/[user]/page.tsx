@@ -1,8 +1,8 @@
 import UserInfo from "@/components/userProfile/UserInfo";
 import UserPost from "@/components/userProfile/UserPost";
 
-const UserProfile = ({ params }: { params: { user: string } }) => {
-	const username = params.user;
+const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
+	const username = (await params).user;
 	return (
 		<>
 			<div className="mb-2">
@@ -46,4 +46,4 @@ const UserProfile = ({ params }: { params: { user: string } }) => {
 	);
 };
 
-export default UserProfile;
+export default Page;
