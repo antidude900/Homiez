@@ -3,6 +3,7 @@ import UserPost from "@/components/userProfile/UserPost";
 
 const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
 	const username = (await params).user;
+	console.log(username);
 	return (
 		<>
 			<div className="mb-2">
