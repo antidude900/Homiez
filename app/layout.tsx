@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/context/theme-provider";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
 	children,
@@ -13,13 +14,14 @@ export default function RootLayout({
 				<head>
 					<title>Social Media App</title>
 				</head>
-				<body className="bg-[#F3EDE9] dark:bg-[#05141C] text-foreground">
+				<body className="bg-[#E8F1F9] dark:bg-[#05141C] text-foreground">
 					<ThemeProvider
 						attribute="class"
 						defaultTheme="system"
 						disableTransitionOnChange
 					>
 						{children}
+						<ToastContainer hideProgressBar autoClose={500} />
 					</ThemeProvider>
 				</body>
 			</html>

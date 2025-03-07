@@ -1,3 +1,5 @@
+"use server";
+
 import User from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
 import {
@@ -6,6 +8,8 @@ import {
 	UpdateUserParams,
 } from "./shared.type";
 import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs/server";
+import console from "console";
 
 export async function createUser(params: CreateUserParams) {
 	try {
@@ -34,7 +38,6 @@ export async function updateUser(params: UpdateUserParams) {
 		throw error;
 	}
 }
-
 
 export async function followUnfollowUser(params: FollowUnfollowUserParams) {
 	try {
@@ -71,6 +74,21 @@ export async function followUnfollowUser(params: FollowUnfollowUserParams) {
 				{ $push: { followers: params.userId } }
 			);
 		}
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function getUser() {
+	try {
+		await connectToDatabase();
+
+		const { userId } = await auth();
+		console.log(userId);
+		const user = await User.findOne({ userId: userId });
+		console.log(user);
+		return user;
 	} catch (error) {
 		console.log(error);
 		throw error;

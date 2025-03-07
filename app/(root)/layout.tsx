@@ -1,22 +1,19 @@
 import LeftSideBar from "@/components/shared/LeftSideBar";
 import RightSideBar from "@/components/shared/RightSideBar";
-import ThemeToogle from "@/components/ThemeToogle";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<div className="flex min-h-screen">
-			<div className="w-1/4 flex-none border">
+			<div className="w-1/4 flex-none border sticky top-0 h-screen">
 				<LeftSideBar />
 			</div>
 
-			<div className="w-1/2 flex-none	p-2 border">{children}</div>
+			{/* Main Content - Expands on smaller screens */}
+			<div className="flex-1 p-4 border">{children}</div>
 
-			<div className="w-1/4 flex-none border">
+			{/* Right Sidebar - Sticky on larger screens */}
+			<div className="w-1/4 flex-none border sticky top-0 h-screen">
 				<RightSideBar />
-			</div>
-
-			<div className="absolute right-4 top-0">
-				<ThemeToogle />
 			</div>
 		</div>
 	);

@@ -18,7 +18,7 @@ const ThemeToogle = () => {
 	return (
 		<Menubar className="relative border-none bg-transparent shadow-none">
 			<MenubarMenu>
-				<MenubarTrigger>
+				<MenubarTrigger className="cursor-pointer">
 					<Image
 						src="/icons/moon.svg"
 						width={20}
@@ -59,7 +59,9 @@ const ThemeToogle = () => {
 								alt={theme.value}
 								width={20}
 								height={20}
-								className={`${resolvedTheme === theme.value && "active-theme"} dark:invert`}
+								className={`${
+									resolvedTheme === theme.value && "active-theme"
+								} dark:invert`}
 							/>
 							<span
 								className={`body-semibold ${resolvedTheme !== theme.value}`}
