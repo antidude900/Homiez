@@ -7,7 +7,7 @@ const Page = async ({ params }: { params: Promise<{ user: string }> }) => {
 	return (
 		<>
 			<div className="mb-2">
-				<UserInfo username={username} />
+				<UserInfo />
 			</div>
 			<div className="vertical-flex gap-2">
 				<UserPost
