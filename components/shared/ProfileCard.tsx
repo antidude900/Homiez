@@ -6,6 +6,9 @@ import Editable from "./Editable";
 
 const ProfileCard = async () => {
 	const user = await getUserInfo();
+	if (!user) {
+		return <div>Error: User not found</div>;
+	}
 
 	return (
 		<div className="h-[300px] bg-background rounded-xl overflow-clip vertical-flex border border-border">

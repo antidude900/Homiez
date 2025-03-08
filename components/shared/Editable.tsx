@@ -101,6 +101,7 @@ const Editable = ({
 					return false;
 				}
 			} catch (error) {
+				console.log(error);
 				toast.error("Error checking username uniqueness", toastOptions);
 				return false;
 			}
