@@ -63,6 +63,7 @@ export async function POST(req: Request) {
 			name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
 			username: username!,
 			email: email_addresses[0].email_address,
+			bio: `Hello, I'm ${first_name} ${last_name}🙏`,
 			picture: image_url,
 		});
 

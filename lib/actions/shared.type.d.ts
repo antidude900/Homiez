@@ -6,6 +6,7 @@ export interface CreateUserParams {
 	name: string;
 	username: string;
 	email: string;
+	bio:string
 	picture: string;
 }
 

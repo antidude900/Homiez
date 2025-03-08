@@ -9,7 +9,6 @@ import {
 } from "./shared.type";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
-import console from "console";
 
 export async function createUser(params: CreateUserParams) {
 	try {
@@ -33,9 +32,10 @@ export async function updateUser(params: UpdateUserParams) {
 		await User.findOneAndUpdate({ userId }, updateData, { new: true });
 
 		revalidatePath(path);
+		return "success";
 	} catch (error) {
 		console.log(error);
-		throw error;
+		return "error";
 	}
 }
 
@@ -80,15 +80,57 @@ export async function followUnfollowUser(params: FollowUnfollowUserParams) {
 	}
 }
 
-export async function getUser() {
+export async function getUserName() {
 	try {
 		await connectToDatabase();
 
 		const { userId } = await auth();
-		console.log(userId);
+
 		const user = await User.findOne({ userId: userId });
-		console.log(user);
+
+		return user.username;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function getUserId() {
+	try {
+		await connectToDatabase();
+
+		const { userId } = await auth();
+
+		return userId;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function getUserInfo() {
+	try {
+		await connectToDatabase();
+
+		const { userId } = await auth();
+
+		const user = await User.findOne({ userId: userId });
+
 		return user;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function checkUsernameUnique(username: string) {
+	try {
+		console.log("Checking uniqueness for:", username);
+		await connectToDatabase();
+
+		const user = await User.findOne({ username });
+		console.log("uniqueness:", !user);
+		return !user;
 	} catch (error) {
 		console.log(error);
 		throw error;

@@ -1,14 +1,25 @@
+import { getUserInfo } from "@/lib/actions/user.action";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-const userInfo = ({ username }: { username: string }) => {
+const userInfo = async () => {
+	const user = await getUserInfo();
+
 	return (
 		<div className="bg-background rounded-xl relative border border-border">
 			<div className=" flex w-full p-2">
 				<div className="flex-1  p-2 relative">
-					<div className="text-2xl font-bold">Sambal Shrestha</div>
-					<div className="text-sm">@{username}</div>
+					<div className="text-2xl font-bold">{user.name}</div>
+					<div className="text-sm">@{user.username}</div>
+
 					<div className="absolute bottom-2 font-medium">
-						<div>The One Most Beloved By Bugs🐞</div>
+						{user.bio && user.bio.length > 0 ? (
+							<div className="italic">{user.bio}</div>
+						) : (
+							<div className="text-muted-foreground border-2 border-dashed border-muted-foreground px-1 w-fit">
+								No Bio
+							</div>
+						)}
+
 						<div className="text-[12px] text-muted-foreground">
 							99M followers
 						</div>

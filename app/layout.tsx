@@ -21,7 +21,7 @@ export default function RootLayout({
 						disableTransitionOnChange
 					>
 						{children}
-						<ToastContainer hideProgressBar autoClose={500} />
+						<ToastContainer hideProgressBar/>
 					</ThemeProvider>
 				</body>
 			</html>
