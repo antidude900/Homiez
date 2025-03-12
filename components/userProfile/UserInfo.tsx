@@ -5,13 +5,13 @@ const userInfo = async () => {
 	const user = await getUserInfo();
 
 	return (
-		<div className="bg-background rounded-xl relative border border-border">
+		<div className="bg-background rounded-xl border border-border">
 			<div className=" flex w-full p-2">
-				<div className="flex-1  p-2 relative">
+				<div className="flex-1 p-2 relative">
 					<div className="text-2xl font-bold">{user.name}</div>
-					<div className="text-sm">@{user.username}</div>
+					<div className="text-sm mb-4">@{user.username}</div>
 
-					<div className="absolute bottom-2 font-medium">
+					<div className="font-semibold">
 						{user.bio && user.bio.length > 0 ? (
 							<div className="italic">{user.bio}</div>
 						) : (
@@ -25,7 +25,7 @@ const userInfo = async () => {
 						</div>
 					</div>
 				</div>
-				<div className=" ml-2 flex justify-center items-center">
+				<div className=" ml-2 flex justify-center items-centerm pt-2">
 					<Avatar className="w-32 h-32">
 						<AvatarImage src="/pp.jpg" />
 						<AvatarFallback>CN</AvatarFallback>

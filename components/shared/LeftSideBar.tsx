@@ -1,8 +1,10 @@
 import Image from "next/image";
 import ProfileCard from "./ProfileCard";
 import Link from "next/link";
+import { getUserInfo } from "@/lib/actions/user.action";
 
-const LeftSideBar = () => {
+const LeftSideBar = async () => {
+	const user = await getUserInfo();
 	return (
 		<div className="p-2">
 			<div className="mb-6 flex justify-end items-center px-2">
@@ -23,7 +25,7 @@ const LeftSideBar = () => {
 				/>
 			</div>
 			<div className="px-2">
-				<ProfileCard />
+				<ProfileCard user={user} />
 			</div>
 		</div>
 	);

@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
 
 const Editable = ({
 	children,
-	className,
+	className = "",
 	type,
 }: {
 	children: React.ReactNode;
@@ -22,6 +22,7 @@ const Editable = ({
 	const [isEditable, setIsEditable] = useState(false);
 	const [value, setValue] = useState(children?.toString() || "");
 	const inputRef = useRef<HTMLInputElement>(null);
+	const formRef = useRef<HTMLFormElement>(null);
 	const originalValue = children?.toString() || "";
 	const pathname = usePathname();
 
@@ -33,15 +34,43 @@ const Editable = ({
 	}, [isEditable]);
 
 	async function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-		if (e.key === "Enter" || e.key === "Escape") {
+		if (e.key === "Escape") {
 			setIsEditable(false);
-			await handleUpdate();
+			setValue(originalValue);
+		} else if (e.key === "Enter") {
+			if (inputRef.current && !inputRef.current.validity.valid) {
+				// Let the browser show its native validation message
+				return;
+			}
+
+			await handleSubmit(e);
 		}
 	}
 
-	async function handleUpdate() {
-		if (!(await validated())) {
-			setValue(originalValue);
+	async function handleSubmit(e: React.FormEvent) {
+		e.preventDefault();
+
+		if (value === originalValue) {
+			setIsEditable(false);
+
+			return;
+		}
+
+		// If username, we need to check uniqueness which can't be done with HTML5 validation
+		if (type === "username") {
+			const isUnique = await checkUsernameUnique(value);
+			if (!isUnique) {
+				if (inputRef.current) {
+					inputRef.current.setCustomValidity("Username is already taken");
+					inputRef.current.reportValidity();
+				}
+				return;
+			}
+		}
+
+		// Validate with browser's native validation
+		if (inputRef.current && !inputRef.current.validity.valid) {
+			inputRef.current.reportValidity();
 			return;
 		}
 
@@ -49,104 +78,105 @@ const Editable = ({
 		if (type === "name") updateData = { name: value };
 		if (type === "username") updateData = { username: value };
 		if (type === "bio") updateData = { bio: value };
-		else {
-			const userId = await getUserId();
+		const userId = await getUserId();
 
-			if (userId) {
-				await updateUser({ userId, updateData, path: pathname });
-				toast.success("Updated successfully", { autoClose: 750 });
-			} else toast.error("I hate my life");
-		}
+		if (userId) {
+			await updateUser({ userId, updateData, path: pathname });
+			toast.success("Updated successfully", { autoClose: 750 });
+			setIsEditable(false);
+		} else toast.error("I hate my life");
 	}
 
-	async function validated() {
-		if (value === originalValue) return false;
-
-		const toastOptions = { autoClose: 1500 };
-
-		if (type === "name") {
-			if (value.length < 3) {
-				toast.error("Name must be at least 3 characters long", toastOptions);
-				return false;
-			}
-			if (!/^[a-zA-Z\s]+$/.test(value)) {
-				toast.error(
-					"Name must contain only alphabetic characters and spaces",
-					toastOptions
-				);
-				return false;
-			}
-		} else if (type === "username") {
-			if (value.length < 3) {
-				toast.error(
-					"Username must be at least 3 characters long",
-					toastOptions
-				);
-				return false;
-			}
-			if (!/^[a-zA-Z0-9_]+$/.test(value)) {
-				toast.error(
-					"Username must contain only alphanumeric characters and underscores",
-					toastOptions
-				);
-				return false;
-			}
-
-			try {
-				console.log("running uniqueness check!");
-				const isUnique = await checkUsernameUnique(value);
-				console.log("isUnique:", isUnique);
-				if (!isUnique) {
-					toast.error("Username is already taken", toastOptions);
-					return false;
-				}
-			} catch (error) {
-				console.log(error);
-				toast.error("Error checking username uniqueness", toastOptions);
-				return false;
-			}
-		} else if (type === "bio") {
-			if (value.length > 100) {
-				toast.error("Bio must be less than 100 characters", toastOptions);
-				return false;
-			}
+	function getValidationProps(): object {
+		// Clear any previous custom validity message
+		if (inputRef.current) {
+			inputRef.current.setCustomValidity("");
 		}
 
-		return true;
+		// Return the appropriate validation attributes based on the field type
+		switch (type) {
+			case "name":
+				return {
+					required: true,
+					minLength: 3,
+					maxLength: 25,
+					pattern: "[a-zA-Z\\s]+",
+					title: "Name must contain only alphabetic characters and spaces",
+				};
+			case "username":
+				return {
+					required: true,
+					minLength: 3,
+					maxLength: 15,
+					pattern: "[a-zA-Z0-9_]+",
+					title:
+						"Username must contain only alphanumeric characters and underscores",
+				};
+			case "bio":
+				return {
+					maxLength: 65,
+					title: "Bio must be less than 65 characters",
+				};
+			default:
+				return {};
+		}
 	}
 
 	return (
 		<div className="relative group">
-			<input
-				ref={inputRef}
-				type="text"
-				placeholder=". . . ."
-				value={value}
-				readOnly={!isEditable}
-				className={`outline-none ${className} bg-transparent text-center transition-all rounded border  
-          ${
-						isEditable
-							? "border-solid border-blue-400 ring-2 ring-blue-100"
-							: "border-transparent cursor-pointer"
-					}
-       }
-        `}
-				size={Math.max(value?.length || 10, 1) + 2}
-				onChange={(e) => setValue(e.target.value)}
-				onBlur={async () => {
-					setIsEditable(false);
-					await handleUpdate();
-				}}
-				onKeyDown={async (e) => {
-					await handleKeyDown(e);
-				}}
-			/>
+			{isEditable ? (
+				<>
+					<div className="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+					<div className="absolute top-0 right-0 -translate-x-1 -translate-y-1">
+						{value.length}
+					</div>
+					<form
+						ref={formRef}
+						onSubmit={handleSubmit}
+						noValidate={false}
+						className="relative z-50"
+					>
+						<input
+							ref={inputRef}
+							type="text"
+							placeholder=". . . ."
+							value={value}
+							className={`w-full outline-none bg-transparent text-center transition-all rounded border border-blue-400 ${className} ring-2 ring-blue-100 z-[60] ${
+								type === "bio" && "h-[40px]"
+							}`}
+							size={Math.min(value.length + 2, 37)}
+							onChange={(e) => setValue(e.target.value)}
+							onBlur={async (e) => {
+								await handleSubmit(e);
+							}}
+							onKeyDown={handleKeyDown}
+							{...getValidationProps()}
+						/>
+					</form>
+				</>
+			) : (
+				<>
+					<div
+						className={`${className} border border-transparent ${
+							type === "bio" && "h-[70px] w-[250px]"
+						} text-center break-all`}
+					>
+						{type === "username" && (
+							<span className="text-muted-foreground h-[26px]">@</span>
+						)}
+						{value}
+					</div>
 
-			{!isEditable && (
-				<Pencil
-					onClick={() => setIsEditable(true)}
-					className="absolute right-0 bottom-1/2 w-4 h-4 opacity-0 group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-700 transition-opacity"
-				/>
+					<Pencil
+						onClick={() => {
+							setIsEditable(true);
+							if (inputRef.current) {
+								inputRef.current.focus();
+							}
+						}}
+						className="absolute -right-4 bottom-1/2 w-4 h-4 opacity-0 group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-700 transition-opacity"
+					/>
+				</>
 			)}
 		</div>
 	);

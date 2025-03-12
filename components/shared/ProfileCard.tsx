@@ -1,17 +1,17 @@
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getUserInfo } from "@/lib/actions/user.action";
 import ToolBar from "./ToolBar";
 import Editable from "./Editable";
+import { IUser } from "@/database/user.model";
 
-const ProfileCard = async () => {
-	const user = await getUserInfo();
-	if (!user) {
-		return <div>Error: User not found</div>;
-	}
+const ProfileCard = ({ user }: { user: Partial<IUser> }) => {
+	if (!user)
+		return (
+			<div className="size-5 animate-spin rounded-full border-2 border-gray-300 border-t-transparent"></div>
+		);
 
 	return (
-		<div className="h-[300px] bg-background rounded-xl overflow-clip vertical-flex border border-border">
+		<div className="h-[350px] bg-background rounded-xl overflow-clip vertical-flex border border-border">
 			<div className="h-[30%] bg-white relative mb-[3.5rem]">
 				{/* h-24 means 6rem so half is 3rem and giving space of 0.5rem from there */}
 				<Image
@@ -21,13 +21,14 @@ const ProfileCard = async () => {
 					className="object-cover object-center"
 				/>
 				<Avatar className="w-24 h-24 mr-5 absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
-					<AvatarImage src="/pp.jpg" />
+					<AvatarImage src={user?.picture} />
 					<AvatarFallback>CN</AvatarFallback>
 				</Avatar>
 
-				<ToolBar username={user.username} />
+				<ToolBar username={user?.username || ""} />
 			</div>
-			<div className="vertical-flex items-center mb-4">
+
+			<div className="vertical-flex items-center mb-2">
 				<Editable className="font-bold" type={"name"}>
 					{user.name}
 				</Editable>
@@ -37,7 +38,7 @@ const ProfileCard = async () => {
 				</Editable>
 
 				<Editable className="italic" type={"bio"}>
-					{user.bio && user.bio.length > 0 ? user.bio : ""}
+					{user.bio}
 				</Editable>
 			</div>
 
