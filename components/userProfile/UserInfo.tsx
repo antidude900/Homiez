@@ -1,33 +1,40 @@
 import { getUserInfo } from "@/lib/actions/user.action";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import Editable from "../shared/Editable";
+import { redirect } from "next/navigation";
 
 const userInfo = async () => {
 	const user = await getUserInfo();
 
+	if (!user) {
+		redirect("/sign-in");
+	}
+
 	return (
-		<div className="bg-background rounded-xl border border-border">
+		<div className="bg-background rounded-xl border border-border relative">
 			<div className=" flex w-full p-2">
-				<div className="flex-1 p-2 relative">
-					<div className="text-2xl font-bold">{user.name}</div>
-					<div className="text-sm mb-4">@{user.username}</div>
+				<div className="flex-1 relative vertical-flex">
+					<Editable className="text-2xl font-bold" type="name">
+						{user.name}
+					</Editable>
+
+					<Editable className="" type="username">
+						{user.username}
+					</Editable>
 
 					<div className="font-semibold">
-						{user.bio && user.bio.length > 0 ? (
-							<div className="italic">{user.bio}</div>
-						) : (
-							<div className="text-muted-foreground border-2 border-dashed border-muted-foreground px-1 w-fit">
-								No Bio
-							</div>
-						)}
+						<Editable className="italic" type="bio">
+							{user.bio}
+						</Editable>
 
-						<div className="text-[12px] text-muted-foreground">
+						<div className="text-[12px] text-muted-foreground mx-4">
 							99M followers
 						</div>
 					</div>
 				</div>
-				<div className=" ml-2 flex justify-center items-centerm pt-2">
+				<div className=" ml-2 flex justify-center items-centerm">
 					<Avatar className="w-32 h-32">
-						<AvatarImage src="/pp.jpg" />
+						<AvatarImage src={user.picture} />
 						<AvatarFallback>CN</AvatarFallback>
 					</Avatar>
 				</div>

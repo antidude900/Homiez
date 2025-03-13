@@ -10,9 +10,11 @@ import {
 	SquareArrowOutUpRight,
 } from "lucide-react";
 import Image from "next/image";
+import { IUser } from "@/database/user.model";
+import { redirect } from "next/navigation";
 
 interface UserPostProps {
-	username: string;
+	user: IUser;
 	postTitle: string;
 	postedAt: string;
 	postImg?: string;
@@ -21,7 +23,7 @@ interface UserPostProps {
 }
 
 const UserPost = ({
-	username,
+	user,
 	postTitle,
 	postedAt,
 	postImg,
@@ -29,39 +31,53 @@ const UserPost = ({
 	repliesCount,
 }: UserPostProps) => {
 	const [liked, setLiked] = useState(false);
+	if (!user) {
+		redirect("/sign-in");
+	}
+
 	return (
 		<div className="bg-background rounded-xl border border-border">
 			<div className="flex p-2">
 				<Avatar className="w-16 h-16 mr-5">
-					<AvatarImage src="/pp.jpg" />
+					<AvatarImage src={user.picture} />
 					<AvatarFallback>CN</AvatarFallback>
 				</Avatar>
 
 				<div className="w-full vertical-flex">
 					<div className="flex mb-4 justify-between">
 						<div className="vertical-flex">
-							<span
-								className="font-bold"
-								onClick={(e) => {
-									e.preventDefault();
-									alert("Clicked!");
-								}}
-							>
-								{username}
-							</span>
+							<div>
+								<span
+									className="font-bold mr-2 cursor-pointer"
+									onClick={() => {
+										alert("Clicked!");
+									}}
+								>
+									{user.name}
+								</span>
 
-							<Link href={`${username}/post/1`}>
+								<span
+									className="text-muted-foreground text-sm cursor-pointer"
+									onClick={() => {
+										alert("Clicked!");
+									}}
+								>
+									@{user.username}
+								</span>
+							</div>
+
+							<Link href={`${user.username}/post/1`}>
 								<span className="">{postTitle}</span>
 							</Link>
 						</div>
 						<div className=" flex mr-2">
 							<span className="text-muted-foreground">{postedAt}</span>
-							<EllipsisVertical className="" />
+							<EllipsisVertical />
 						</div>
 					</div>
 
 					{postImg && (
-						<Link href={`${username}/post/1`} className="w-full mb-1">
+						<Link href={`${user.username}/post/1`} className="w-full mb-1">
 							<Image
 								src={postImg}
 								alt="post image"

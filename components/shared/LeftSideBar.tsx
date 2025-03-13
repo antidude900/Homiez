@@ -2,11 +2,16 @@ import Image from "next/image";
 import ProfileCard from "./ProfileCard";
 import Link from "next/link";
 import { getUserInfo } from "@/lib/actions/user.action";
+import { redirect } from "next/navigation";
 
 const LeftSideBar = async () => {
 	const user = await getUserInfo();
+
+	if (!user) {
+		redirect("/sign-in");
+	}
 	return (
-		<div className="p-2">
+		<div className="p-2 min-h-screen border-r border-r-border">
 			<div className="mb-6 flex justify-end items-center px-2">
 				<Link href="/">
 					<Image

@@ -80,15 +80,12 @@ export async function followUnfollowUser(params: FollowUnfollowUserParams) {
 	}
 }
 
-export async function getUserName() {
+export async function getUserByUserName(username: string) {
 	try {
 		await connectToDatabase();
 
-		const { userId } = await auth();
-
-		const user = await User.findOne({ userId: userId });
-
-		return user.username;
+		const user = await User.findOne({ username });
+		return JSON.parse(JSON.stringify(user));
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -115,8 +112,7 @@ export async function getUserInfo() {
 		const { userId } = await auth();
 
 		const user = await User.findOne({ userId: userId });
-
-		return user;
+		return JSON.parse(JSON.stringify(user));
 	} catch (error) {
 		console.log(error);
 		throw error;

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Pencil } from "lucide-react";
+import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import {
 	checkUsernameUnique,
@@ -9,6 +10,7 @@ import {
 	updateUser,
 } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const Editable = ({
 	children,
@@ -25,6 +27,8 @@ const Editable = ({
 	const formRef = useRef<HTMLFormElement>(null);
 	const originalValue = children?.toString() || "";
 	const pathname = usePathname();
+	const overlay_sections = ["main", "left-sidebar", "right-sidebar"];
+	const router = useRouter();
 
 	// Auto-focus when edit mode is enabled
 	useEffect(() => {
@@ -84,6 +88,10 @@ const Editable = ({
 			await updateUser({ userId, updateData, path: pathname });
 			toast.success("Updated successfully", { autoClose: 750 });
 			setIsEditable(false);
+			setTimeout(() => {
+				window.location.href = "/";
+				router.replace("/");
+			}, 400);
 		} else toast.error("I hate my life");
 	}
 
@@ -114,8 +122,8 @@ const Editable = ({
 				};
 			case "bio":
 				return {
-					maxLength: 65,
-					title: "Bio must be less than 65 characters",
+					maxLength: 60,
+					title: "Bio must be less than 60 characters",
 				};
 			default:
 				return {};
@@ -123,26 +131,32 @@ const Editable = ({
 	}
 
 	return (
-		<div className="relative group">
+		<div className="relative group inline-block w-fit">
 			{isEditable ? (
 				<>
-					<div className="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
-					<div className="absolute top-0 right-0 -translate-x-1 -translate-y-1">
+					{overlay_sections.map((section) => {
+						return createPortal(
+							<div className="absolute inset-0 bg-black bg-opacity-50 z-10"></div>,
+							document.getElementById(section) as HTMLElement
+						);
+					})}
+
+					<div className="absolute top-1 right-0 -translate-x-1 -translate-y-1 text-sm font-bold z-30 text-muted-foreground">
 						{value.length}
 					</div>
 					<form
 						ref={formRef}
 						onSubmit={handleSubmit}
 						noValidate={false}
-						className="relative z-50"
+						className="relative z-20 w-fit border"
 					>
 						<input
 							ref={inputRef}
 							type="text"
 							placeholder=". . . ."
 							value={value}
-							className={`w-full outline-none bg-transparent text-center transition-all rounded border border-blue-400 ${className} ring-2 ring-blue-100 z-[60] ${
-								type === "bio" && "h-[40px]"
+							className={`outline-none bg-background transition-all rounded border border-blue-400 ${className} ring-2 ring-blue-100 px-2 ${
+								type === "bio" && "h-[50px] w-full"
 							}`}
 							size={Math.min(value.length + 2, 37)}
 							onChange={(e) => setValue(e.target.value)}
@@ -158,24 +172,26 @@ const Editable = ({
 				<>
 					<div
 						className={`${className} border border-transparent ${
-							type === "bio" && "h-[70px] w-[250px]"
-						} text-center break-all`}
+							type === "bio" && "h-[50px]"
+						} max-w-fit break-all flex justify-center items-center relative mx-4`}
 					>
 						{type === "username" && (
-							<span className="text-muted-foreground h-[26px]">@</span>
+							<span className="text-muted-foreground">@</span>
 						)}
 						{value}
-					</div>
 
-					<Pencil
-						onClick={() => {
-							setIsEditable(true);
-							if (inputRef.current) {
-								inputRef.current.focus();
-							}
-						}}
-						className="absolute -right-4 bottom-1/2 w-4 h-4 opacity-0 group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-700 transition-opacity"
-					/>
+						<Pencil
+							onClick={() => {
+								setIsEditable(true);
+								if (inputRef.current) {
+									inputRef.current.focus();
+								}
+							}}
+							className={`absolute right-0 top-0 translate-x-full ${
+								type === "bio" ? "translate-y-1/4" : "-translate-y-1/4 -right-1"
+							} w-4 h-4 opacity-0 group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-700 transition-opacity`}
+						/>
+					</div>
 				</>
 			)}
 		</div>
