@@ -13,7 +13,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 			</div>
 
 			{/* Main Content - Expands on smaller screens */}
-			<div className="flex-1 p-2 relative" id="main">
+			<div className="flex-1 p-2 px-4 relative" id="main">
 				{children}
 			</div>
 

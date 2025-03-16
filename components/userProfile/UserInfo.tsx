@@ -28,7 +28,9 @@ const userInfo = async () => {
 						</Editable>
 
 						<div className="text-[12px] text-muted-foreground mx-4">
-							99M followers
+							<span className="cursor-pointer">99M followers</span>
+							<span> &nbsp;|&nbsp; </span>
+							<span className="cursor-pointer">2 following</span>
 						</div>
 					</div>
 				</div>

@@ -10,6 +10,7 @@ const LeftSideBar = async () => {
 	if (!user) {
 		redirect("/sign-in");
 	}
+
 	return (
 		<div className="p-2 min-h-screen border-r border-r-border">
 			<div className="mb-6 flex justify-end items-center px-2">

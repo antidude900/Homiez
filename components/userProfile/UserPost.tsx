@@ -91,8 +91,9 @@ const UserPost = ({
 					)}
 
 					<div className="text-[14px] text-muted-foreground mb-2">
-						<span>{likesCount} likes &nbsp;|</span>
-						<span>&nbsp; {repliesCount} replies</span>
+						<span className="cursor-pointer">{likesCount} likes</span>
+						<span> &nbsp;|&nbsp; </span>
+						<span className="cursor-pointer">{repliesCount} replies</span>
 					</div>
 
 					<div

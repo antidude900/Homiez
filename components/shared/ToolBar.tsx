@@ -18,18 +18,18 @@ const ToolBar = ({ username }: { username: string }) => {
 		}
 	};
 
-	const handleSignOut = () => {
-		router.replace("/sign-in");
-		toast.promise(
-			signOut({ redirectUrl: "/sign-in" }),
-			{
-				pending: "Signing Out...",
-				success: "Signed Out!",
-				error: "Sign Out Failed",
-			},
-			{ autoClose: 500 }
-		);
-	};
+		const handleSignOut = () => {
+			router.replace("/sign-in");
+			toast.promise(
+				signOut({ redirectUrl: "/sign-in" }),
+				{
+					pending: "Signing Out...",
+					success: "Signed Out!",
+					error: "Sign Out Failed",
+				},
+				{ autoClose: 500 }
+			);
+		};
 
 	return (
 		<div className="absolute right-1 top-0 flex gap-4 bg-secondary py-1 px-2 rounded-xl">

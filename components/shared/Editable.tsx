@@ -11,6 +11,7 @@ import {
 } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import PopUp from "./PopUp";
 
 const Editable = ({
 	children,
@@ -21,15 +22,18 @@ const Editable = ({
 	className?: string;
 	type: string;
 }) => {
-	const [isEditable, setIsEditable] = useState(false);
-	const [value, setValue] = useState(children?.toString() || "");
-	const inputRef = useRef<HTMLInputElement>(null);
-	const formRef = useRef<HTMLFormElement>(null);
 	const originalValue = children?.toString() || "";
+	const [isEditable, setIsEditable] = useState(false);
+	const [value, setValue] = useState(originalValue);
+	const [open, setOpen] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const pathname = usePathname();
 	const overlay_sections = ["main", "left-sidebar", "right-sidebar"];
 	const router = useRouter();
 
+	useEffect(() => {
+		setValue(children?.toString() || "");
+	}, [children]);
 	// Auto-focus when edit mode is enabled
 	useEffect(() => {
 		if (isEditable && inputRef.current) {
@@ -47,11 +51,11 @@ const Editable = ({
 				return;
 			}
 
-			await handleSubmit(e);
+			await handleValidation(e);
 		}
 	}
 
-	async function handleSubmit(e: React.FormEvent) {
+	async function handleValidation(e: React.FormEvent) {
 		e.preventDefault();
 
 		if (value === originalValue) {
@@ -78,20 +82,27 @@ const Editable = ({
 			return;
 		}
 
+		setOpen(true);
+	}
+
+	async function handleSubmit() {
 		let updateData = {};
 		if (type === "name") updateData = { name: value };
 		if (type === "username") updateData = { username: value };
 		if (type === "bio") updateData = { bio: value };
 		const userId = await getUserId();
 
+		toast.loading("Updating...");
+		await new Promise((resolve) => setTimeout(resolve, 250));
+
 		if (userId) {
 			await updateUser({ userId, updateData, path: pathname });
+			toast.dismiss();
 			toast.success("Updated successfully", { autoClose: 750 });
 			setIsEditable(false);
-			setTimeout(() => {
-				window.location.href = "/";
-				router.replace("/");
-			}, 400);
+			if (type === "username") {
+				router.push(`/${value}`);
+			}
 		} else toast.error("I hate my life");
 	}
 
@@ -131,7 +142,7 @@ const Editable = ({
 	}
 
 	return (
-		<div className="relative group inline-block w-fit">
+		<div className="relative group inline-block w-fit cursor-pointer">
 			{isEditable ? (
 				<>
 					{overlay_sections.map((section) => {
@@ -145,7 +156,6 @@ const Editable = ({
 						{value.length}
 					</div>
 					<form
-						ref={formRef}
 						onSubmit={handleSubmit}
 						noValidate={false}
 						className="relative z-20 w-fit border"
@@ -161,7 +171,7 @@ const Editable = ({
 							size={Math.min(value.length + 2, 37)}
 							onChange={(e) => setValue(e.target.value)}
 							onBlur={async (e) => {
-								await handleSubmit(e);
+								await handleValidation(e);
 							}}
 							onKeyDown={handleKeyDown}
 							{...getValidationProps()}
@@ -178,7 +188,7 @@ const Editable = ({
 						{type === "username" && (
 							<span className="text-muted-foreground">@</span>
 						)}
-						{value}
+						{originalValue}
 
 						<Pencil
 							onClick={() => {
@@ -194,6 +204,21 @@ const Editable = ({
 					</div>
 				</>
 			)}
+
+			<PopUp
+				open={open}
+				type={type}
+				onDiscard={() => {
+					setOpen(false);
+					setValue(originalValue);
+					setIsEditable(false);
+				}}
+				onConfirm={() => {
+					setOpen(false);
+					setIsEditable(false);
+					handleSubmit();
+				}}
+			/>
 		</div>
 	);
 };

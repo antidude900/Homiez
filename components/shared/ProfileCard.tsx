@@ -3,13 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import ToolBar from "./ToolBar";
 import Editable from "./Editable";
 import { IUser } from "@/database/user.model";
-import { redirect } from "next/navigation";
 
 const ProfileCard = ({ user }: { user: Partial<IUser> }) => {
-	if (!user) {
-		redirect("/sign-in");
-	}
-
 	return (
 		<div className="h-[330px] bg-background rounded-xl overflow-clip vertical-flex border border-border">
 			<div className="h-[30%] bg-white relative mb-[3.5rem]">
