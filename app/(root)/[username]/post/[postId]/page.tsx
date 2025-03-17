@@ -1,5 +1,5 @@
-import Comment from "@/components/userProfile/Comment";
-import UserPost from "@/components/userProfile/UserPost";
+// import Comment from "@/components/userProfile/Comment";
+// import UserPost from "@/components/userProfile/UserPost";
 import { getUserByUserName } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 
@@ -18,7 +18,7 @@ const Page = async ({
 
 	return (
 		<>
-			<div className="mb-4">
+			{/* <div className="mb-4">
 				<UserPost
 					user={user}
 					postTitle="Deepseek vs OpenAi!"
@@ -48,7 +48,7 @@ const Page = async ({
 					postedAt="1d"
 					likesCount={69}
 				/>
-			</div>
+			</div> */}
 		</>
 	);
 };
