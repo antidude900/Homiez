@@ -3,6 +3,7 @@ import ProfileCard from "./ProfileCard";
 import Link from "next/link";
 import { getUserInfo } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
+import CreatePostForm from "./CreatePostForm";
 
 const LeftSideBar = async () => {
 	const user = await getUserInfo();
@@ -30,8 +31,11 @@ const LeftSideBar = async () => {
 					className="bg-background p-2 rounded-xl flex-1 border border-border outline-none focus:ring-0"
 				/>
 			</div>
-			<div className="px-2">
+			<div className="px-2 mb-4">
 				<ProfileCard user={user} />
+			</div>
+			<div className="flex justify-center px-4">
+				<CreatePostForm mongoUserId={JSON.stringify(user._id)} />
 			</div>
 		</div>
 	);

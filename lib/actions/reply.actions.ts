@@ -1,3 +1,5 @@
+"use server";
+
 import Reply from "@/database/reply.model";
 import { connectToDatabase } from "../mongoose";
 import { CreateReplyParams, LikeUnlikeReply } from "./shared.type";

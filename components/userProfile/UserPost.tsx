@@ -10,36 +10,37 @@ import {
 	SquareArrowOutUpRight,
 } from "lucide-react";
 import Image from "next/image";
-import { IUser } from "@/database/user.model";
-import { redirect } from "next/navigation";
+import { getTimestamp } from "@/lib/utils";
 
 interface UserPostProps {
-	user: IUser;
-	postTitle: string;
-	postedAt: string;
+	author: {
+		_id: string;
+		name: string;
+		username: string;
+		picture: string;
+	};
+	postText: string;
+	postedAt: Date;
 	postImg?: string;
 	likesCount: number;
 	repliesCount: number;
 }
 
 const UserPost = ({
-	user,
-	postTitle,
+	author,
+	postText,
 	postedAt,
 	postImg,
 	likesCount,
 	repliesCount,
 }: UserPostProps) => {
 	const [liked, setLiked] = useState(false);
-	if (!user) {
-		redirect("/sign-in");
-	}
 
 	return (
 		<div className="bg-background rounded-xl border border-border">
 			<div className="flex p-2">
 				<Avatar className="w-16 h-16 mr-5">
-					<AvatarImage src={user.picture} />
+					<AvatarImage src={author.picture} />
 					<AvatarFallback>CN</AvatarFallback>
 				</Avatar>
 
@@ -53,7 +54,7 @@ const UserPost = ({
 										alert("Clicked!");
 									}}
 								>
-									{user.name}
+									{author.name}
 								</span>
 
 								<span
@@ -62,22 +63,24 @@ const UserPost = ({
 										alert("Clicked!");
 									}}
 								>
-									@{user.username}
+									@{author.username}
 								</span>
 							</div>
 
-							<Link href={`${user.username}/post/1`}>
-								<span className="">{postTitle}</span>
+							<Link href={`${author.username}/post/1`}>
+								<span className="">{postText}</span>
 							</Link>
 						</div>
 						<div className=" flex mr-2">
-							<span className="text-muted-foreground">{postedAt}</span>
+							<span className="text-muted-foreground">
+								{getTimestamp(postedAt)}
+							</span>
 							<EllipsisVertical />
 						</div>
 					</div>
 
 					{postImg && (
-						<Link href={`${user.username}/post/1`} className="w-full mb-1">
+						<Link href={`${author.username}/post/1`} className="w-full mb-1">
 							<Image
 								src={postImg}
 								alt="post image"

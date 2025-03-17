@@ -1,16 +1,32 @@
+"use server";
+
 import Post from "@/database/post.model";
 import { connectToDatabase } from "../mongoose";
 import { CreatePostParams, LikeUnlikePost } from "./shared.type";
 import User from "@/database/user.model";
+import { v2 as cloudinary } from "cloudinary";
 
 export async function createPost(params: CreatePostParams) {
-	try {
-		await connectToDatabase();
-		await Post.create(params);
-	} catch (error) {
-		console.log(error);
-		throw error;
+	const { text, image, author } = params;
+	cloudinary.config({
+		cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+		api_key: process.env.CLOUDINARY_API_KEY,
+		api_secret: process.env.CLOUDINARY_API_SECRET,
+	});
+
+	let imgUrl = "";
+	if (image) {
+		const uploadResponse = await cloudinary.uploader.upload(image, {
+			folder: "social_media_images",
+		});
+		imgUrl = uploadResponse.secure_url;
 	}
+
+	await Post.create({
+		text,
+		image: imgUrl,
+		author,
+	});
 }
 
 export async function getPost(params: { postId: string }) {
@@ -28,13 +44,14 @@ export async function getPost(params: { postId: string }) {
 	}
 }
 
-export async function getAllPost(params: { userId: string }) {
+export async function getAllPost({ userId }: { userId: string }) {
 	try {
 		await connectToDatabase();
-		const posts = await Post.find({ author: params.userId }).sort({
-			createdAt: -1,
-		});
-		return posts;
+		const posts = await Post.find({ author: userId })
+			.sort({ createdAt: -1 })
+			.populate("author", "name username picture");
+
+		return { posts };
 	} catch (error) {
 		console.log(error);
 		throw error;

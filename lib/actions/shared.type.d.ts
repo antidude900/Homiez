@@ -6,7 +6,7 @@ export interface CreateUserParams {
 	name: string;
 	username: string;
 	email: string;
-	bio:string
+	bio: string;
 	picture: string;
 }
 
@@ -23,7 +23,7 @@ export interface UpdateUserParams {
 
 export interface CreatePostParams {
 	text: string;
-	image: string;
+	image: string | null;
 	author: Schema.Types.ObjectId;
 }
 

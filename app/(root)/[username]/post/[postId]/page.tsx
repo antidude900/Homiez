@@ -29,7 +29,7 @@ const Page = async ({
 				/>
 			</div>
 
-			<div className="vertical-flex gap-2">
+			<div className="grid gap-2">
 				<Comment
 					username="Hari"
 					postTitle="Very interesting!"
