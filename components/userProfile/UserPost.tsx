@@ -20,7 +20,7 @@ interface UserPostProps {
 		picture: string;
 	};
 	postText: string;
-	postedAt: Date;
+	postedAt: string;
 	postImg?: string;
 	likesCount: number;
 	repliesCount: number;

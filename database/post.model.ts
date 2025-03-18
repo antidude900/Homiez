@@ -10,8 +10,8 @@ export interface IPost extends Document {
 }
 
 const PostSchema = new Schema({
-	text: { type: String, required: true },
-	image: { type: String, required: true },
+	text: { type: String },
+	image: { type: String },
 	author: { type: Schema.Types.ObjectId, ref: "User", required: true },
 	likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
 	replies: [{ type: Schema.Types.ObjectId, ref: "Replies" }],

@@ -15,18 +15,29 @@ export async function createPost(params: CreatePostParams) {
 	});
 
 	let imgUrl = "";
-	if (image) {
-		const uploadResponse = await cloudinary.uploader.upload(image, {
-			folder: "social_media_images",
-		});
-		imgUrl = uploadResponse.secure_url;
+
+	try {
+		if (image) {
+			const uploadResponse = await cloudinary.uploader.upload(image, {
+				folder: "social_media_images",
+			});
+			imgUrl = uploadResponse.secure_url;
+		}
+	} catch (error) {
+		console.log("error from cloudinary", error);
+		throw error;
 	}
 
-	await Post.create({
-		text,
-		image: imgUrl,
-		author,
-	});
+	try {
+		await Post.create({
+			text,
+			image: imgUrl,
+			author,
+		});
+	} catch (error) {
+		console.log("error from post create", error);
+		throw error;
+	}
 }
 
 export async function getPost(params: { postId: string }) {
@@ -51,7 +62,7 @@ export async function getAllPost({ userId }: { userId: string }) {
 			.sort({ createdAt: -1 })
 			.populate("author", "name username picture");
 
-		return { posts };
+		return JSON.stringify(posts);
 	} catch (error) {
 		console.log(error);
 		throw error;

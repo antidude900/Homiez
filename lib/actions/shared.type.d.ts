@@ -23,7 +23,7 @@ export interface UpdateUserParams {
 
 export interface CreatePostParams {
 	text: string;
-	image: string | null;
+	image: string;
 	author: Schema.Types.ObjectId;
 }
 

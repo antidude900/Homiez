@@ -7,9 +7,10 @@ import { redirect } from "next/navigation";
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 	const { username } = await params;
 	const user = await getUserByUserName(username);
-	const result = await getAllPost({ userId: user._id });
-	console.log(result);
-	console.log(result.posts[0].author);
+	const posts = await getAllPost({ userId: user._id }).then((e) =>
+		JSON.parse(e)
+	);
+
 	if (!user) {
 		redirect("/sign-in");
 	}
@@ -20,17 +21,32 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 				<UserInfo />
 			</div>
 			<div className="grid gap-4">
-				{result.posts.map((post) => (
-					<UserPost
-						key={post._id}
-						author={JSON.parse(JSON.stringify(post.author))}
-						postText={post.text}
-						postImg={post.image}
-						postedAt={post.createdAt}
-						likesCount={post.likes.length}
-						repliesCount={post.replies.length}
-					/>
-				))}
+				{posts.map(
+					(post: {
+						_id: string;
+						author: {
+							_id: string;
+							name: string;
+							username: string;
+							picture: string;
+						};
+						text: string;
+						image?: string;
+						createdAt: string;
+						likes: [];
+						replies: [];
+					}) => (
+						<UserPost
+							key={post._id}
+							author={post.author}
+							postText={post.text}
+							postImg={post?.image || ""}
+							postedAt={post.createdAt}
+							likesCount={post.likes.length}
+							repliesCount={post.replies.length}
+						/>
+					)
+				)}
 			</div>
 		</>
 	);
