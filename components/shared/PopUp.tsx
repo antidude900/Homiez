@@ -36,7 +36,7 @@ const PopUp = ({
 				<DialogFooter className="flex justify-between">
 					<Button
 						onClick={onDiscard}
-						className="hover:ring-4 hover:ring-destructive bg-destructive"
+						className="bg-destructive"
 						onMouseEnter={() => {
 							if (buttonRef.current) buttonRef.current.blur();
 						}}
@@ -47,7 +47,7 @@ const PopUp = ({
 						autoFocus
 						ref={buttonRef}
 						onClick={onConfirm}
-						className="hover:ring-4 hover:ring-primary focus:border-2 focus:border-border"
+						className="focus:shadow-[0_8px_8px_var(--accent)]"
 						onMouseEnter={() => {
 							if (buttonRef.current) buttonRef.current.blur();
 						}}

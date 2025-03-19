@@ -93,7 +93,7 @@ export default function CreatePostForm({
 					Create Post
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[500px]">
+			<DialogContent className="sm:max-w-[500px] [&>button]:hidden">
 				<form onSubmit={handleSubmit}>
 					<DialogHeader className="mb-4">
 						<DialogTitle>Create a new post</DialogTitle>
@@ -159,16 +159,12 @@ export default function CreatePostForm({
 					<DialogFooter>
 						<Button
 							type="button"
-							className="hover:ring-4 hover:ring-destructive bg-destructive"
+							className="bg-destructive"
 							onClick={() => setOpen(false)}
 						>
 							Cancel
 						</Button>
-						<Button
-							type="submit"
-							disabled={isSubmitting}
-							className="hover:ring-4 hover:ring-primary"
-						>
+						<Button type="submit" disabled={isSubmitting}>
 							{isSubmitting ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
