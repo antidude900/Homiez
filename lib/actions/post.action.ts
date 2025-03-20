@@ -100,9 +100,9 @@ export async function likeUnlikePost(params: LikeUnlikePost) {
 	}
 }
 
-export async function getFeedPost(params: { userId: string }) {
+export async function getFeedPost(params: { clerkId: string }) {
 	try {
-		const user = await User.findOne({ userId: params.userId });
+		const user = await User.findOne({ clerkId: params.clerkId });
 
 		const following = user.following;
 

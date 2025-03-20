@@ -22,11 +22,7 @@ import { Label } from "@/components/ui/label";
 import { createPost } from "@/lib/actions/post.action";
 import image from "next/image";
 
-export default function CreatePostForm({
-	mongoUserId,
-}: {
-	mongoUserId: string;
-}) {
+export default function CreatePostForm({ userId }: { userId: string }) {
 	const router = useRouter();
 	const [open, setOpen] = useState(false);
 	const [text, setText] = useState("");
@@ -67,7 +63,7 @@ export default function CreatePostForm({
 			await createPost({
 				text,
 				image: imagePreview,
-				author: JSON.parse(mongoUserId),
+				author: JSON.parse(userId),
 			});
 
 			// Reset form and close dialog

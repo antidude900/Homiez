@@ -35,7 +35,7 @@ const LeftSideBar = async () => {
 				<ProfileCard user={user} />
 			</div>
 			<div className="flex justify-center px-4">
-				<CreatePostForm mongoUserId={JSON.stringify(user._id)} />
+				<CreatePostForm userId={JSON.stringify(user._id)} />
 			</div>
 		</div>
 	);

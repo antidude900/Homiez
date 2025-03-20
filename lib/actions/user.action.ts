@@ -4,7 +4,7 @@ import User from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
 import {
 	CreateUserParams,
-	FollowUnfollowUserParams,
+	// FollowUnfollowUserParams,
 	UpdateUserParams,
 } from "./shared.type";
 import { revalidatePath } from "next/cache";
@@ -27,9 +27,9 @@ export async function updateUser(params: UpdateUserParams) {
 	try {
 		await connectToDatabase();
 
-		const { userId, updateData, path } = params;
+		const { clerkId, updateData, path } = params;
 
-		await User.findOneAndUpdate({ userId }, updateData, { new: true });
+		await User.findOneAndUpdate({ clerkId }, updateData, { new: true });
 
 		revalidatePath(path);
 		return "success";
@@ -39,46 +39,46 @@ export async function updateUser(params: UpdateUserParams) {
 	}
 }
 
-export async function followUnfollowUser(params: FollowUnfollowUserParams) {
-	try {
-		await connectToDatabase();
+// export async function followUnfollowUser(params: FollowUnfollowUserParams) {
+// 	try {
+// 		await connectToDatabase();
 
-		const user = await User.findOne({ userId: params.userId });
+// 		const user = await User.findOne({ clerkId: params.clerkId });
 
-		//unfollow
-		if (user.following.includes(params.followingId)) {
-			await User.updateOne(
-				//removing the person from folllowing
-				{ userId: params.userId },
-				{ $pull: { following: params.followingId } }
-			);
+// 		//unfollow
+// 		if (user.following.includes(params.followingId)) {
+// 			await User.updateOne(
+// 				//removing the person from folllowing
+// 				{ clerkId: params.clerkId },
+// 				{ $pull: { following: params.followingId } }
+// 			);
 
-			await User.updateOne(
-				//removing us from the person followers
-				{ userId: params.followingId },
-				{ $pull: { followers: params.userId } }
-			);
-		}
+// 			await User.updateOne(
+// 				//removing us from the person followers
+// 				{ clerkId: params.followingId },
+// 				{ $pull: { followers: params.clerkId } }
+// 			);
+// 		}
 
-		//follow
-		else {
-			await User.updateOne(
-				//adding the person to folllowing
-				{ userId: params.userId },
-				{ $push: { following: params.followingId } }
-			);
+// 		//follow
+// 		else {
+// 			await User.updateOne(
+// 				//adding the person to folllowing
+// 				{ userId: params.userId },
+// 				{ $push: { following: params.followingId } }
+// 			);
 
-			await User.updateOne(
-				//adding us to the person followers
-				{ userId: params.followingId },
-				{ $push: { followers: params.userId } }
-			);
-		}
-	} catch (error) {
-		console.log(error);
-		throw error;
-	}
-}
+// 			await User.updateOne(
+// 				//adding us to the person followers
+// 				{ userId: params.followingId },
+// 				{ $push: { followers: params.userId } }
+// 			);
+// 		}
+// 	} catch (error) {
+// 		console.log(error);
+// 		throw error;
+// 	}
+// }
 
 export async function getUserByUserName(username: string) {
 	try {
@@ -92,13 +92,13 @@ export async function getUserByUserName(username: string) {
 	}
 }
 
-export async function getUserId() {
+export async function getClerkId() {
 	try {
 		await connectToDatabase();
 
-		const { userId } = await auth();
+		const { userId: clerkId } = await auth();
 
-		return userId;
+		return clerkId;
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -109,9 +109,9 @@ export async function getUserInfo() {
 	try {
 		await connectToDatabase();
 
-		const { userId } = await auth();
+		const { userId: clerkId } = await auth();
 
-		const user = await User.findOne({ userId: userId });
+		const user = await User.findOne({ clerkId });
 		return JSON.parse(JSON.stringify(user));
 	} catch (error) {
 		console.log(error);

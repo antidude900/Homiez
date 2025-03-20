@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import {
 	checkUsernameUnique,
-	getUserId,
+	getClerkId,
 	updateUser,
 } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
@@ -90,13 +90,13 @@ const Editable = ({
 		if (type === "name") updateData = { name: value };
 		if (type === "username") updateData = { username: value };
 		if (type === "bio") updateData = { bio: value };
-		const userId = await getUserId();
+		const clerkId = await getClerkId();
 
 		toast.loading("Updating...");
 		await new Promise((resolve) => setTimeout(resolve, 250));
 
-		if (userId) {
-			await updateUser({ userId, updateData, path: pathname });
+		if (clerkId) {
+			await updateUser({ clerkId, updateData, path: pathname });
 			toast.dismiss();
 			toast.success("Updated successfully", { autoClose: 750 });
 			setIsEditable(false);

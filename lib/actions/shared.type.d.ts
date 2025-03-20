@@ -2,7 +2,7 @@ import { IUser } from "@/database/user.model";
 import { Schema } from "mongoose";
 
 export interface CreateUserParams {
-	userId: string;
+	clerkId: string;
 	name: string;
 	username: string;
 	email: string;
@@ -11,12 +11,12 @@ export interface CreateUserParams {
 }
 
 export interface FollowUnfollowUserParams {
-	userId: string;
+	clerkId: string;
 	followingId: Schema.Types.ObjectId;
 }
 
 export interface UpdateUserParams {
-	userId: string;
+	clerkId: string;
 	updateData: Partial<IUser>;
 	path: string;
 }
@@ -40,5 +40,5 @@ export interface CreateReplyParams {
 
 export interface LikeUnlikeReply {
 	replyId: Schema.Types.ObjectId;
-	userId: Schema.Types.ObjectId;
+	clerkId: Schema.Types.ObjectId;
 }
