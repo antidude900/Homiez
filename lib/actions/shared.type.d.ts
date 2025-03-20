@@ -40,5 +40,5 @@ export interface CreateReplyParams {
 
 export interface LikeUnlikeReply {
 	replyId: Schema.Types.ObjectId;
-	clerkId: Schema.Types.ObjectId;
+	userId: Schema.Types.ObjectId;
 }
