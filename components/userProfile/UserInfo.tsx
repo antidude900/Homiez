@@ -6,11 +6,22 @@ import Editable from "../shared/Editable";
 import { Button } from "../ui/button";
 import { IUser } from "@/database/user.model";
 import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
+import { useState } from "react";
 
-const userInfo = ({ user }: { user: Partial<IUser> }) => {
+const UserInfo = ({
+	user,
+	isSelf,
+	follow,
+}: {
+	user: Partial<IUser>;
+	isSelf: boolean;
+	follow: boolean;
+}) => {
+	const [followed, setFollowed] = useState<boolean>(follow);
+
 	const handlefollowUnfollow = async (userId: string) => {
-		const followingId = await getUserId();
-		console.log(followingId);
+		const followingId = await getUserId().then((e) => JSON.parse(e));
+
 		await followUnfollowUser({
 			userId: userId,
 			followingId: followingId,
@@ -35,14 +46,25 @@ const userInfo = ({ user }: { user: Partial<IUser> }) => {
 						</Editable>
 
 						<div className="text-[12px] text-muted-foreground mx-4">
-							<Button
-								className="mr-4"
-								onClick={() => {
-									handlefollowUnfollow(user._id as string);
-								}}
-							>
-								Follow
-							</Button>
+							{!isSelf && (
+								<Button
+									className="mr-4 w-[90px]"
+									onClick={async () => {
+										await handlefollowUnfollow(user._id as string);
+										setFollowed((prev) => !prev);
+									}}
+									disabled={followed === null} // Disable button while loading
+								>
+									{followed === null ? (
+										<span className="size-5 animate-spin rounded-full border-2 border-gray-300 border-t-transparent"></span>
+									) : followed ? (
+										"Unfollow"
+									) : (
+										"Follow"
+									)}
+								</Button>
+							)}
+
 							<span className="cursor-pointer">
 								{user.followers?.length || "0"} followers
 							</span>
@@ -66,4 +88,4 @@ const userInfo = ({ user }: { user: Partial<IUser> }) => {
 	);
 };
 
-export default userInfo;
+export default UserInfo;

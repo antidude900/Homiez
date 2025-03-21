@@ -41,6 +41,7 @@ export async function updateUser(params: UpdateUserParams) {
 }
 
 export async function followUnfollowUser(params: FollowUnfollowUserParams) {
+	console.log(params);
 	try {
 		await connectToDatabase();
 
@@ -63,17 +64,13 @@ export async function followUnfollowUser(params: FollowUnfollowUserParams) {
 
 		//follow
 		else {
-			await User.updateOne(
-				//adding the person to folllowing
-				{ userId: params.userId },
-				{ $push: { following: params.followingId } }
-			);
+			await User.findByIdAndUpdate(params.userId, {
+				$push: { following: params.followingId },
+			});
 
-			await User.updateOne(
-				//adding us to the person followers
-				{ userId: params.followingId },
-				{ $push: { followers: params.userId } }
-			);
+			await User.findByIdAndUpdate(params.followingId, {
+				$push: { followers: params.userId },
+			});
 		}
 	} catch (error) {
 		console.log(error);
@@ -98,8 +95,9 @@ export async function getUserId() {
 		await connectToDatabase();
 
 		const { userId: clerkId } = await auth();
-		const userId = await User.findOne({ clerkId }).select("_id");
+		const { _id: userId } = await User.findOne({ clerkId }).select("_id");
 
+		console.log("id", userId);
 		return JSON.stringify(userId);
 	} catch (error) {
 		console.log(error);

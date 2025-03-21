@@ -1,15 +1,18 @@
 import UserInfo from "@/components/userProfile/UserInfo";
 import UserPost from "@/components/userProfile/UserPost";
 import { getAllPost } from "@/lib/actions/post.action";
-import { getUserByUserName } from "@/lib/actions/user.action";
+import { getUserByUserName, getUserId } from "@/lib/actions/user.action";
 
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 	const { username } = await params;
 	const user = await getUserByUserName(username).then((e) => JSON.parse(e));
+	const followingId = await getUserId().then((e) => JSON.parse(e));
+	const userId = await getUserId().then((e) => JSON.parse(e));
 
 	if (!user) {
 		<div>Loading...</div>;
 	}
+	console.log(user._id, userId);
 	const posts = await getAllPost({ userId: user._id }).then((e) =>
 		JSON.parse(e)
 	);
@@ -17,7 +20,11 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 	return (
 		<>
 			<div className="mb-4">
-				<UserInfo user={user} />
+				<UserInfo
+					user={user}
+					isSelf={userId === user._id}
+					follow={user.following.includes(followingId)}
+				/>
 			</div>
 			<div className="grid gap-4">
 				{posts.map(
