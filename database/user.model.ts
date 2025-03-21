@@ -21,8 +21,8 @@ const UserSchema = new Schema({
 	bio: { type: String },
 	picture: { type: String, required: true },
 	location: { type: String },
-	followers: { type: Schema.Types.ObjectId, ref: "User" },
-	following: { type: Schema.Types.ObjectId, ref: "User" },
+	followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+	following: [{ type: Schema.Types.ObjectId, ref: "User" }],
 	joinedAt: { type: Date, default: Date.now },
 });
 

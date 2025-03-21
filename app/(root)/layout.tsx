@@ -1,7 +1,14 @@
 import LeftSideBar from "@/components/shared/LeftSideBar";
 import RightSideBar from "@/components/shared/RightSideBar";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = async ({ children }: { children: React.ReactNode }) => {
+	const { userId } = await auth();
+
+	if (!userId) {
+		redirect("/sign-in");
+	}
 	return (
 		<div className="flex min-h-screen">
 			{/* <div className="fixed inset-0 bg-black bg-opacity-50 z-10"></div> */}

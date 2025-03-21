@@ -11,14 +11,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
+import { IUser } from "@/database/user.model";
 
 interface UserPostProps {
-	author: {
-		_id: string;
-		name: string;
-		username: string;
-		picture: string;
-	};
+	author: Partial<IUser>;
 	postText: string;
 	postedAt: string;
 	postImg?: string;

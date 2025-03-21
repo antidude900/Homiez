@@ -58,9 +58,7 @@ export async function getPost(params: { postId: string }) {
 export async function getAllPost({ userId }: { userId: string }) {
 	try {
 		await connectToDatabase();
-		const posts = await Post.find({ author: userId })
-			.sort({ createdAt: -1 })
-			.populate("author", "name username picture");
+		const posts = await Post.find({ author: userId }).sort({ createdAt: -1 });
 
 		return JSON.stringify(posts);
 	} catch (error) {

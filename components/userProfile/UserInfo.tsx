@@ -1,14 +1,21 @@
-import { getUserInfo } from "@/lib/actions/user.action";
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Editable from "../shared/Editable";
-import { redirect } from "next/navigation";
 
-const userInfo = async () => {
-	const user = await getUserInfo();
+import { Button } from "../ui/button";
+import { IUser } from "@/database/user.model";
+import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
 
-	if (!user) {
-		redirect("/sign-in");
-	}
+const userInfo = ({ user }: { user: Partial<IUser> }) => {
+	const handlefollowUnfollow = async (userId: string) => {
+		const followingId = await getUserId();
+		console.log(followingId);
+		await followUnfollowUser({
+			userId: userId,
+			followingId: followingId,
+		});
+	};
 
 	return (
 		<div className="bg-background rounded-xl border border-border relative">
@@ -28,9 +35,21 @@ const userInfo = async () => {
 						</Editable>
 
 						<div className="text-[12px] text-muted-foreground mx-4">
-							<span className="cursor-pointer">99M followers</span>
+							<Button
+								className="mr-4"
+								onClick={() => {
+									handlefollowUnfollow(user._id as string);
+								}}
+							>
+								Follow
+							</Button>
+							<span className="cursor-pointer">
+								{user.followers?.length || "0"} followers
+							</span>
 							<span> &nbsp;|&nbsp; </span>
-							<span className="cursor-pointer">2 following</span>
+							<span className="cursor-pointer">
+								{user.following?.length || "0"} following
+							</span>
 						</div>
 					</div>
 				</div>

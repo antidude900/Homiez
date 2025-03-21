@@ -11,12 +11,12 @@ export interface CreateUserParams {
 }
 
 export interface FollowUnfollowUserParams {
-	clerkId: string;
-	followingId: Schema.Types.ObjectId;
+	userId: string;
+	followingId: string;
 }
 
 export interface UpdateUserParams {
-	clerkId: string;
+	userId: string;
 	updateData: Partial<IUser>;
 	path: string;
 }
