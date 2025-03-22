@@ -14,7 +14,7 @@ const LeftSideBar = async () => {
 
 	return (
 		<div className="p-2 min-h-screen border-r border-r-border">
-			<div className="mb-6 flex justify-end items-center px-2">
+			<div className="mb-4 flex justify-end items-center px-2">
 				<Link href="/">
 					<Image
 						src="/icons/twitter.svg"

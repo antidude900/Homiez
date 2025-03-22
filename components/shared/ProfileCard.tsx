@@ -44,14 +44,14 @@ const ProfileCard = ({ user }: { user: Partial<IUser> }) => {
 
 			<div className="flex-1 flex items-center p-2">
 				<div className="flex-1 text-center">
-					<div>99M</div>
+					<div>{user.followers?.length || "0"}</div>
 					<div className="text-muted-foreground font-medium">Followers</div>
 				</div>
 
 				<div className="border-l-[1px] border-muted-foreground h-12 mx-4"></div>
 
 				<div className="flex-1 text-center">
-					<div>2</div>
+					<div>{user.following?.length || "0"}</div>
 					<div className="text-muted-foreground font-medium">Following</div>
 				</div>
 			</div>

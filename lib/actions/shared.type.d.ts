@@ -13,6 +13,7 @@ export interface CreateUserParams {
 export interface FollowUnfollowUserParams {
 	userId: string;
 	followingId: string;
+	path: string;
 }
 
 export interface UpdateUserParams {

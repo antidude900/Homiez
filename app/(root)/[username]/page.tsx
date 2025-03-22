@@ -6,13 +6,12 @@ import { getUserByUserName, getUserId } from "@/lib/actions/user.action";
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 	const { username } = await params;
 	const user = await getUserByUserName(username).then((e) => JSON.parse(e));
-	const followingId = await getUserId().then((e) => JSON.parse(e));
 	const userId = await getUserId().then((e) => JSON.parse(e));
 
 	if (!user) {
 		<div>Loading...</div>;
 	}
-	console.log(user._id, userId);
+
 	const posts = await getAllPost({ userId: user._id }).then((e) =>
 		JSON.parse(e)
 	);
@@ -23,7 +22,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 				<UserInfo
 					user={user}
 					isSelf={userId === user._id}
-					follow={user.following.includes(followingId)}
+					follow={user.followers.includes(userId)}
 				/>
 			</div>
 			<div className="grid gap-4">

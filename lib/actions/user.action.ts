@@ -41,23 +41,22 @@ export async function updateUser(params: UpdateUserParams) {
 }
 
 export async function followUnfollowUser(params: FollowUnfollowUserParams) {
-	console.log(params);
 	try {
 		await connectToDatabase();
 
 		const user = await User.findById(params.userId);
 
 		//unfollow
-		if (user.following.includes(params.followingId)) {
+		if (user.followers.includes(params.followingId)) {
 			await User.findByIdAndUpdate(
 				params.userId,
-				{ $pull: { following: params.followingId } },
+				{ $pull: { followers: params.followingId } },
 				{ new: true }
 			);
 
 			await User.findByIdAndUpdate(
 				params.followingId,
-				{ $pull: { followers: params.userId } },
+				{ $pull: { following: params.userId } },
 				{ new: true }
 			);
 		}
@@ -65,13 +64,14 @@ export async function followUnfollowUser(params: FollowUnfollowUserParams) {
 		//follow
 		else {
 			await User.findByIdAndUpdate(params.userId, {
-				$push: { following: params.followingId },
+				$push: { followers: params.followingId },
 			});
 
 			await User.findByIdAndUpdate(params.followingId, {
-				$push: { followers: params.userId },
+				$push: { following: params.userId },
 			});
 		}
+		revalidatePath(params.path);
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -97,7 +97,6 @@ export async function getUserId() {
 		const { userId: clerkId } = await auth();
 		const { _id: userId } = await User.findOne({ clerkId }).select("_id");
 
-		console.log("id", userId);
 		return JSON.stringify(userId);
 	} catch (error) {
 		console.log(error);
@@ -121,11 +120,10 @@ export async function getUserInfo() {
 
 export async function checkUsernameUnique(username: string) {
 	try {
-		console.log("Checking uniqueness for:", username);
 		await connectToDatabase();
 
 		const user = await User.findOne({ username });
-		console.log("uniqueness:", !user);
+
 		return !user;
 	} catch (error) {
 		console.log(error);

@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { IUser } from "@/database/user.model";
 import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 const UserInfo = ({
 	user,
@@ -18,6 +19,7 @@ const UserInfo = ({
 	follow: boolean;
 }) => {
 	const [followed, setFollowed] = useState<boolean>(follow);
+	const pathname = usePathname();
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -25,6 +27,7 @@ const UserInfo = ({
 		await followUnfollowUser({
 			userId: userId,
 			followingId: followingId,
+			path: pathname,
 		});
 	};
 
@@ -55,13 +58,7 @@ const UserInfo = ({
 									}}
 									disabled={followed === null} // Disable button while loading
 								>
-									{followed === null ? (
-										<span className="size-5 animate-spin rounded-full border-2 border-gray-300 border-t-transparent"></span>
-									) : followed ? (
-										"Unfollow"
-									) : (
-										"Follow"
-									)}
+									{followed ? "Unfollow" : "Follow"}
 								</Button>
 							)}
 

@@ -34,7 +34,7 @@ const UserPost = ({
 
 	return (
 		<div className="bg-background rounded-xl border border-border">
-			<div className="flex p-2">
+			<div className="flex px-2 py-4">
 				<Avatar className="w-16 h-16 mr-5">
 					<AvatarImage src={author.picture} />
 					<AvatarFallback>CN</AvatarFallback>
@@ -43,25 +43,15 @@ const UserPost = ({
 				<div className="w-full vertical-flex">
 					<div className="flex mb-4 justify-between">
 						<div className="vertical-flex">
-							<div>
-								<span
-									className="font-bold mr-2 cursor-pointer"
-									onClick={() => {
-										alert("Clicked!");
-									}}
-								>
+							<Link href={`${author.username}`}>
+								<span className="font-bold mr-2 cursor-pointer">
 									{author.name}
 								</span>
 
-								<span
-									className="text-muted-foreground text-sm cursor-pointer"
-									onClick={() => {
-										alert("Clicked!");
-									}}
-								>
+								<span className="text-muted-foreground text-sm cursor-pointer"	>
 									@{author.username}
 								</span>
-							</div>
+							</Link>
 
 							<Link href={`${author.username}/post/1`}>
 								<span className="">{postText}</span>

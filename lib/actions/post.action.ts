@@ -3,7 +3,7 @@
 import Post from "@/database/post.model";
 import { connectToDatabase } from "../mongoose";
 import { CreatePostParams, LikeUnlikePost } from "./shared.type";
-import User from "@/database/user.model";
+import User, { IUser } from "@/database/user.model";
 import { v2 as cloudinary } from "cloudinary";
 
 export async function createPost(params: CreatePostParams) {
@@ -98,17 +98,30 @@ export async function likeUnlikePost(params: LikeUnlikePost) {
 	}
 }
 
-export async function getFeedPost(params: { clerkId: string }) {
+export async function getFeedPost(userId: string) {
 	try {
-		const user = await User.findOne({ clerkId: params.clerkId });
+		const user: IUser | null = await User.findById(userId);
+		if (!user) {
+			throw new Error("User not found");
+		}
 
 		const following = user.following;
+		const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-		const feedPosts = await Post.find({ author: { $in: following } }).sort({
-			createdAt: -1,
-		});
+		const followingPosts = await Post.find({ author: { $in: following } })
+			.sort({ createdAt: -1 })
+			.populate("author", "name username picture");
 
-		return feedPosts;
+		const userRecentPosts = await Post.find({
+			author: user._id,
+			createdAt: { $gte: oneDayAgo },
+		})
+			.sort({ createdAt: -1 })
+			.populate("author", "name username picture");
+
+		const feedPosts = [...userRecentPosts, ...followingPosts];
+
+		return JSON.stringify(feedPosts);
 	} catch (error) {
 		console.log(error);
 		throw error;
