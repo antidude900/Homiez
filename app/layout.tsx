@@ -22,7 +22,7 @@ export default function RootLayout({
 					>
 						{children}
 
-						<ToastContainer hideProgressBar />
+						<ToastContainer hideProgressBar position="bottom-right" />
 					</ThemeProvider>
 				</body>
 			</html>

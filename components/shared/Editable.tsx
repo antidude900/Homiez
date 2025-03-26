@@ -4,7 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import { Pencil } from "lucide-react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
-import { checkUsernameUnique, getUserId, updateUser } from "@/lib/actions/user.action";
+import {
+	checkUsernameUnique,
+	getUserId,
+	updateUser,
+} from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import PopUp from "./PopUp";
@@ -89,7 +93,7 @@ const Editable = ({
 
 		toast.loading("Updating...");
 		await new Promise((resolve) => setTimeout(resolve, 250));
-		const userId = await getUserId();
+		const userId = await getUserId().then((e) => JSON.parse(e));
 
 		if (userId) {
 			await updateUser({ userId, updateData, path: pathname });
