@@ -1,5 +1,6 @@
-// import Comment from "@/components/userProfile/Comment";
-// import UserPost from "@/components/userProfile/UserPost";
+import Comment from "@/components/userProfile/Comment";
+import UserPost from "@/components/userProfile/UserPost";
+import { getPost } from "@/lib/actions/post.action";
 import { getUserByUserName } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 
@@ -9,23 +10,29 @@ const Page = async ({
 	params: Promise<{ username: string; postId: string }>;
 }) => {
 	const { username, postId } = await params;
-	console.log(username, postId);
-	const user = await getUserByUserName(username);
+
+	const user = await getUserByUserName(username).then((e) => JSON.parse(e));
+	const post = await getPost({ postId }).then((e) => JSON.parse(e));
 
 	if (!user) {
 		redirect("/sign-in");
 	}
 
+	if (!post) {
+		return <div>Post not Found!</div>;
+	}
+
 	return (
 		<>
-			{/* <div className="mb-4">
+			<div className="mb-4">
 				<UserPost
-					user={user}
-					postTitle="Deepseek vs OpenAi!"
-					postImg="/post-1.webp"
-					postedAt="1d"
-					likesCount={69}
-					repliesCount={69}
+					author={user}
+					postText={post.text}
+					postId={postId}
+					postImg={post?.image || ""}
+					postedAt={post.createdAt}
+					likesCount={post.likes.length}
+					repliesCount={post.replies.length}
 				/>
 			</div>
 
@@ -48,7 +55,7 @@ const Page = async ({
 					postedAt="1d"
 					likesCount={69}
 				/>
-			</div> */}
+			</div>
 		</>
 	);
 };

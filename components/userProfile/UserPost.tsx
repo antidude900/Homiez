@@ -15,6 +15,7 @@ import { IUser } from "@/database/user.model";
 
 interface UserPostProps {
 	author: Partial<IUser>;
+	postId: string;
 	postText: string;
 	postedAt: string;
 	postImg?: string;
@@ -24,6 +25,7 @@ interface UserPostProps {
 
 const UserPost = ({
 	author,
+	postId,
 	postText,
 	postedAt,
 	postImg,
@@ -48,12 +50,12 @@ const UserPost = ({
 									{author.name}
 								</span>
 
-								<span className="text-muted-foreground text-sm cursor-pointer"	>
+								<span className="text-muted-foreground text-sm cursor-pointer">
 									@{author.username}
 								</span>
 							</Link>
 
-							<Link href={`${author.username}/post/1`}>
+							<Link href={`${author.username}/post/${postId}`}>
 								<span className="">{postText}</span>
 							</Link>
 						</div>
@@ -66,7 +68,10 @@ const UserPost = ({
 					</div>
 
 					{postImg && (
-						<Link href={`${author.username}/post/1`} className="w-full mb-1">
+						<Link
+							href={`${author.username}/post/${postId}`}
+							className="w-full mb-1"
+						>
 							<Image
 								src={postImg}
 								alt="post image"

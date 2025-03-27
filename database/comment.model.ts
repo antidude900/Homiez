@@ -1,4 +1,4 @@
-import { Schema, models, model, Document } from "mongoose";
+import { Schema, models, Document, model } from "mongoose";
 
 export interface IReply extends Document {
 	text: string;
@@ -8,7 +8,7 @@ export interface IReply extends Document {
 	createdAt: Date;
 }
 
-const ReplySchema = new Schema({
+const CommentSchema = new Schema({
 	text: { type: String, required: true },
 	author: { type: Schema.Types.ObjectId, ref: "User", required: true },
 	postId: { type: Schema.Types.ObjectId, ref: "Post", required: true },
@@ -16,6 +16,6 @@ const ReplySchema = new Schema({
 	createdAt: { type: Date, default: Date.now },
 });
 
-const Reply = models.Reply || model("Reply", ReplySchema);
+const Comment = models.Comment || model("Comment", CommentSchema);
 
-export default Reply;
+export default Comment;

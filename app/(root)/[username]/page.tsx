@@ -29,6 +29,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 				{posts.map(
 					(post: {
 						_id: string;
+						postId: string;
 						text: string;
 						image?: string;
 						createdAt: string;
@@ -38,6 +39,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 						<UserPost
 							key={post._id}
 							author={user}
+							postId={post._id}
 							postText={post.text}
 							postImg={post?.image || ""}
 							postedAt={post.createdAt}

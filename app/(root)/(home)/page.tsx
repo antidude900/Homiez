@@ -18,6 +18,7 @@ const page = async () => {
 				{posts.map(
 					(post: {
 						author: Partial<IUser>;
+						postId: string;
 						_id: string;
 						text: string;
 						image?: string;
@@ -28,6 +29,7 @@ const page = async () => {
 						<UserPost
 							key={post._id}
 							author={post.author}
+							postId={post._id}
 							postText={post.text}
 							postImg={post?.image || ""}
 							postedAt={post.createdAt}

@@ -48,7 +48,7 @@ export async function getPost(params: { postId: string }) {
 		if (!posts) {
 			throw new Error("Post not found");
 		}
-		return posts;
+		return JSON.stringify(posts);
 	} catch (error) {
 		console.log(error);
 		throw error;

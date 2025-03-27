@@ -14,7 +14,7 @@ const PostSchema = new Schema({
 	image: { type: String },
 	author: { type: Schema.Types.ObjectId, ref: "User", required: true },
 	likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
-	replies: [{ type: Schema.Types.ObjectId, ref: "Replies" }],
+	replies: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
 	createdAt: { type: Date, default: Date.now },
 });
 
