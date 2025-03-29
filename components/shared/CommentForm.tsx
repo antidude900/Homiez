@@ -19,16 +19,18 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import image from "next/image";
+import { createComment } from "@/lib/actions/comment.actions";
+import { getUserId } from "@/lib/actions/user.action";
 
-export default function CreatePostForm({ userId }: { userId: string }) {
+export default function CreateCommentForm({ postId }: { postId: string }) {
 	const router = useRouter();
 	const [open, setOpen] = useState(false);
 	const [text, setText] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	console.log(userId);
 
 	const handleSubmit = async (e: React.FormEvent) => {
+		const authorId = await getUserId().then((e) => JSON.parse(e));
 		e.preventDefault();
 
 		if (!text.trim() && !image) {
@@ -40,12 +42,12 @@ export default function CreatePostForm({ userId }: { userId: string }) {
 		setIsSubmitting(true);
 
 		try {
-			// await createPost({
-			// 	text,
-			// 	author: JSON.parse(userId),
-			// });
+			await createComment({
+				text,
+				author: authorId,
+				postId: postId,
+			});
 
-			// Reset form and close dialog
 			setText("");
 
 			setOpen(false);
@@ -95,14 +97,18 @@ export default function CreatePostForm({ userId }: { userId: string }) {
 						>
 							Cancel
 						</Button>
-						<Button type="submit" disabled={isSubmitting}>
+						<Button
+							onClick={handleSubmit}
+							disabled={isSubmitting}
+							className="cursor-pointer"
+						>
 							{isSubmitting ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									Posting...
 								</>
 							) : (
-								"Post"
+								"Comment"
 							)}
 						</Button>
 					</DialogFooter>

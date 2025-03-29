@@ -1,5 +1,6 @@
 import Comment from "@/components/userProfile/Comment";
 import UserPost from "@/components/userProfile/UserPost";
+import { IUser } from "@/database/user.model";
 import { getPost } from "@/lib/actions/post.action";
 import { getUserByUserName } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
@@ -13,12 +14,12 @@ const Page = async ({
 
 	const user = await getUserByUserName(username).then((e) => JSON.parse(e));
 	const post = await getPost({ postId }).then((e) => JSON.parse(e));
-
+	console.log(post);
 	if (!user) {
 		redirect("/sign-in");
 	}
 
-	if (!post) {
+	if (!post || post.author !== user._id) {
 		return <div>Post not Found!</div>;
 	}
 
@@ -32,29 +33,28 @@ const Page = async ({
 					postImg={post?.image || ""}
 					postedAt={post.createdAt}
 					likesCount={post.likes.length}
-					repliesCount={post.replies.length}
+					repliesCount={post.comments.length}
 				/>
 			</div>
 
 			<div className="grid gap-2">
-				<Comment
-					username="Hari"
-					postTitle="Very interesting!"
-					postedAt="1d"
-					likesCount={69}
-				/>{" "}
-				<Comment
-					username="shyam"
-					postTitle="OpenAI will win!"
-					postedAt="1d"
-					likesCount={69}
-				/>{" "}
-				<Comment
-					username="sita"
-					postTitle="Deepseek will win!"
-					postedAt="1d"
-					likesCount={69}
-				/>
+				{post.comments.map(
+					(comment: {
+						_id: string;
+						author: Partial<IUser>;
+						text: string;
+						createdAt: string;
+						likes: [];
+					}) => (
+						<Comment
+							key={comment._id}
+							author={comment.author}
+							text={comment.text}
+							postedAt={comment.createdAt}
+							likesCount={comment.likes.length}
+						/>
+					)
+				)}
 			</div>
 		</>
 	);

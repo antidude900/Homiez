@@ -50,6 +50,7 @@ export default function CreatePostForm({ userId }: { userId: string }) {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		console.log(userId,"userId")
 
 		if (!text.trim() && !image) {
 			setError("Please add some text or an image");

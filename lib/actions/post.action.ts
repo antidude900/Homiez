@@ -43,7 +43,16 @@ export async function createPost(params: CreatePostParams) {
 export async function getPost(params: { postId: string }) {
 	try {
 		await connectToDatabase();
-		const posts = await Post.findById(params.postId);
+		const posts = await Post.findById(params.postId).populate([
+			{
+				path: "comments",
+				select: "text likes",
+				options: { sort: { createdAt: -1 } },
+				populate: [
+					{ path: "author", select: "name username picture" },
+				],
+			},
+		]);
 
 		if (!posts) {
 			throw new Error("Post not found");

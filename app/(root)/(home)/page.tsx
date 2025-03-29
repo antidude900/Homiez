@@ -7,6 +7,7 @@ const page = async () => {
 	const userId: string = await getUserId().then((e) => JSON.parse(e));
 
 	const posts = await getFeedPost(userId).then((e) => JSON.parse(e));
+
 	return (
 		<>
 			<div className="bg-background rounded-xl border border-border relative mb-4">
@@ -24,7 +25,7 @@ const page = async () => {
 						image?: string;
 						createdAt: string;
 						likes: [];
-						replies: [];
+						comments: [];
 					}) => (
 						<UserPost
 							key={post._id}
@@ -34,7 +35,7 @@ const page = async () => {
 							postImg={post?.image || ""}
 							postedAt={post.createdAt}
 							likesCount={post.likes.length}
-							repliesCount={post.replies.length}
+							repliesCount={post.comments.length}
 						/>
 					)
 				)}

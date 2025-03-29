@@ -3,11 +3,17 @@
 import Comment from "@/database/comment.model";
 import { connectToDatabase } from "../mongoose";
 import { CreateCommentParams } from "./shared.type";
+import Post from "@/database/post.model";
 
 export async function createComment(params: CreateCommentParams) {
 	try {
 		await connectToDatabase();
-		await Comment.create(params);
+		const newComment = await Comment.create(params);
+		await Post.findByIdAndUpdate(
+			params.postId,
+			{ $push: { comments: newComment._id } },
+			{ new: true }
+		);
 	} catch (error) {
 		console.log(error);
 		throw error;

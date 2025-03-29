@@ -35,8 +35,8 @@ export interface LikeUnlikePost {
 
 export interface CreateCommentParams {
 	text: string;
-	author: Schema.Types.ObjectId;
-	postId: Schema.Types.ObjectId;
+	author: string;
+	postId: string;
 }
 
 export interface LikeUnlikeReply {

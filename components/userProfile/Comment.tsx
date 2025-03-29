@@ -4,27 +4,22 @@ import Link from "next/link";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { EllipsisVertical, Heart } from "lucide-react";
+import { IUser } from "@/database/user.model";
 
 interface CommentProps {
-	username: string;
-	postTitle: string;
+	author: Partial<IUser>;
+	text: string;
 	postedAt: string;
 	likesCount: number;
 }
 
-const Comment = ({
-	username,
-	postTitle,
-	postedAt,
-
-	likesCount,
-}: CommentProps) => {
+const Comment = ({ author, text, postedAt, likesCount }: CommentProps) => {
 	const [liked, setLiked] = useState(false);
 	return (
 		<div className="bg-background rounded-xl border border-border">
 			<div className="flex p-2">
 				<Avatar className="w-8 h-8 mr-5">
-					<AvatarImage src="/pp.jpg" />
+					<AvatarImage src={author.picture} />
 					<AvatarFallback>CN</AvatarFallback>
 				</Avatar>
 
@@ -38,10 +33,10 @@ const Comment = ({
 									alert("Clicked!");
 								}}
 							>
-								{username}
+								{author.username}
 							</span>
-							<Link href={`${username}/post/1`}>
-								<span className="">{postTitle}</span>
+							<Link href={`${author.username}/post/1`}>
+								<span className="">{text}</span>
 							</Link>
 						</div>
 						<div className=" flex mr-2">

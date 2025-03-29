@@ -34,7 +34,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 						image?: string;
 						createdAt: string;
 						likes: [];
-						replies: [];
+						comments: [];
 					}) => (
 						<UserPost
 							key={post._id}
@@ -44,7 +44,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 							postImg={post?.image || ""}
 							postedAt={post.createdAt}
 							likesCount={post.likes.length}
-							repliesCount={post.replies.length}
+							repliesCount={post.comments.length}
 						/>
 					)
 				)}

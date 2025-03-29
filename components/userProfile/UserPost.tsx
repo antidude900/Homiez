@@ -3,15 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import {
-	EllipsisVertical,
-	Heart,
-	MessageCircle,
-	SquareArrowOutUpRight,
-} from "lucide-react";
+import { EllipsisVertical, Heart, SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import { IUser } from "@/database/user.model";
+import CreateCommentForm from "../shared/CommentForm";
 
 interface UserPostProps {
 	author: Partial<IUser>;
@@ -99,7 +95,7 @@ const UserPost = ({
 							fill={liked ? "red" : "transparent"}
 							onClick={() => setLiked(!liked)}
 						/>
-						<MessageCircle />
+						<CreateCommentForm postId={postId} />
 						<SquareArrowOutUpRight />
 					</div>
 				</div>
