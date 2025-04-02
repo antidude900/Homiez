@@ -2,9 +2,11 @@
 
 import Post from "@/database/post.model";
 import { connectToDatabase } from "../mongoose";
-import { CreatePostParams, LikeUnlikePost } from "./shared.type";
+import { CreatePostParams } from "./shared.type";
 import User, { IUser } from "@/database/user.model";
 import { v2 as cloudinary } from "cloudinary";
+import { getUserId } from "./user.action";
+import { revalidatePath } from "next/cache";
 
 export async function createPost(params: CreatePostParams) {
 	const { text, image, author } = params;
@@ -48,9 +50,7 @@ export async function getPost(params: { postId: string }) {
 				path: "comments",
 				select: "text likes",
 				options: { sort: { createdAt: -1 } },
-				populate: [
-					{ path: "author", select: "name username picture" },
-				],
+				populate: [{ path: "author", select: "name username picture" }],
 			},
 		]);
 
@@ -86,24 +86,27 @@ export async function deletePost(params: { postId: string }) {
 	}
 }
 
-export async function likeUnlikePost(params: LikeUnlikePost) {
+export async function likeUnlikePost(postId: string, path: string) {
 	try {
 		await connectToDatabase();
-		const post = await Post.findById(params.postId);
-		if (post.likes.includes(params.userId)) {
-			await Post.updateOne(
-				{ _id: params.postId },
-				{ $pull: { likes: params.userId } }
-			);
-		} else {
-			await Post.updateOne(
-				{ _id: params.postId },
-				{ $push: { likes: params.userId } }
-			);
-		}
-	} catch (error) {
-		console.log(error);
-		throw error;
+		const userId = await getUserId().then((e) => JSON.parse(e));
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const updatedPost =
+			(await Post.findOneAndUpdate(
+				{ _id: postId, likes: userId },
+				{ $pull: { likes: userId } },
+				{ new: true }
+			)) ||
+			(await Post.findOneAndUpdate(
+				{ _id: postId },
+				{ $addToSet: { likes: userId } },
+				{ new: true }
+			));
+
+		revalidatePath(path);
+	} catch (e) {
+		console.log(e);
 	}
 }
 

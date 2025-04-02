@@ -32,7 +32,7 @@ const Page = async ({
 					postId={postId}
 					postImg={post?.image || ""}
 					postedAt={post.createdAt}
-					likesCount={post.likes.length}
+					likes={post.likes}
 					repliesCount={post.comments.length}
 				/>
 			</div>

@@ -71,6 +71,8 @@ export async function followUnfollowUser(params: FollowUnfollowUserParams) {
 				$push: { following: params.userId },
 			});
 		}
+
+		console.log(updateUser);
 		revalidatePath(params.path);
 	} catch (error) {
 		console.log(error);

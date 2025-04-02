@@ -43,7 +43,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 							postText={post.text}
 							postImg={post?.image || ""}
 							postedAt={post.createdAt}
-							likesCount={post.likes.length}
+							likes={post.likes}
 							repliesCount={post.comments.length}
 						/>
 					)
