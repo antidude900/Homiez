@@ -132,3 +132,17 @@ export async function checkUsernameUnique(username: string) {
 		throw error;
 	}
 }
+
+export async function getLikedUsers(likedUsers: string[]) {
+	try {
+		await connectToDatabase();
+		const users = await User.find(
+			{ _id: { $in: likedUsers } },
+			"name username picture"
+		);
+		return JSON.stringify(users);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}

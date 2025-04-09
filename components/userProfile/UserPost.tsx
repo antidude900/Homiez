@@ -12,6 +12,7 @@ import { getUserId } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
 import { likeUnlikePost } from "@/lib/actions/post.action";
 import { Skeleton } from "../ui/skeleton";
+import { LikeUsersShow } from "../shared/LikeUsersShow";
 
 interface UserPostProps {
 	author: Partial<IUser>;
@@ -121,7 +122,8 @@ const UserPost = ({
 					)}
 
 					<div className="text-[14px] text-muted-foreground mb-2">
-						<span className="cursor-pointer">{likes.length} likes</span>
+						<LikeUsersShow likedUsers={likes}>{likes.length}</LikeUsersShow>
+
 						<span> &nbsp;|&nbsp; </span>
 						<span className="cursor-pointer">{repliesCount} replies</span>
 					</div>
