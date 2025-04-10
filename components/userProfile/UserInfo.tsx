@@ -51,12 +51,11 @@ const UserInfo = ({
 						<div className="text-[12px] text-muted-foreground mx-4">
 							{!isSelf && (
 								<Button
-									className="mr-4 w-[90px]"
+									className={`mr-4 w-[90px] ${followed && "bg-destructive"}`}
 									onClick={async () => {
 										await handlefollowUnfollow(user._id as string);
 										setFollowed((prev) => !prev);
 									}}
-									disabled={followed === null} // Disable button while loading
 								>
 									{followed ? "Unfollow" : "Follow"}
 								</Button>

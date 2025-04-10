@@ -6,10 +6,24 @@ import {
 	DialogTrigger,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { getLikedUsers } from "@/lib/actions/user.action";
+import {
+	followUnfollowUser,
+	getLikedUsers,
+	getUserId,
+} from "@/lib/actions/user.action";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
+
+type User = {
+	_id: string;
+	name: string;
+	username: string;
+	picture: string;
+	followed: boolean;
+};
 
 export function LikeUsersShow({
 	children,
@@ -18,15 +32,40 @@ export function LikeUsersShow({
 	children: React.ReactNode;
 	likedUsers: string[];
 }) {
-	const [users, setUsers] = useState([]);
+	const [users, setUsers] = useState<User[]>([]);
+	const [userId, setUserId] = useState<string | null>(null);
 	const [fetched, setFetched] = useState(false);
+	const pathname = usePathname();
 
 	const fetchData = async () => {
 		if (!fetched && likedUsers.length > 0) {
 			const users = await getLikedUsers(likedUsers).then((e) => JSON.parse(e));
+			const userId = await getUserId().then((e) => JSON.parse(e));
 			setUsers(users);
+			setUserId(userId);
 		}
 		setFetched(true);
+	};
+
+	const handlefollowUnfollow = async (userId: string) => {
+		const followingId = await getUserId().then((e) => JSON.parse(e));
+
+		await followUnfollowUser({
+			userId: userId,
+			followingId: followingId,
+			path: pathname,
+		});
+
+		setUsers((prev) =>
+			prev.map((prevUser) =>
+				userId === prevUser._id
+					? {
+							...prevUser,
+							followed: !prevUser.followed,
+					  }
+					: prevUser
+			)
+		);
 	};
 
 	return (
@@ -46,9 +85,9 @@ export function LikeUsersShow({
 					) : users.length === 0 ? (
 						<p className="text-sm text-muted-foreground">No likes yet.</p>
 					) : (
-						users.map(
-							(user: { name: string; username: string; picture: string }) => (
-								<div key={user.username} className="flex items-center gap-3">
+						users.map((user) => (
+							<div key={user.username} className="flex justify-between w-full">
+								<div className="flex items-center gap-3">
 									<Avatar className="">
 										<AvatarImage src={user.picture} />
 										<AvatarFallback className="bg-green-700">
@@ -62,8 +101,20 @@ export function LikeUsersShow({
 										</p>
 									</Link>
 								</div>
-							)
-						)
+								{userId !== user._id && (
+									<Button
+										className={`mr-4 w-[90px] ${
+											user.followed && "bg-destructive"
+										}`}
+										onClick={async () => {
+											await handlefollowUnfollow(user._id as string);
+										}}
+									>
+										{user.followed ? "Unfollow" : "Follow"}
+									</Button>
+								)}
+							</div>
+						))
 					)}
 				</div>
 			</DialogContent>
