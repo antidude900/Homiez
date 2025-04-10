@@ -2,18 +2,14 @@ import Image from "next/image";
 import ProfileCard from "./ProfileCard";
 import Link from "next/link";
 import { getUserInfo } from "@/lib/actions/user.action";
-import { redirect } from "next/navigation";
 import CreatePostForm from "./CreatePostForm";
+import SuggestedUsers from "./SuggestedUsers";
 
 const LeftSideBar = async () => {
 	const user = await getUserInfo();
 
-	if (!user) {
-		redirect("/sign-in");
-	}
-
 	return (
-		<div className="p-2 min-h-screen border-r border-r-border">
+		<div className="p-2 h-screen border-r border-r-border flex flex-col">
 			<div className="mb-4 flex justify-end items-center px-2">
 				<Link href="/">
 					<Image
@@ -34,8 +30,13 @@ const LeftSideBar = async () => {
 			<div className="px-2 mb-4">
 				<ProfileCard user={user} />
 			</div>
-			<div className="flex justify-center px-4">
+			<div className="flex justify-center px-4 mb-6">
 				<CreatePostForm userId={JSON.stringify(user._id)} />
+			</div>
+
+			
+			<div className="h-fit min-h-0">
+				<SuggestedUsers />
 			</div>
 		</div>
 	);

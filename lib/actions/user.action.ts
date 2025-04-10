@@ -159,3 +159,29 @@ export async function getLikedUsers(likedUsers: string[]) {
 		throw error;
 	}
 }
+
+export async function getSuggestedUsers() {
+	try {
+		await connectToDatabase();
+		const userId = await getUserId().then((e) => JSON.parse(e));
+
+		const { following: followingList } = await User.findById(
+			userId,
+			"following"
+		);
+
+		const users = await User.find({}, "name username picture followers");
+
+		const sortedUsers = users
+			.filter(
+				(user) =>
+					user._id.toString() !== userId && !followingList.includes(user._id)
+			)
+			.sort((a, b) => b.followers.length - a.followers.length);
+
+		return JSON.stringify(sortedUsers);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}

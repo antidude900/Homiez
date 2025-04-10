@@ -1,14 +1,15 @@
 import LeftSideBar from "@/components/shared/LeftSideBar";
 import RightSideBar from "@/components/shared/RightSideBar";
-import { auth } from "@clerk/nextjs/server";
+import { getUserId } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
-	const { userId } = await auth();
+	const userId = await getUserId().then((e) => JSON.parse(e));
 
-	if (!userId) {
+	if (userId === null) {	
 		redirect("/sign-in");
 	}
+
 	return (
 		<div className="flex min-h-screen">
 			{/* <div className="fixed inset-0 bg-black bg-opacity-50 z-10"></div> */}

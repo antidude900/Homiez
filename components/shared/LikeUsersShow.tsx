@@ -88,7 +88,7 @@ export function LikeUsersShow({
 						users.map((user) => (
 							<div key={user.username} className="flex justify-between w-full">
 								<div className="flex items-center gap-3">
-									<Avatar className="">
+									<Avatar className="">	
 										<AvatarImage src={user.picture} />
 										<AvatarFallback className="bg-green-700">
 											{user.name[0]}
