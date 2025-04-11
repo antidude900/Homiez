@@ -1,9 +1,17 @@
-import { getSuggestedUsers } from "@/lib/actions/user.action";
+"use client";
+
+import {
+	followUnfollowUser,
+	getSuggestedUsers,
+	getUserId,
+} from "@/lib/actions/user.action";
 
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { SuggestionsMore } from "./SuggestionsMore";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 type User = {
 	_id: string;
@@ -12,8 +20,29 @@ type User = {
 	picture: string;
 };
 
-const SuggestedUsers = async () => {
-	const users = await getSuggestedUsers().then((e) => JSON.parse(e));
+const SuggestedUsers = () => {
+	const [users, setUsers] = useState<User[]>([]);
+	const pathname = usePathname();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const users = await getSuggestedUsers().then((e) => JSON.parse(e));
+			setUsers(users);
+		};
+
+		fetchData();
+	}, []);
+
+	const handlefollowUnfollow = async (userId: string) => {
+		const followingId = await getUserId().then((e) => JSON.parse(e));
+
+		await followUnfollowUser({
+			userId: userId,
+			followingId: followingId,
+			path: pathname,
+		});
+		setUsers((prev) => prev.filter((user) => user._id !== userId));
+	};
 
 	return (
 		<div className="bg-background w-full p-2 rounded-xl h-full border border-border flex flex-col">
@@ -38,7 +67,12 @@ const SuggestedUsers = async () => {
 							</Link>
 						</div>
 
-						<Button className="mr-4 w-[90px]">Follow</Button>
+						<Button
+							className="mr-4 w-[90px]"
+							onClick={() => handlefollowUnfollow(user._id)}
+						>
+							Follow
+						</Button>
 					</div>
 				))}
 			</div>

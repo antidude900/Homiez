@@ -8,6 +8,8 @@ import { IUser } from "@/database/user.model";
 import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { FollowerShow } from "../shared/FollowerShow";
+import { FollowingShow } from "../shared/FollowingShow";
 
 const UserInfo = ({
 	user,
@@ -60,14 +62,18 @@ const UserInfo = ({
 									{followed ? "Unfollow" : "Follow"}
 								</Button>
 							)}
+							<FollowerShow user={user._id || ""}>
+								<span className="cursor-pointer">
+									{user.followers?.length || "0"} followers
+								</span>
+							</FollowerShow>
 
-							<span className="cursor-pointer">
-								{user.followers?.length || "0"} followers
-							</span>
 							<span> &nbsp;|&nbsp; </span>
-							<span className="cursor-pointer">
-								{user.following?.length || "0"} following
-							</span>
+							<FollowingShow user={user._id || ""}>
+								<span className="cursor-pointer">
+									{user.following?.length || "0"} following
+								</span>
+							</FollowingShow>
 						</div>
 					</div>
 				</div>

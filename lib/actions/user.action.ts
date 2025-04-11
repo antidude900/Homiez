@@ -185,3 +185,63 @@ export async function getSuggestedUsers() {
 		throw error;
 	}
 }
+
+export async function getFollowers(user: string) {
+	try {
+		await connectToDatabase();
+
+		const userId = await getUserId().then((e) => JSON.parse(e));
+		const currentUser = await User.findById(userId).select("following");
+
+		const users = await User.findById(user, "followers").populate([
+			{
+				path: "followers",
+				select: "name username picture",
+				options: { sort: { createdAt: 1 } },
+			},
+		]);
+
+		const result = users.followers.map((user) => ({
+			_id: user._id,
+			name: user.name,
+			username: user.username,
+			picture: user.picture,
+			followed: currentUser.following.includes(user._id),
+		}));
+
+		return JSON.stringify(result);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function getFollowing(user: string) {
+	try {
+		await connectToDatabase();
+
+		const userId = await getUserId().then((e) => JSON.parse(e));
+		const currentUser = await User.findById(userId).select("following");
+
+		const users = await User.findById(user, "following").populate([
+			{
+				path: "following",
+				select: "name username picture",
+				options: { sort: { createdAt: 1 } },
+			},
+		]);
+
+		const result = users.following.map((user) => ({
+			_id: user._id,
+			name: user.name,
+			username: user.username,
+			picture: user.picture,
+			followed: currentUser.following.includes(user._id),
+		}));
+
+		return JSON.stringify(result);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}

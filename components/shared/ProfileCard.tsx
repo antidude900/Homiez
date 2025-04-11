@@ -3,6 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import ToolBar from "./ToolBar";
 import Editable from "./Editable";
 import { IUser } from "@/database/user.model";
+import { FollowerShow } from "./FollowerShow";
+import { FollowingShow } from "./FollowingShow";
 
 const ProfileCard = ({ user }: { user: Partial<IUser> }) => {
 	return (
@@ -44,15 +46,19 @@ const ProfileCard = ({ user }: { user: Partial<IUser> }) => {
 
 			<div className="flex-1 flex items-center p-2">
 				<div className="flex-1 text-center">
-					<div>{user.followers?.length || "0"}</div>
-					<div className="text-muted-foreground font-medium">Followers</div>
+					<FollowerShow user={user._id || ""}>
+						<div>{user.followers?.length || "0"}</div>
+						<div className="text-muted-foreground font-medium">Followers</div>
+					</FollowerShow>
 				</div>
 
 				<div className="border-l-[1px] border-muted-foreground h-12 mx-4"></div>
 
 				<div className="flex-1 text-center">
-					<div>{user.following?.length || "0"}</div>
-					<div className="text-muted-foreground font-medium">Following</div>
+					<FollowingShow user={user._id || ""}>
+						<div>{user.following?.length || "0"}</div>
+						<div className="text-muted-foreground font-medium">Following</div>
+					</FollowingShow>
 				</div>
 			</div>
 		</div>
