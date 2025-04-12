@@ -1,6 +1,6 @@
 "use server";
 
-import User from "@/database/user.model";
+import User, { IUser } from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
 import {
 	CreateUserParams,
@@ -201,7 +201,7 @@ export async function getFollowers(user: string) {
 			},
 		]);
 
-		const result = users.followers.map((user) => ({
+		const result = users.followers.map((user: Partial<IUser>) => ({
 			_id: user._id,
 			name: user.name,
 			username: user.username,
@@ -231,7 +231,7 @@ export async function getFollowing(user: string) {
 			},
 		]);
 
-		const result = users.following.map((user) => ({
+		const result = users.following.map((user: Partial<IUser>) => ({
 			_id: user._id,
 			name: user.name,
 			username: user.username,
