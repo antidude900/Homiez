@@ -14,7 +14,7 @@ const Page = async ({
 
 	const user = await getUserByUserName(username).then((e) => JSON.parse(e));
 	const post = await getPost({ postId }).then((e) => JSON.parse(e));
-	console.log(post);
+
 	if (!user) {
 		redirect("/sign-in");
 	}
