@@ -1,12 +1,13 @@
 import Image from "next/image";
 import ProfileCard from "./ProfileCard";
 import Link from "next/link";
-import { getUserInfo } from "@/lib/actions/user.action";
+import { getSuggestedUsers, getUserInfo } from "@/lib/actions/user.action";
 import CreatePostForm from "./CreatePostForm";
 import SuggestedUsers from "./SuggestedUsers";
 
 const LeftSideBar = async () => {
 	const user = await getUserInfo();
+	const suggestedUsers = await getSuggestedUsers().then((e) => JSON.parse(e));
 
 	return (
 		<div className="p-2 h-screen border-r border-r-border flex flex-col">
@@ -34,9 +35,8 @@ const LeftSideBar = async () => {
 				<CreatePostForm userId={JSON.stringify(user._id)} />
 			</div>
 
-			
 			<div className="h-fit min-h-0">
-				<SuggestedUsers />
+				<SuggestedUsers suggestedUsers={suggestedUsers} />
 			</div>
 		</div>
 	);

@@ -6,21 +6,31 @@ import Editable from "../shared/Editable";
 import { Button } from "../ui/button";
 import { IUser } from "@/database/user.model";
 import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
-import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { FollowerShow } from "../shared/FollowerShow";
 import { FollowingShow } from "../shared/FollowingShow";
 
+type User = {
+	_id: string;
+	name: string;
+	username: string;
+	picture: string;
+	followed: boolean;
+};
+
 const UserInfo = ({
 	user,
-	isSelf,
-	follow,
+	currentUserId,
+	followed,
+	followers,
+	followings,
 }: {
 	user: Partial<IUser>;
-	isSelf: boolean;
-	follow: boolean;
+	currentUserId: string;
+	followed: boolean;
+	followers: User[];
+	followings: User[];
 }) => {
-	const [followed, setFollowed] = useState<boolean>(follow);
 	const pathname = usePathname();
 
 	const handlefollowUnfollow = async (userId: string) => {
@@ -51,25 +61,24 @@ const UserInfo = ({
 						</Editable>
 
 						<div className="text-[12px] text-muted-foreground mx-4">
-							{!isSelf && (
+							{currentUserId !== user._id && (
 								<Button
 									className={`mr-4 w-[90px] ${followed && "bg-destructive"}`}
 									onClick={async () => {
 										await handlefollowUnfollow(user._id as string);
-										setFollowed((prev) => !prev);
 									}}
 								>
 									{followed ? "Unfollow" : "Follow"}
 								</Button>
 							)}
-							<FollowerShow user={user._id || ""}>
+							<FollowerShow followers={followers} userId={currentUserId}>
 								<span className="cursor-pointer">
 									{user.followers?.length || "0"} followers
 								</span>
 							</FollowerShow>
 
 							<span> &nbsp;|&nbsp; </span>
-							<FollowingShow user={user._id || ""}>
+							<FollowingShow followings={followings} userId={currentUserId}>
 								<span className="cursor-pointer">
 									{user.following?.length || "0"} following
 								</span>

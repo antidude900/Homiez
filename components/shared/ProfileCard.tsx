@@ -2,11 +2,29 @@ import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import ToolBar from "./ToolBar";
 import Editable from "./Editable";
-import { IUser } from "@/database/user.model";
 import { FollowerShow } from "./FollowerShow";
 import { FollowingShow } from "./FollowingShow";
+import {
+	getFollowers,
+	getFollowing,
+	getUserId,
+} from "@/lib/actions/user.action";
 
-const ProfileCard = ({ user }: { user: Partial<IUser> }) => {
+interface User {
+	_id: string;
+	name: string;
+	username: string;
+	picture: string;
+	bio: string;
+	followers: string[];
+	following: string[];
+}
+
+const ProfileCard = async ({ user }: { user: User }) => {
+	const followers = await getFollowers(user._id).then((e) => JSON.parse(e));
+	const followings = await getFollowing(user._id).then((e) => JSON.parse(e));
+	const userId = await getUserId().then((e) => JSON.parse(e));
+
 	return (
 		<div className="h-[330px] bg-background rounded-xl overflow-clip vertical-flex border border-border">
 			<div className="h-[30%] bg-white relative mb-[3.5rem]">
@@ -22,7 +40,7 @@ const ProfileCard = ({ user }: { user: Partial<IUser> }) => {
 					<AvatarFallback>CN</AvatarFallback>
 				</Avatar>
 
-				<ToolBar username={user?.username || ""} />
+				<ToolBar username={user.username} />
 			</div>
 
 			<div className="vertical-flex items-center mb-2">
@@ -46,8 +64,8 @@ const ProfileCard = ({ user }: { user: Partial<IUser> }) => {
 
 			<div className="flex-1 flex items-center p-2">
 				<div className="flex-1 text-center">
-					<FollowerShow user={user._id || ""}>
-						<div>{user.followers?.length || "0"}</div>
+					<FollowerShow followers={followers} userId={userId}>
+						<div>{user.followers.length || "0"}</div>
 						<div className="text-muted-foreground font-medium">Followers</div>
 					</FollowerShow>
 				</div>
@@ -55,7 +73,7 @@ const ProfileCard = ({ user }: { user: Partial<IUser> }) => {
 				<div className="border-l-[1px] border-muted-foreground h-12 mx-4"></div>
 
 				<div className="flex-1 text-center">
-					<FollowingShow user={user._id || ""}>
+					<FollowingShow followings={followings} userId={userId}>
 						<div>{user.following?.length || "0"}</div>
 						<div className="text-muted-foreground font-medium">Following</div>
 					</FollowingShow>

@@ -1,11 +1,18 @@
 import UserInfo from "@/components/userProfile/UserInfo";
 import UserPost from "@/components/userProfile/UserPost";
 import { getAllPost } from "@/lib/actions/post.action";
-import { getUserByUserName, getUserId } from "@/lib/actions/user.action";
+import {
+	getFollowers,
+	getFollowing,
+	getUserByUserName,
+	getUserId,
+} from "@/lib/actions/user.action";
 
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 	const { username } = await params;
 	const user = await getUserByUserName(username).then((e) => JSON.parse(e));
+	const followers = await getFollowers(user._id).then((e) => JSON.parse(e));
+	const followings = await getFollowing(user._id).then((e) => JSON.parse(e));
 	const userId = await getUserId().then((e) => JSON.parse(e));
 
 	if (!user) {
@@ -21,8 +28,10 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 			<div className="mb-4">
 				<UserInfo
 					user={user}
-					isSelf={userId === user._id}
-					follow={user.followers.includes(userId)}
+					currentUserId={userId}
+					followed={user.followers.includes(userId)}
+					followers={followers}
+					followings={followings}
 				/>
 			</div>
 			<div className="grid gap-4">
