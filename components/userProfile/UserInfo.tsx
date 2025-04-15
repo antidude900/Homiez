@@ -9,6 +9,14 @@ import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
 import { FollowerShow } from "../shared/FollowerShow";
 import { FollowingShow } from "../shared/FollowingShow";
+import { Pencil } from "lucide-react";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "../ui/tooltip";
+import { useState } from "react";
 
 type User = {
 	_id: string;
@@ -32,6 +40,7 @@ const UserInfo = ({
 	followings: User[];
 }) => {
 	const pathname = usePathname();
+	const [isOpen, setIsOpen] = useState(false);
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -44,7 +53,7 @@ const UserInfo = ({
 	};
 
 	return (
-		<div className="bg-background rounded-xl border border-border relative">
+		<div className="bg-background rounded-xl border border-border relative overflow-clip">
 			<div className=" flex w-full p-2">
 				<div className="flex-1 relative vertical-flex">
 					<Editable className="text-2xl font-bold" type="name">
@@ -86,12 +95,36 @@ const UserInfo = ({
 						</div>
 					</div>
 				</div>
-				<div className=" ml-2 flex justify-center items-centerm">
+				<div className=" ml-2 flex justify-center items-center">
 					<Avatar className="w-32 h-32">
 						<AvatarImage src={user.picture} />
 						<AvatarFallback>CN</AvatarFallback>
 					</Avatar>
 				</div>
+			</div>
+
+			<div className="absolute left-0 bottom-0 bg-muted-foreground px-2 rounded-sm">
+				<TooltipProvider>
+					<Tooltip delayDuration={0} open={isOpen} onOpenChange={setIsOpen}>
+						<TooltipTrigger
+							onClick={() => setIsOpen(true)}
+							className="cursor-default"
+							asChild
+						>
+							<div className="flex items-center gap-1 font-medium">
+								<Pencil className="w-4 h-4" />
+								<span>EDIT</span>
+							</div>
+						</TooltipTrigger>
+						<TooltipContent
+							side="bottom"
+							className="max-w-[350px] text-center cursor-default"
+						>
+							<p>Hover on the specific profile info to toogle an Edit Button</p>
+							<p> (Also works in the profile card at the left side)</p>
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			</div>
 			<div className="text-center p-2">Posts</div>
 			<hr className="border-t-4 rounded border-[#7BD8B9] dark:border-[#21CB99] w-[100px] absolute right-1/2 translate-x-1/2 bottom-0" />
