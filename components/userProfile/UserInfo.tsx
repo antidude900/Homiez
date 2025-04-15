@@ -113,7 +113,7 @@ const UserInfo = ({
 						>
 							<div className="flex items-center gap-1 font-medium">
 								<Pencil className="w-4 h-4" />
-								<span>EDIT</span>
+								<span>Edit</span>
 							</div>
 						</TooltipTrigger>
 						<TooltipContent
