@@ -7,17 +7,24 @@ import {
 	getUserByUserName,
 	getUserId,
 } from "@/lib/actions/user.action";
+import { SearchX } from "lucide-react";
 
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 	const { username } = await params;
 	const user = await getUserByUserName(username).then((e) => JSON.parse(e));
+
+	if (!user) {
+		return (
+			<div className="flex flex-col items-center justify-center h-screen gap-2">
+				<SearchX className="w-[5vw] h-[5vw]" />
+				<div className="font-bold text-[2vw]">No Users Found!</div>
+			</div>
+		);
+	}
+
 	const followers = await getFollowers(user._id).then((e) => JSON.parse(e));
 	const followings = await getFollowing(user._id).then((e) => JSON.parse(e));
 	const userId = await getUserId().then((e) => JSON.parse(e));
-
-	if (!user) {
-		<div>Loading...</div>;
-	}
 
 	const posts = await getAllPost({ userId: user._id }).then((e) =>
 		JSON.parse(e)
