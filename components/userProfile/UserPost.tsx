@@ -79,10 +79,10 @@ const UserPost = ({
 					<AvatarFallback>CN</AvatarFallback>
 				</Avatar>
 
-				<div className="w-full vertical-flex">
+				<div className="w-full">
 					<div className="flex mb-4 justify-between">
-						<div className="vertical-flex">
-							<Link href={`${author.username}`}>
+						<div className="space-y-1">
+							<Link href={`/${author.username}`}>
 								<span className="font-bold mr-2 cursor-pointer">
 									{author.name}
 								</span>
@@ -92,8 +92,11 @@ const UserPost = ({
 								</span>
 							</Link>
 
-							<Link href={`${author.username}/post/${postId}`}>
-								<span className="">{postText}</span>
+							<Link
+								href={`/${author.username}/post/${postId}`}
+								className="block"
+							>
+								<div className="">{postText}</div>
 							</Link>
 						</div>
 						<div className=" flex mr-2">

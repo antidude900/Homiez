@@ -23,25 +23,24 @@ const Comment = ({ author, text, postedAt, likesCount }: CommentProps) => {
 					<AvatarFallback>CN</AvatarFallback>
 				</Avatar>
 
-				<div className="w-full vertical-flex">
+				<div className="w-full">
 					<div className="flex mb-4 justify-between">
-						<div className="vertical-flex">
-							<span
-								className="font-bold"
-								onClick={(e) => {
-									e.preventDefault();
-									alert("Clicked!");
-								}}
-							>
-								{author.username}
-							</span>
-							<Link href={`${author.username}/post/1`}>
-								<span className="">{text}</span>
+						<div className="space-y-1">
+							<Link href={`/${author.username}`}>
+								<span className="font-bold mr-2 cursor-pointer">
+									{author.name}
+								</span>
+
+								<span className="text-muted-foreground text-sm cursor-pointer">
+									@{author.username}
+								</span>
 							</Link>
+
+							<div>{text}</div>
 						</div>
 						<div className=" flex mr-2">
 							<span className="text-muted-foreground">{postedAt}</span>
-							<EllipsisVertical className="" />
+							<EllipsisVertical />
 						</div>
 					</div>
 
