@@ -74,11 +74,12 @@ const UserPost = ({
 	return (
 		<div className="bg-background rounded-xl border border-border">
 			<div className="flex px-2 py-4">
-				<Avatar className="w-16 h-16 mr-5">
-					<AvatarImage src={author.picture} />
-					<AvatarFallback>CN</AvatarFallback>
-				</Avatar>
-
+				<Link href={`/${author.username}`}>
+					<Avatar className="w-16 h-16 mr-5">
+						<AvatarImage src={author.picture} />
+						<AvatarFallback>CN</AvatarFallback>
+					</Avatar>
+				</Link>
 				<div className="w-full">
 					<div className="flex mb-4 justify-between">
 						<div className="space-y-1">
@@ -103,7 +104,7 @@ const UserPost = ({
 							<span className="text-muted-foreground">
 								{getTimestamp(postedAt)}
 							</span>
-							<EllipsisVertical />
+							<EllipsisVertical className="cursor-pointer" />
 						</div>
 					</div>
 
@@ -146,10 +147,12 @@ const UserPost = ({
 									setLiked((prev) => !prev);
 								}
 							}}
-							className={`${isSelf && "cursor-not-allowed opacity-20"}`}
+							className={`${
+								isSelf && "cursor-not-allowed opacity-20"
+							} cursor-pointer`}
 						/>
 						<CreateCommentForm postId={postId} />
-						<SquareArrowOutUpRight />
+						<SquareArrowOutUpRight className="cursor-pointer" />
 					</div>
 				</div>
 			</div>

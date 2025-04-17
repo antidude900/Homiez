@@ -65,7 +65,7 @@ export default function CreateCommentForm({ postId }: { postId: string }) {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<MessageCircle />
+				<MessageCircle className="cursor-pointer" />
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[500px] [&>button]:hidden">
 				<form onSubmit={handleSubmit}>

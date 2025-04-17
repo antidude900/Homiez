@@ -35,7 +35,7 @@ const LeftSideBar = async () => {
 				<CreatePostForm userId={JSON.stringify(user._id)} />
 			</div>
 
-			<div className="h-fit min-h-0">
+			<div className="mt-auto min-h-0 border-2">
 				<SuggestedUsers suggestedUsers={suggestedUsers} />
 			</div>
 		</div>
