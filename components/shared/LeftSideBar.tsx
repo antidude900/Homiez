@@ -10,7 +10,7 @@ const LeftSideBar = async () => {
 	const suggestedUsers = await getSuggestedUsers().then((e) => JSON.parse(e));
 
 	return (
-		<div className="p-2 h-screen border-r border-r-border flex flex-col">
+		<div className="pt-2 pb-4 h-screen border-r border-r-border flex flex-col">
 			<div className="mb-4 flex justify-end items-center px-2">
 				<Link href="/">
 					<Image
@@ -35,7 +35,7 @@ const LeftSideBar = async () => {
 				<CreatePostForm userId={JSON.stringify(user._id)} />
 			</div>
 
-			<div className="mt-auto min-h-0 border-2">
+			<div className="mt-auto min-h-0 px-2">
 				<SuggestedUsers suggestedUsers={suggestedUsers} />
 			</div>
 		</div>

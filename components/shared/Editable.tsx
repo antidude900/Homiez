@@ -92,7 +92,6 @@ const Editable = ({
 		if (type === "bio") updateData = { bio: value };
 
 		toast.loading("Updating...");
-		await new Promise((resolve) => setTimeout(resolve, 250));
 		const userId = await getUserId().then((e) => JSON.parse(e));
 
 		if (userId) {

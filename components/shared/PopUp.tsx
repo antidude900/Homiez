@@ -47,7 +47,7 @@ const PopUp = ({
 						autoFocus
 						ref={buttonRef}
 						onClick={onConfirm}
-						className="focus:shadow-[0_8px_8px_var(--accent)]"
+						className="focus:ring-offset-2"
 						onMouseEnter={() => {
 							if (buttonRef.current) buttonRef.current.blur();
 						}}
