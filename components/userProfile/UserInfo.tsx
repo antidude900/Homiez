@@ -111,7 +111,7 @@ const UserInfo = ({
 							className="cursor-default"
 							asChild
 						>
-							<div className="flex items-center gap-1 font-medium">
+							<div className="flex items-center gap-1 text-[#f5f5f5]">
 								<Pencil className="w-4 h-4" />
 								<span>Edit</span>
 							</div>
