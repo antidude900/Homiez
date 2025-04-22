@@ -11,7 +11,7 @@ const page = async ({
 		query?: string;
 	}>;
 }) => {
-	const query = (searchParams.query ?? "").trim() || null;
+	const query = ((await searchParams).query ?? "").trim() || null;
 
 	if (query === null) {
 		return <div>Search for something...</div>;
