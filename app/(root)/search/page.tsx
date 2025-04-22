@@ -7,9 +7,9 @@ import React from "react";
 const page = async ({
 	searchParams,
 }: {
-	searchParams: {
+	searchParams: Promise<{
 		query?: string;
-	};
+	}>;
 }) => {
 	const query = (searchParams.query ?? "").trim() || null;
 
@@ -41,7 +41,10 @@ const page = async ({
 			<div className="text-2xl font-bold mb-4">
 				Search Results for &quot;{query}&quot;
 			</div>
-			<SearchUserOrPost userSearchResults={userSearchResults} postSearchResults={postSearchResults}/>
+			<SearchUserOrPost
+				userSearchResults={userSearchResults}
+				postSearchResults={postSearchResults}
+			/>
 		</div>
 	);
 };
