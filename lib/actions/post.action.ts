@@ -139,3 +139,28 @@ export async function getFeedPost(userId: string) {
 		throw error;
 	}
 }
+
+export async function getPostsSearchResults(query: string) {
+	try {
+		await connectToDatabase();
+		const posts = await Post.find({
+			text: { $regex: query, $options: "i" },
+		})
+			.sort({ createdAt: -1 })
+			.populate("author", "name username picture");
+
+		const queryLower = query.toLowerCase();
+
+		const sortedPosts = posts.sort((a, b) => {
+			const aIndex = a.text.toLowerCase().indexOf(queryLower);
+			const bIndex = b.text.toLowerCase().indexOf(queryLower);
+
+			return aIndex - bIndex;
+		});
+
+		return JSON.stringify(sortedPosts);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}

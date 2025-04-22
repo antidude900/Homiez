@@ -246,11 +246,10 @@ export async function getFollowing(user: string) {
 	}
 }
 
-export async function getUserSearchResults(query:string) {
+export async function getUserSearchResults(query: string) {
 	try {
 		await connectToDatabase();
 
-		
 		const userId = await getUserId().then((e) => JSON.parse(e));
 		const currentUser = await User.findById(userId).select("following");
 
@@ -262,9 +261,28 @@ export async function getUserSearchResults(query:string) {
 				],
 			},
 			"name username picture"
-		).limit(5);
+		);
+		const queryLower = query.toLowerCase();
 
-		const result = users.map((user: Partial<IUser>) => ({
+		const sortedUsers = users.sort((a, b) => {
+			const aNameIndex = a.name.toLowerCase().indexOf(queryLower);
+			const aUsernameIndex = a.username.toLowerCase().indexOf(queryLower);
+			const bNameIndex = b.name.toLowerCase().indexOf(queryLower);
+			const bUsernameIndex = b.username.toLowerCase().indexOf(queryLower);
+
+			const aIndex = Math.min(
+				aNameIndex === -1 ? Infinity : aNameIndex,
+				aUsernameIndex === -1 ? Infinity : aUsernameIndex
+			);
+			const bIndex = Math.min(
+				bNameIndex === -1 ? Infinity : bNameIndex,
+				bUsernameIndex === -1 ? Infinity : bUsernameIndex
+			);
+
+			return aIndex - bIndex;
+		});
+
+		const result = sortedUsers.map((user: Partial<IUser>) => ({
 			_id: user._id,
 			name: user.name,
 			username: user.username,

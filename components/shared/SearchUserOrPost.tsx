@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import UserCard from "./UserCard";
+import { IUser } from "@/database/user.model";
+import UserPost from "../userProfile/UserPost";
 
 interface SearchUserOrPostProps {
 	userSearchResults: Array<{
@@ -11,9 +13,22 @@ interface SearchUserOrPostProps {
 		picture: string;
 		followed: boolean;
 	}>;
+	postSearchResults: Array<{
+		author: Partial<IUser>;
+		postId: string;
+		_id: string;
+		text: string;
+		image?: string;
+		createdAt: string;
+		likes: [];
+		comments: [];
+	}>;
 }
 
-const SearchUserOrPost = ({ userSearchResults }: SearchUserOrPostProps) => {
+const SearchUserOrPost = ({
+	userSearchResults,
+	postSearchResults,
+}: SearchUserOrPostProps) => {
 	const [active, isActive] = useState("users");
 	return (
 		<div>
@@ -39,7 +54,7 @@ const SearchUserOrPost = ({ userSearchResults }: SearchUserOrPostProps) => {
 				</div>
 			</div>
 
-			{active === "users" && (
+			{active === "users" ? (
 				<div className="space-y-6 mx-10">
 					{userSearchResults.length === 0 ? (
 						<div className="text-center">No results found!</div>
@@ -52,6 +67,25 @@ const SearchUserOrPost = ({ userSearchResults }: SearchUserOrPostProps) => {
 								name={user.name}
 								picture={user.picture}
 								followed={user.followed}
+							/>
+						))
+					)}
+				</div>
+			) : (
+				<div className="space-y-4">
+					{postSearchResults.length === 0 ? (
+						<div className="text-center">No results found!</div>
+					) : (
+						postSearchResults.map((post) => (
+							<UserPost
+								key={post._id}
+								author={post.author}
+								postId={post._id}
+								postText={post.text}
+								postImg={post?.image || ""}
+								postedAt={post.createdAt}
+								likes={post.likes}
+								repliesCount={post.comments.length}
 							/>
 						))
 					)}
