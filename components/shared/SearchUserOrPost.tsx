@@ -55,7 +55,7 @@ const SearchUserOrPost = ({
 			</div>
 
 			{active === "users" ? (
-				<div className="space-y-6 mx-10">
+				<div className="bg-background p-4 rounded-xl space-y-6">
 					{userSearchResults.length === 0 ? (
 						<div className="text-center">No results found!</div>
 					) : (

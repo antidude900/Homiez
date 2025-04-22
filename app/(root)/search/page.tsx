@@ -37,15 +37,15 @@ const page = async ({
 	}> = await getPostsSearchResults(query).then((e) => JSON.parse(e));
 
 	return (
-		<div className="bg-background w-full p-2 rounded-xl h-full border border-border flex flex-col">
-			<div className="text-2xl font-bold mb-4">
+		<>	
+			<div className="text-2xl font-bold mb-7">
 				Search Results for &quot;{query}&quot;
 			</div>
 			<SearchUserOrPost
 				userSearchResults={userSearchResults}
 				postSearchResults={postSearchResults}
 			/>
-		</div>
+		</>
 	);
 };
 
