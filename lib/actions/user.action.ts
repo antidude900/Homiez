@@ -245,3 +245,36 @@ export async function getFollowing(user: string) {
 		throw error;
 	}
 }
+
+export async function getUserSearchResults(query:string) {
+	try {
+		await connectToDatabase();
+
+		
+		const userId = await getUserId().then((e) => JSON.parse(e));
+		const currentUser = await User.findById(userId).select("following");
+
+		const users = await User.find(
+			{
+				$or: [
+					{ name: { $regex: query, $options: "i" } },
+					{ username: { $regex: query, $options: "i" } },
+				],
+			},
+			"name username picture"
+		).limit(5);
+
+		const result = users.map((user: Partial<IUser>) => ({
+			_id: user._id,
+			name: user.name,
+			username: user.username,
+			picture: user.picture,
+			followed: currentUser.following.includes(user._id),
+		}));
+
+		return JSON.stringify(result);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
