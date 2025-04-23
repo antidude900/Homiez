@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { EllipsisVertical, Heart, SquareArrowOutUpRight } from "lucide-react";
+import { Heart, SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import { IUser } from "@/database/user.model";
@@ -11,6 +11,8 @@ import { usePathname } from "next/navigation";
 import { likeUnlikePost } from "@/lib/actions/post.action";
 import { LikeUsersShow } from "../shared/LikeUsersShow";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import EditDeletePost from "../shared/EditDeletePost";
 
 interface UserPostProps {
 	author: Partial<IUser>;
@@ -38,7 +40,6 @@ const UserPost = ({
 	const pathname = usePathname();
 	const [fetched, setFetched] = useState(false);
 	const [disabled, setDisabled] = useState(false);
-
 
 	return (
 		<div className="bg-background rounded-xl border border-border">
@@ -69,11 +70,11 @@ const UserPost = ({
 								<div className="">{postText}</div>
 							</Link>
 						</div>
-						<div className=" flex mr-2">
+						<div className=" flex mr-2 items-center h-fit">
 							<span className="text-muted-foreground">
-								{getTimestamp(postedAt)}
+								{getTimestamp(postedAt) + " ago"}
 							</span>
-							<EllipsisVertical className="cursor-pointer" />
+							{isSelf && <EditDeletePost postId={postId} />}
 						</div>
 					</div>
 
@@ -132,7 +133,15 @@ const UserPost = ({
 							}`}
 						/>
 						<CreateCommentForm postId={postId} />
-						<SquareArrowOutUpRight className="cursor-pointer" />
+						<SquareArrowOutUpRight
+							className="cursor-pointer"
+							onClick={() => {
+								navigator.clipboard.writeText(
+									`https://social-media-app-gray-six.vercel.app/${author.username}/post/${postId}`
+								);
+								toast.success("Post Link copied!", { autoClose: 500 });
+							}}
+						/>
 					</div>
 				</div>
 			</div>

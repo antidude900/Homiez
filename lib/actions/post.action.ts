@@ -5,6 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import { CreatePostParams } from "./shared.type";
 import User, { IUser } from "@/database/user.model";
 import { v2 as cloudinary } from "cloudinary";
+import Comment from "@/database/comment.model";
 import { getUserId } from "./user.action";
 import { revalidatePath } from "next/cache";
 
@@ -76,15 +77,21 @@ export async function getAllPost({ userId }: { userId: string }) {
 	}
 }
 
-export async function deletePost(params: { postId: string }) {
+export const deletePost = async (postId: string, pathname: string) => {
 	try {
 		await connectToDatabase();
-		await Post.deleteOne({ _id: params.postId });
+
+		const post = await Post.findById(postId);
+		if (!post) throw new Error("Post not found");
+
+		await Comment.deleteMany({ _id: { $in: post.comments } });
+		await Post.findByIdAndDelete(postId);
+		revalidatePath(pathname);
 	} catch (error) {
-		console.log(error);
+		console.error("Failed to delete post:", error);
 		throw error;
 	}
-}
+};
 
 export async function likeUnlikePost(postId: string, path: string) {
 	try {
