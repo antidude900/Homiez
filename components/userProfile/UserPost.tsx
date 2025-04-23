@@ -1,18 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { EllipsisVertical, Heart, SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import { IUser } from "@/database/user.model";
 import CreateCommentForm from "../shared/CommentForm";
-import { getUserId } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
 import { likeUnlikePost } from "@/lib/actions/post.action";
-import { Skeleton } from "../ui/skeleton";
 import { LikeUsersShow } from "../shared/LikeUsersShow";
+import { useState } from "react";
 
 interface UserPostProps {
 	author: Partial<IUser>;
@@ -22,6 +20,8 @@ interface UserPostProps {
 	postImg?: string;
 	likes: string[];
 	repliesCount: number;
+	liked: boolean;
+	isSelf: boolean;
 }
 
 const UserPost = ({
@@ -32,44 +32,12 @@ const UserPost = ({
 	postImg,
 	likes,
 	repliesCount,
+	liked,
+	isSelf,
 }: UserPostProps) => {
-	const [liked, setLiked] = useState<boolean | null>(null);
-	const [isSelf, setisSelf] = useState<boolean>(false);
-
 	const pathname = usePathname();
-
-	useEffect(() => {
-		const setLikeandisSelf = async () => {
-			const userId = await getUserId().then((e) => JSON.parse(e));
-			setLiked(likes.includes(userId));
-			setisSelf(userId === author._id);
-		};
-
-		setLikeandisSelf();
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	if (liked == null) {
-		return (
-			<div className="rounded-xl border border-border flex px-4 py-4">
-				<div className="flex-shrink-0 mr-5">
-					<Skeleton className="w-16 h-16 rounded-full" />
-				</div>
-
-				<div className="w-full vertical-flex space-y-2 mr-5">
-					<div className="flex items-center">
-						<Skeleton className="h-5 w-24 mr-2" />
-						<Skeleton className="h-4 w-10" />
-					</div>
-
-					<Skeleton className="h-4 w-1/2" />
-
-					<Skeleton className="w-full h-[300px] rounded-xl mb-1" />
-				</div>
-			</div>
-		);
-	}
+	const [fetched, setFetched] = useState(false);
+	const [disabled, setDisabled] = useState(false);
 
 	return (
 		<div className="bg-background rounded-xl border border-border">
@@ -126,7 +94,14 @@ const UserPost = ({
 					)}
 
 					<div className="text-[14px] text-muted-foreground mb-2">
-						<LikeUsersShow likedUsers={likes}>{likes.length}</LikeUsersShow>
+						<LikeUsersShow
+							likedUsers={likes}
+							fetched={fetched}
+							setFetched={setFetched}
+							disabled={disabled}
+						>
+							{likes.length}
+						</LikeUsersShow>
 
 						<span> &nbsp;|&nbsp; </span>
 						<Link href={`${author.username}/post/${postId}`}>
@@ -142,14 +117,19 @@ const UserPost = ({
 							color={liked ? "red" : "currentColor"}
 							fill={liked ? "red" : "transparent"}
 							onClick={async () => {
+								console.log("isSelf", isSelf);
 								if (!isSelf) {
+									setDisabled(true);
 									await likeUnlikePost(postId, pathname);
-									setLiked((prev) => !prev);
+									setFetched(false);
+									setDisabled(false);
 								}
 							}}
 							className={`${
-								isSelf && "cursor-not-allowed opacity-20"
-							} cursor-pointer`}
+								isSelf || disabled
+									? "cursor-not-allowed opacity-20"
+									: "cursor-pointer"
+							}`}
 						/>
 						<CreateCommentForm postId={postId} />
 						<SquareArrowOutUpRight className="cursor-pointer" />

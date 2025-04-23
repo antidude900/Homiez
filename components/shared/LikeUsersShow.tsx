@@ -28,23 +28,30 @@ type User = {
 export function LikeUsersShow({
 	children,
 	likedUsers,
+	fetched,
+	setFetched,
+	disabled,
 }: {
 	children: React.ReactNode;
 	likedUsers: string[];
+	fetched: boolean;
+	setFetched: React.Dispatch<React.SetStateAction<boolean>>;
+	disabled: boolean;
 }) {
 	const [users, setUsers] = useState<User[]>([]);
 	const [userId, setUserId] = useState<string | null>(null);
-	const [fetched, setFetched] = useState(false);
 	const pathname = usePathname();
 
 	const fetchData = async () => {
-		if (!fetched && likedUsers.length > 0) {
+		if (!fetched || !disabled) {
 			const users = await getLikedUsers(likedUsers).then((e) => JSON.parse(e));
 			const userId = await getUserId().then((e) => JSON.parse(e));
 			setUsers(users);
 			setUserId(userId);
 		}
-		setFetched(true);
+		if (!disabled) {
+			setFetched(true);
+		}
 	};
 
 	const handlefollowUnfollow = async (userId: string) => {
@@ -71,7 +78,12 @@ export function LikeUsersShow({
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<span className="cursor-pointer" onMouseEnter={fetchData}>
+				<span
+					className={`${
+						disabled ? "cursor-not-allowed opacity-20" : "cursor-pointer"
+					}`}
+					onMouseEnter={fetchData}
+				>
 					{children?.toString()} likes
 				</span>
 			</DialogTrigger>
@@ -88,7 +100,7 @@ export function LikeUsersShow({
 						users.map((user) => (
 							<div key={user.username} className="flex justify-between w-full">
 								<div className="flex items-center gap-3">
-									<Avatar className="">	
+									<Avatar className="">
 										<AvatarImage src={user.picture} />
 										<AvatarFallback className="bg-green-700">
 											{user.name[0]}

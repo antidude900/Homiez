@@ -49,7 +49,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 						text: string;
 						image?: string;
 						createdAt: string;
-						likes: [];
+						likes: string[];
 						comments: [];
 					}) => (
 						<UserPost
@@ -61,6 +61,8 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 							postedAt={post.createdAt}
 							likes={post.likes}
 							repliesCount={post.comments.length}
+							liked={post.likes.includes(userId)}
+							isSelf={true}
 						/>
 					)
 				)}

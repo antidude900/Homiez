@@ -20,14 +20,16 @@ interface SearchUserOrPostProps {
 		text: string;
 		image?: string;
 		createdAt: string;
-		likes: [];
+		likes: string[];
 		comments: [];
 	}>;
+	userId: string;
 }
 
 const SearchUserOrPost = ({
 	userSearchResults,
 	postSearchResults,
+	userId,
 }: SearchUserOrPostProps) => {
 	const [active, isActive] = useState("users");
 	return (
@@ -86,6 +88,8 @@ const SearchUserOrPost = ({
 								postedAt={post.createdAt}
 								likes={post.likes}
 								repliesCount={post.comments.length}
+								liked={post.likes.includes(userId)}
+								isSelf={true}
 							/>
 						))
 					)}

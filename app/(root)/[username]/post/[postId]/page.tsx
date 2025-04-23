@@ -2,7 +2,7 @@ import Comment from "@/components/userProfile/Comment";
 import UserPost from "@/components/userProfile/UserPost";
 import { IUser } from "@/database/user.model";
 import { getPost } from "@/lib/actions/post.action";
-import { getUserByUserName } from "@/lib/actions/user.action";
+import { getUserByUserName, getUserId } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 
 const Page = async ({
@@ -13,6 +13,7 @@ const Page = async ({
 	const { username, postId } = await params;
 
 	const user = await getUserByUserName(username).then((e) => JSON.parse(e));
+	const userId: string = await getUserId().then((e) => JSON.parse(e));
 	const post = await getPost({ postId }).then((e) => JSON.parse(e));
 
 	if (!user) {
@@ -34,6 +35,8 @@ const Page = async ({
 					postedAt={post.createdAt}
 					likes={post.likes}
 					repliesCount={post.comments.length}
+					liked={post.likes.includes(userId)}
+					isSelf={user._id === userId}
 				/>
 			</div>
 

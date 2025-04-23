@@ -24,7 +24,7 @@ const page = async () => {
 						text: string;
 						image?: string;
 						createdAt: string;
-						likes: [];
+						likes: string[];
 						comments: [];
 					}) => (
 						<UserPost
@@ -36,6 +36,8 @@ const page = async () => {
 							postedAt={post.createdAt}
 							likes={post.likes}
 							repliesCount={post.comments.length}
+							liked={post.likes.includes(userId)}
+							isSelf={post.author._id === userId}
 						/>
 					)
 				)}
