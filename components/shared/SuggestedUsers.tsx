@@ -64,7 +64,6 @@ const SuggestedUsers = ({ suggestedUsers }: { suggestedUsers: User[] }) => {
 							className="mr-4 w-[90px]"
 							disabled={updating}
 							onClick={async () => {
-								console.log("clicked follow/unfollow button");
 								setUpdating(true);
 
 								await handlefollowUnfollow(suggestedUser._id);

@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 type User = {
 	_id: string;
@@ -30,6 +31,7 @@ export function FollowingShow({
 	userId: string;
 }) {
 	const pathname = usePathname();
+	const [updating, setUpdating] = useState(false);
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -78,8 +80,13 @@ export function FollowingShow({
 										className={`mr-4 w-[90px] ${
 											following.followed && "bg-destructive"
 										}`}
+										disabled={updating}
 										onClick={async () => {
+											setUpdating(true);
 											await handlefollowUnfollow(following._id as string);
+											setTimeout(() => {
+												setUpdating(false);
+											}, 1000);
 										}}
 									>
 										{following.followed ? "Unfollow" : "Follow"}

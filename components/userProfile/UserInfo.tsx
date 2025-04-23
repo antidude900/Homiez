@@ -41,6 +41,7 @@ const UserInfo = ({
 }) => {
 	const pathname = usePathname();
 	const [isOpen, setIsOpen] = useState(false);
+	const [updating, setUpdating] = useState(false);
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -73,8 +74,13 @@ const UserInfo = ({
 							{currentUserId !== user._id && (
 								<Button
 									className={`mr-4 w-[90px] ${followed && "bg-destructive"}`}
+									disabled={updating}
 									onClick={async () => {
+										setUpdating(true);
 										await handlefollowUnfollow(user._id as string);
+										setTimeout(() => {
+											setUpdating(false);
+										}, 1000);
 									}}
 								>
 									{followed ? "Unfollow" : "Follow"}
