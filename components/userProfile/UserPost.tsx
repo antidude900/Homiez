@@ -39,6 +39,7 @@ const UserPost = ({
 	const [fetched, setFetched] = useState(false);
 	const [disabled, setDisabled] = useState(false);
 
+
 	return (
 		<div className="bg-background rounded-xl border border-border">
 			<div className="flex px-2 py-4">
@@ -117,7 +118,6 @@ const UserPost = ({
 							color={liked ? "red" : "currentColor"}
 							fill={liked ? "red" : "transparent"}
 							onClick={async () => {
-								console.log("isSelf", isSelf);
 								if (!isSelf) {
 									setDisabled(true);
 									await likeUnlikePost(postId, pathname);

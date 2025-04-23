@@ -62,7 +62,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 							likes={post.likes}
 							repliesCount={post.comments.length}
 							liked={post.likes.includes(userId)}
-							isSelf={true}
+							isSelf={user._id === userId}
 						/>
 					)
 				)}

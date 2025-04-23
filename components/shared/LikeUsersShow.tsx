@@ -41,6 +41,7 @@ export function LikeUsersShow({
 	const [users, setUsers] = useState<User[]>([]);
 	const [userId, setUserId] = useState<string | null>(null);
 	const pathname = usePathname();
+	const [updating, setUpdating] = useState(false);
 
 	const fetchData = async () => {
 		if (!fetched || !disabled) {
@@ -118,8 +119,13 @@ export function LikeUsersShow({
 										className={`mr-4 w-[90px] ${
 											user.followed && "bg-destructive"
 										}`}
+										disabled={updating}
 										onClick={async () => {
+											setUpdating(true);
 											await handlefollowUnfollow(user._id as string);
+											setTimeout(() => {
+												setUpdating(false);
+											}, 1000);
 										}}
 									>
 										{user.followed ? "Unfollow" : "Follow"}

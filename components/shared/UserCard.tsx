@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -13,10 +13,20 @@ interface UserCardProps {
 	name: string;
 	picture: string;
 	followed: boolean;
+	isSelf: boolean;
 }
 
-const UserCard = ({ id, username, name, picture, followed }: UserCardProps) => {
+const UserCard = ({
+	id,
+	username,
+	name,
+	picture,
+	followed,
+	isSelf,
+}: UserCardProps) => {
 	const pathname = usePathname();
+	const [updating, setUpdating] = useState(false);
+
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
 
@@ -39,14 +49,21 @@ const UserCard = ({ id, username, name, picture, followed }: UserCardProps) => {
 				</Link>
 			</div>
 
-			<Button
-				className={`mr-4 w-[90px] ${followed && "bg-destructive"}`}
-				onClick={async () => {
-					await handlefollowUnfollow(id as string);
-				}}
-			>
-				{followed ? "Unfollow" : "Follow"}
-			</Button>
+			{!isSelf && (
+				<Button
+					className={`mr-4 w-[90px] ${followed && "bg-destructive"}`}
+					disabled={updating}
+					onClick={async () => {
+						setUpdating(true);
+						await handlefollowUnfollow(id as string);
+						setTimeout(() => {
+							setUpdating(false);
+						}, 1000);
+					}}
+				>
+					{followed ? "Unfollow" : "Follow"}
+				</Button>
+			)}
 		</div>
 	);
 };

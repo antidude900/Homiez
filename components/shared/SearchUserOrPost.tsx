@@ -69,6 +69,7 @@ const SearchUserOrPost = ({
 								name={user.name}
 								picture={user.picture}
 								followed={user.followed}
+								isSelf={user._id === userId}
 							/>
 						))
 					)}
@@ -89,7 +90,7 @@ const SearchUserOrPost = ({
 								likes={post.likes}
 								repliesCount={post.comments.length}
 								liked={post.likes.includes(userId)}
-								isSelf={true}
+								isSelf={post.author._id === userId}
 							/>
 						))
 					)}
