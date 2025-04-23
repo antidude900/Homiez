@@ -91,12 +91,10 @@ const Editable = ({
 		if (type === "username") updateData = { username: value };
 		if (type === "bio") updateData = { bio: value };
 
-		toast.loading("Updating...");
 		const userId = await getUserId().then((e) => JSON.parse(e));
 
 		if (userId) {
 			await updateUser({ userId, updateData, path: pathname });
-			toast.dismiss();
 			toast.success("Updated successfully", { autoClose: 750 });
 			setIsEditable(false);
 			if (type === "username") {

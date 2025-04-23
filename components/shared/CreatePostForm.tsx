@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { createPost } from "@/lib/actions/post.action";
 import image from "next/image";
+import { toast } from "react-toastify";
 
 export default function CreatePostForm({ userId }: { userId: string }) {
 	const router = useRouter();
@@ -66,13 +67,13 @@ export default function CreatePostForm({ userId }: { userId: string }) {
 				author: JSON.parse(userId),
 			});
 
-			// Reset form and close dialog
+			
 			setText("");
 
 			setImagePreview("");
 			setOpen(false);
-
-			// Refresh the page to show the new post
+			toast.success("Post Created!", { autoClose: 750 });
+			
 			router.refresh();
 		} catch (error) {
 			console.error("Error creating post:", error);

@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { SuggestionsMore } from "./SuggestionsMore";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface User {
 	_id: string;
@@ -17,6 +18,7 @@ interface User {
 
 const SuggestedUsers = ({ suggestedUsers }: { suggestedUsers: User[] }) => {
 	const pathname = usePathname();
+	const [updating, setUpdating] = useState(false);
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -27,6 +29,10 @@ const SuggestedUsers = ({ suggestedUsers }: { suggestedUsers: User[] }) => {
 			path: pathname,
 		});
 	};
+
+	useEffect(() => {
+		setUpdating(false);
+	}, []);
 
 	return (
 		<div className="bg-background w-full p-2 rounded-xl h-full border border-border flex flex-col">
@@ -56,7 +62,16 @@ const SuggestedUsers = ({ suggestedUsers }: { suggestedUsers: User[] }) => {
 
 						<Button
 							className="mr-4 w-[90px]"
-							onClick={() => handlefollowUnfollow(suggestedUser._id)}
+							disabled={updating}
+							onClick={async () => {
+								console.log("clicked follow/unfollow button");
+								setUpdating(true);
+
+								await handlefollowUnfollow(suggestedUser._id);
+								setTimeout(() => {
+									setUpdating(false);
+								}, 1000);
+							}}
 						>
 							Follow
 						</Button>
