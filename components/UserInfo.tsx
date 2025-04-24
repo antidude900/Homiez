@@ -1,22 +1,23 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import Editable from "../shared/Editable";
-
-import { Button } from "../ui/button";
 import { IUser } from "@/database/user.model";
 import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
-import { FollowerShow } from "../shared/FollowerShow";
-import { FollowingShow } from "../shared/FollowingShow";
+
 import { Pencil } from "lucide-react";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "../ui/tooltip";
 import { useState } from "react";
+import { FollowerShow } from "./shared/FollowerShow";
+import { FollowingShow } from "./shared/FollowingShow";
+
+import Editable from "./shared/Editable";
+import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import {
+	TooltipProvider,
+	Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+} from "./ui/tooltip";
 
 type User = {
 	_id: string;

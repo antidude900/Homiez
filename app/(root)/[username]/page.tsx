@@ -1,5 +1,5 @@
-import UserInfo from "@/components/userProfile/UserInfo";
-import UserPost from "@/components/userProfile/UserPost";
+import UserInfo from "@/components/UserInfo";
+import UserPost from "@/components/UserPost/UserPost";
 import { getAllPost } from "@/lib/actions/post.action";
 import {
 	getFollowers,

@@ -5,9 +5,10 @@ import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
-import { SuggestionsMore } from "./SuggestionsMore";
+
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { SuggestionsMore } from "./SuggestionsMore";
 
 interface User {
 	_id: string;

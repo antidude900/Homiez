@@ -6,13 +6,13 @@ import { Heart, SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import { IUser } from "@/database/user.model";
-import CreateCommentForm from "../shared/CommentForm";
+import CreateCommentForm from "../ui/CommentForm";
 import { usePathname } from "next/navigation";
 import { likeUnlikePost } from "@/lib/actions/post.action";
 import { LikeUsersShow } from "../shared/LikeUsersShow";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import EditDeletePost from "../shared/EditDeletePost";
+import EditDeletePost from "./EditDeletePost";
 
 interface UserPostProps {
 	author: Partial<IUser>;

@@ -1,5 +1,5 @@
-import Comment from "@/components/userProfile/Comment";
-import UserPost from "@/components/userProfile/UserPost";
+import Comment from "@/components/UserPost/Comment";
+import UserPost from "@/components/UserPost/UserPost";
 import { IUser } from "@/database/user.model";
 import { getPost } from "@/lib/actions/post.action";
 import { getUserByUserName, getUserId } from "@/lib/actions/user.action";

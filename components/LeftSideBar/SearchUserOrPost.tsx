@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import UserCard from "./UserCard";
 import { IUser } from "@/database/user.model";
-import UserPost from "../userProfile/UserPost";
+import UserPost from "../UserPost/UserPost";
+import UserCard from "../shared/UserCard";
 
 interface SearchUserOrPostProps {
 	userSearchResults: Array<{

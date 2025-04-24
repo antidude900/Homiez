@@ -1,14 +1,14 @@
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import ToolBar from "./ToolBar";
-import Editable from "./Editable";
-import { FollowerShow } from "./FollowerShow";
-import { FollowingShow } from "./FollowingShow";
 import {
 	getFollowers,
 	getFollowing,
 	getUserId,
 } from "@/lib/actions/user.action";
+import Editable from "../shared/Editable";
+import { FollowerShow } from "../shared/FollowerShow";
+import { FollowingShow } from "../shared/FollowingShow";
+import ToolBar from "../shared/ToolBar";
 
 interface User {
 	_id: string;

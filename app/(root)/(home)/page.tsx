@@ -1,4 +1,4 @@
-import UserPost from "@/components/userProfile/UserPost";
+import UserPost from "@/components/UserPost/UserPost";
 import { IUser } from "@/database/user.model";
 import { getFeedPost } from "@/lib/actions/post.action";
 import { getUserId } from "@/lib/actions/user.action";
@@ -55,7 +55,7 @@ const page = async () => {
 				)}
 			</div>
 		</>
-	);	
+	);
 };
 
 export default page;

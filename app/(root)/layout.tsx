@@ -1,12 +1,12 @@
-import LeftSideBar from "@/components/shared/LeftSideBar";
-import RightSideBar from "@/components/shared/RightSideBar";
+import LeftSideBar from "@/components/LeftSideBar/LeftSideBar";
+import RightSideBar from "@/components/RightSideBar/RightSideBar";
 import { getUserId } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
 	const userId = await getUserId().then((e) => JSON.parse(e));
 
-	if (userId === null) {	
+	if (userId === null) {
 		redirect("/sign-in");
 	}
 
