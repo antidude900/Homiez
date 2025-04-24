@@ -112,7 +112,7 @@ const UserPost = ({
 						</LikeUsersShow>
 
 						<span> &nbsp;|&nbsp; </span>
-						<Link href={`${author.username}/post/${postId}`}>
+						<Link href={`/${author.username}/post/${postId}`}>
 							<span className="cursor-pointer">{repliesCount} replies</span>
 						</Link>
 					</div>

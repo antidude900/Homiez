@@ -42,29 +42,35 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 				/>
 			</div>
 			<div className="grid gap-4">
-				{posts.map(
-					(post: {
-						_id: string;
-						postId: string;
-						text: string;
-						image?: string;
-						createdAt: string;
-						likes: string[];
-						comments: [];
-					}) => (
-						<UserPost
-							key={post._id}
-							author={user}
-							postId={post._id}
-							postText={post.text}
-							postImg={post?.image || ""}
-							postedAt={post.createdAt}
-							likes={post.likes}
-							repliesCount={post.comments.length}
-							liked={post.likes.includes(userId)}
-							isSelf={user._id === userId}
-						/>
+				{posts.length > 0 ? (
+					posts.map(
+						(post: {
+							_id: string;
+							postId: string;
+							text: string;
+							image?: string;
+							createdAt: string;
+							likes: string[];
+							comments: [];
+						}) => (
+							<UserPost
+								key={post._id}
+								author={user}
+								postId={post._id}
+								postText={post.text}
+								postImg={post?.image || ""}
+								postedAt={post.createdAt}
+								likes={post.likes}
+								repliesCount={post.comments.length}
+								liked={post.likes.includes(userId)}
+								isSelf={user._id === userId}
+							/>
+						)
 					)
+				) : (
+					<div className="flex flex-col items-center justify-center gap-2">
+						<div className="font-bold text-[2vw]">No Posts!</div>
+					</div>
 				)}
 			</div>
 		</>
