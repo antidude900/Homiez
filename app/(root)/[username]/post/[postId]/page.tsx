@@ -38,6 +38,7 @@ const Page = async ({
 			</div>
 		);
 	}
+	console.log(post.comments);
 
 	return (
 		<>
@@ -63,14 +64,16 @@ const Page = async ({
 							author: Partial<IUser>;
 							text: string;
 							createdAt: string;
-							likes: [];
+							likes: string[];
 						}) => (
 							<Comment
 								key={comment._id}
+								id={comment._id}
 								author={comment.author}
 								text={comment.text}
 								postedAt={comment.createdAt}
 								likesCount={comment.likes.length}
+								liked={comment.likes.includes(userId)}
 							/>
 						)
 					)

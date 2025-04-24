@@ -52,7 +52,7 @@ export async function getPost(params: { postId: string }) {
 		const posts = await Post.findById(params.postId).populate([
 			{
 				path: "comments",
-				select: "text likes",
+				select: "text likes createdAt",
 				options: { sort: { createdAt: -1 } },
 				populate: [{ path: "author", select: "name username picture" }],
 			},

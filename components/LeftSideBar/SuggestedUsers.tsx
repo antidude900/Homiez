@@ -1,7 +1,6 @@
 "use client";
 
 import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
-
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";

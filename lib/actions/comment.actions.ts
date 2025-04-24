@@ -4,6 +4,8 @@ import Comment from "@/database/comment.model";
 import { connectToDatabase } from "../mongoose";
 import { CreateCommentParams } from "./shared.type";
 import Post from "@/database/post.model";
+import { getUserId } from "./user.action";
+import { revalidatePath } from "next/cache";
 
 export async function createComment(params: CreateCommentParams) {
 	try {
@@ -20,33 +22,19 @@ export async function createComment(params: CreateCommentParams) {
 	}
 }
 
-// export async function likeUnlikeReply(params: LikeUnlikeReply) {
-// 	try {
-// 		await connectToDatabase();
-// 		const reply = await Reply.findById(params.replyId);
-// 		if (reply.likes.includes(params.userId)) {
-// 			await Reply.updateOne(
-// 				{ _id: params.replyId },
-// 				{ $pull: { likes: params.userId } }
-// 			);
-// 		} else {
-// 			await Reply.updateOne(
-// 				{ _id: params.replyId },
-// 				{ $push: { likes: params.userId } }
-// 			);
-// 		}
-// 	} catch (error) {
-// 		console.log(error);
-// 		throw error;
-// 	}
-// }
-
-// export async function deletePost(params: { replyId: string }) {
-// 	try {
-// 		await connectToDatabase();
-// 		await Reply.deleteOne({ _id: params.replyId });
-// 	} catch (error) {
-// 		console.log(error);
-// 		throw error;
-// 	}
-// }
+export async function likeUnlikeReply(commentId: string, pathname: string) {
+	const userId = await getUserId().then((e) => JSON.parse(e));
+	try {
+		await connectToDatabase();
+		const comment = await Comment.findById(commentId);
+		if (comment.likes.includes(userId)) {
+			await Comment.updateOne({ _id: commentId }, { $pull: { likes: userId } });
+		} else {
+			await Comment.updateOne({ _id: commentId }, { $push: { likes: userId } });
+		}
+		revalidatePath(pathname);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}

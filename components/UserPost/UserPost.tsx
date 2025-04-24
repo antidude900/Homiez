@@ -6,7 +6,7 @@ import { Heart, SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import { IUser } from "@/database/user.model";
-import CreateCommentForm from "../ui/CommentForm";
+import CreateCommentForm from "./CommentForm";
 import { usePathname } from "next/navigation";
 import { likeUnlikePost } from "@/lib/actions/post.action";
 import { LikeUsersShow } from "../shared/LikeUsersShow";
@@ -128,8 +128,10 @@ const UserPost = ({
 								if (!isSelf) {
 									setDisabled(true);
 									await likeUnlikePost(postId, pathname);
-									setFetched(false);
-									setDisabled(false);
+									setTimeout(() => {
+										setFetched(false);
+										setDisabled(false);
+									}, 1000);
 								}
 							}}
 							className={`${

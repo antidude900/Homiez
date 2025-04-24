@@ -3,18 +3,32 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { EllipsisVertical, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import { IUser } from "@/database/user.model";
+import { getTimestamp } from "@/lib/utils";
+import { likeUnlikeReply } from "@/lib/actions/comment.actions";
+import { usePathname } from "next/navigation";
 
 interface CommentProps {
+	id: string;
 	author: Partial<IUser>;
 	text: string;
 	postedAt: string;
 	likesCount: number;
+	liked: boolean;
 }
 
-const Comment = ({ author, text, postedAt, likesCount }: CommentProps) => {
-	const [liked, setLiked] = useState(false);
+const Comment = ({
+	id,
+	author,
+	text,
+	postedAt,
+	likesCount,
+	liked,
+}: CommentProps) => {
+	const pathname = usePathname();
+	const [disabled, setDisabled] = useState(false);
+
 	return (
 		<div className="bg-background rounded-xl border border-border">
 			<div className="flex p-2">
@@ -39,8 +53,9 @@ const Comment = ({ author, text, postedAt, likesCount }: CommentProps) => {
 							<div>{text}</div>
 						</div>
 						<div className=" flex mr-2">
-							<span className="text-muted-foreground">{postedAt}</span>
-							<EllipsisVertical />
+							<span className="text-muted-foreground">
+								{getTimestamp(postedAt) + " ago"}
+							</span>
 						</div>
 					</div>
 
@@ -54,7 +69,16 @@ const Comment = ({ author, text, postedAt, likesCount }: CommentProps) => {
 							<Heart
 								color={liked ? "red" : "currentColor"}
 								fill={liked ? "red" : "transparent"}
-								onClick={() => setLiked(!liked)}
+								onClick={async () => {
+									setDisabled(true);
+									await likeUnlikeReply(id, pathname);
+									setTimeout(() => {
+										setDisabled(false);
+									}, 1000);
+								}}
+								className={`${
+									disabled ? "cursor-not-allowed opacity-20" : "cursor-pointer"
+								}`}
 							/>
 						</div>
 					</div>

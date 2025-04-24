@@ -39,6 +39,6 @@ export interface CreateCommentParams {
 }
 
 export interface LikeUnlikeReply {
-	replyId: Schema.Types.ObjectId;
+	CommentId: Schema.Types.ObjectId;
 	userId: Schema.Types.ObjectId;
 }
