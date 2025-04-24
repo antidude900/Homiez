@@ -7,11 +7,20 @@ import {
 	MenubarItem,
 } from "../ui/menubar";
 
-import { EllipsisVertical, Pencil, Trash } from "lucide-react";
+import { EllipsisVertical, Trash } from "lucide-react";
 import { toast } from "react-toastify";
 import { usePathname } from "next/navigation";
+import UpdatePostForm from "./UpdatePostForm";
 
-const EditDeletePost = ({ postId }: { postId: string }) => {
+const EditDeletePost = ({
+	postId,
+	txt,
+	img,
+}: {
+	postId: string;
+	txt: string;
+	img: string;
+}) => {
 	const pathname = usePathname();
 	return (
 		<Menubar className="relative border-none bg-transparent shadow-none">
@@ -20,17 +29,20 @@ const EditDeletePost = ({ postId }: { postId: string }) => {
 					<EllipsisVertical />
 				</MenubarTrigger>
 				<MenubarContent
-					className="mt-3 min-w-[60px] rounded border"
+					className="my-3 min-w-[60px] rounded border space-y-1"
 					align="center"
 				>
-					<MenubarItem className={"flex items-center gap-2 px-2.5 py-2"}>
-						<Pencil className="w-4 h-4" />
-						<span className="body-semibold">Edit</span>
+					<MenubarItem
+						onSelect={(e) => {
+							e.preventDefault();
+						}}
+					>
+						<UpdatePostForm postId={postId} txt={txt} img={img} />
 					</MenubarItem>
 					<MenubarItem
-						className={"flex items-center gap-2 px-2.5 py-2"}
+						className={"flex items-center gap-2"}
 						onClick={async () => {
-							await deletePost(postId,pathname);
+							await deletePost(postId, pathname);
 							toast.success("Post deleted successfully", {
 								autoClose: 750,
 							});

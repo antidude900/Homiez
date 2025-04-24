@@ -5,7 +5,7 @@ import type React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Loader2, ImageIcon, X } from "lucide-react";
+import { Loader2, ImageIcon, X, Pencil } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,17 +19,26 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { createPost } from "@/lib/actions/post.action";
-import image from "next/image";
+import { updatePost } from "@/lib/actions/post.action";
 import { toast } from "react-toastify";
+import image from "next/image";
 
-export default function CreatePostForm() {
+export default function UpdatePostForm({
+	postId,
+	txt,
+	img,
+}: {
+	postId: string;
+	txt: string;
+	img: string;
+}) {
 	const router = useRouter();
 	const [open, setOpen] = useState(false);
-	const [text, setText] = useState("");
-	const [imagePreview, setImagePreview] = useState<string>("");
+	const [text, setText] = useState(txt);
+	const [imagePreview, setImagePreview] = useState<string>(img);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	console.log("our image", imagePreview);
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0] || null;
@@ -61,16 +70,10 @@ export default function CreatePostForm() {
 		setIsSubmitting(true);
 
 		try {
-			await createPost({
-				text,
-				image: imagePreview,
-			});
+			await updatePost(postId, text, imagePreview);
 
-			setText("");
-
-			setImagePreview("");
 			setOpen(false);
-			toast.success("Post Created!", { autoClose: 750 });
+			toast.success("Post Updated!", { autoClose: 750 });
 
 			router.refresh();
 		} catch (error) {
@@ -83,15 +86,14 @@ export default function CreatePostForm() {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button className="w-full rounded-xl mx-2 text-[15px] p-6">
-					Create Post
-				</Button>
+			<DialogTrigger className="w-full flex items-center gap-2">
+				<Pencil className="w-4 h-4" />
+				<span className="body-semibold">Edit</span>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[500px] [&>button]:hidden">
 				<form onSubmit={handleSubmit}>
 					<DialogHeader className="mb-4">
-						<DialogTitle>Create a new post</DialogTitle>
+						<DialogTitle>Update Post</DialogTitle>
 						<DialogDescription>What&apos;s on your mind?</DialogDescription>
 					</DialogHeader>
 					<div className="grid gap-4 mb-4">
@@ -102,7 +104,12 @@ export default function CreatePostForm() {
 								placeholder="Write it down..."
 								value={text}
 								onChange={(e) => setText(e.target.value)}
-								className="min-h-[100px]"
+								className="min-h-[100px] resize-none"
+								onKeyDown={(e) => {
+									if (e.key === " " || e.key === "Enter") {
+										e.stopPropagation();
+									}
+								}}
 							/>
 						</div>
 
@@ -166,7 +173,7 @@ export default function CreatePostForm() {
 									Posting...
 								</>
 							) : (
-								"Post"
+								"Update"
 							)}
 						</Button>
 					</DialogFooter>

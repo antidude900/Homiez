@@ -10,7 +10,7 @@ import { getUserId } from "./user.action";
 import { revalidatePath } from "next/cache";
 
 export async function createPost(params: CreatePostParams) {
-	const { text, image, author } = params;
+	const { text, image } = params;
 	cloudinary.config({
 		cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
 		api_key: process.env.CLOUDINARY_API_KEY,
@@ -30,6 +30,9 @@ export async function createPost(params: CreatePostParams) {
 		console.log("error from cloudinary", error);
 		throw error;
 	}
+
+	await connectToDatabase();
+	const author = await getUserId().then((e) => JSON.parse(e));
 
 	try {
 		await Post.create({
@@ -168,6 +171,41 @@ export async function getPostsSearchResults(query: string) {
 		return JSON.stringify(sortedPosts);
 	} catch (error) {
 		console.log(error);
+		throw error;
+	}
+}
+
+export async function updatePost(postId: string, text: string, image: string) {
+	try {
+		await connectToDatabase();
+		const post = await Post.findById(postId);
+		let imgUrl = "";
+
+		if (image !== post.image) {
+			cloudinary.config({
+				cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+				api_key: process.env.CLOUDINARY_API_KEY,
+				api_secret: process.env.CLOUDINARY_API_SECRET,
+			});
+
+			try {
+				if (image) {
+					const uploadResponse = await cloudinary.uploader.upload(image, {
+						folder: "social_media_images",
+					});
+					imgUrl = uploadResponse.secure_url;
+				}
+			} catch (error) {
+				console.log("error from cloudinary", error);
+				throw error;
+			}
+		} else {
+			imgUrl = image;
+		}
+
+		await Post.findByIdAndUpdate(postId, { text, image: imgUrl });
+	} catch (error) {
+		console.error("Error updating post:", error);
 		throw error;
 	}
 }

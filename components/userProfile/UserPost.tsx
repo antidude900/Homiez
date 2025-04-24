@@ -74,13 +74,19 @@ const UserPost = ({
 							<span className="text-muted-foreground">
 								{getTimestamp(postedAt) + " ago"}
 							</span>
-							{isSelf && <EditDeletePost postId={postId} />}
+							{isSelf && (
+								<EditDeletePost
+									postId={postId}
+									txt={postText}
+									img={postImg || ""}
+								/>
+							)}
 						</div>
 					</div>
 
 					{postImg && (
 						<Link
-							href={`${author.username}/post/${postId}`}
+							href={`/${author.username}/post/${postId}`}
 							className="w-full mb-1"
 						>
 							<Image
