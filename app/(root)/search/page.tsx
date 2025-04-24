@@ -1,4 +1,4 @@
-import SearchUserOrPost from "@/components/shared/SearchUserOrPost";
+import SearchUserOrPost from "@/components/LeftSideBar/SearchUserOrPost";
 import { IUser } from "@/database/user.model";
 import { getPostsSearchResults } from "@/lib/actions/post.action";
 import { getUserId, getUserSearchResults } from "@/lib/actions/user.action";

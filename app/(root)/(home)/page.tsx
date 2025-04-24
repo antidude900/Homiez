@@ -2,7 +2,6 @@ import UserPost from "@/components/UserPost/UserPost";
 import { IUser } from "@/database/user.model";
 import { getFeedPost } from "@/lib/actions/post.action";
 import { getUserId } from "@/lib/actions/user.action";
-import { SearchX } from "lucide-react";
 
 const page = async () => {
 	const userId: string = await getUserId().then((e) => JSON.parse(e));
