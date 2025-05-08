@@ -12,7 +12,12 @@ export default function RootLayout({
 		<ClerkProvider>
 			<html lang="en" suppressHydrationWarning>
 				<head>
-					<title>Social Media App</title>
+					<title>Homiez</title>
+					<link
+						rel="icon"
+						href="/icons/handshake_square_favicon.png"
+						type="image/png"
+					/>
 				</head>
 				<body className="bg-[#E8F1F9] dark:bg-[#05141C] text-foreground">
 					<ThemeProvider

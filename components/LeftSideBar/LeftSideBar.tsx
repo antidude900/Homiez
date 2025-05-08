@@ -15,10 +15,10 @@ const LeftSideBar = async () => {
 			<div className="mb-4 flex items-center px-2">
 				<Link href="/">
 					<Image
-						src="/icons/twitter.svg"
+						src="/icons/handshake_square.png"
 						alt="logo"
-						width={32}
-						height={32}
+						width={48}
+						height={48}
 						className="mr-2"
 					/>
 				</Link>

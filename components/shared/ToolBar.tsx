@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
-const ToolBar = ({ username }: { username: string }) => {
+const 	ToolBar = ({ username }: { username: string }) => {
 	const { signOut } = useClerk();
 	const router = useRouter();
 

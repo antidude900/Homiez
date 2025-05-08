@@ -10,8 +10,8 @@ const page = async () => {
 
 	return (
 		<>
-			<div className="bg-background rounded-xl border border-border relative mb-4">
-				<div className="text-center p-2">For You</div>
+			<div className="bg-background rounded-xl border border-border relative mb-4 h-[40px] box-content">
+				<div className="text-center p-2 font-bold text-lg">For You</div>
 				<hr className="border-t-4 rounded border-[#7BD8B9] dark:border-[#21CB99] w-[100px] absolute right-1/2 translate-x-1/2 bottom-0" />
 			</div>
 
@@ -45,7 +45,7 @@ const page = async () => {
 				) : (
 					<div className="flex flex-col items-center justify-center h-[80vh] gap-2">
 						<div className="font-bold text-[2vw]">
-							Your feed is feeling a little lonely right now.
+							Your feed is feeling a little lonely right now...
 						</div>
 						<div className="font-bold text-muted-foreground text-[1.5vw]">
 							Follow some interesting people to bring it to life!
