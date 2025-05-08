@@ -10,7 +10,7 @@ import CreateCommentForm from "./CommentForm";
 import { usePathname } from "next/navigation";
 import { likeUnlikePost } from "@/lib/actions/post.action";
 import { LikeUsersShow } from "../shared/LikeUsersShow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import EditDeletePost from "./EditDeletePost";
 
@@ -40,6 +40,13 @@ const UserPost = ({
 	const pathname = usePathname();
 	const [fetched, setFetched] = useState(false);
 	const [disabled, setDisabled] = useState(false);
+	const [client, setClient] = useState(false);
+
+	useEffect(() => {
+		setClient(true);
+	}, []);
+
+	if (!client) return <div>Loading</div>;
 
 	return (
 		<div className="bg-background rounded-xl border border-border">
