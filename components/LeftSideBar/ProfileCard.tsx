@@ -1,10 +1,6 @@
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import {
-	getFollowers,
-	getFollowing,
-	getUserId,
-} from "@/lib/actions/user.action";
+import { getUserId } from "@/lib/actions/user.action";
 import Editable from "../shared/Editable";
 import { FollowerShow } from "../shared/FollowerShow";
 import { FollowingShow } from "../shared/FollowingShow";
@@ -21,8 +17,6 @@ interface User {
 }
 
 const ProfileCard = async ({ user }: { user: User }) => {
-	const followers = await getFollowers(user._id).then((e) => JSON.parse(e));
-	const followings = await getFollowing(user._id).then((e) => JSON.parse(e));
 	const userId = await getUserId().then((e) => JSON.parse(e));
 
 	return (
@@ -64,7 +58,7 @@ const ProfileCard = async ({ user }: { user: User }) => {
 
 			<div className="flex-1 flex items-center p-2">
 				<div className="flex-1 text-center">
-					<FollowerShow followers={followers} userId={userId}>
+					<FollowerShow otherUserId={user._id} userId={userId}>
 						<div>{user.followers.length || "0"}</div>
 						<div className="text-muted-foreground font-medium">Followers</div>
 					</FollowerShow>
@@ -73,7 +67,7 @@ const ProfileCard = async ({ user }: { user: User }) => {
 				<div className="border-l-[1px] border-muted-foreground h-12 mx-4"></div>
 
 				<div className="flex-1 text-center">
-					<FollowingShow followings={followings} userId={userId}>
+					<FollowingShow otherUserId={user._id} userId={userId}>
 						<div>{user.following?.length || "0"}</div>
 						<div className="text-muted-foreground font-medium">Following</div>
 					</FollowingShow>

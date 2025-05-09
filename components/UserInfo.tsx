@@ -5,7 +5,7 @@ import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
 
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FollowerShow } from "./shared/FollowerShow";
 import { FollowingShow } from "./shared/FollowingShow";
 
@@ -18,31 +18,20 @@ import {
 	TooltipTrigger,
 	TooltipContent,
 } from "./ui/tooltip";
-
-type User = {
-	_id: string;
-	name: string;
-	username: string;
-	picture: string;
-	followed: boolean;
-};
+import { useFollowingContext } from "@/context/FollowingContext";
 
 const UserInfo = ({
 	user,
 	currentUserId,
-	followed,
-	followers,
-	followings,
 }: {
 	user: Partial<IUser>;
 	currentUserId: string;
-	followed: boolean;
-	followers: User[];
-	followings: User[];
 }) => {
 	const pathname = usePathname();
 	const [isOpen, setIsOpen] = useState(false);
 	const [updating, setUpdating] = useState(false);
+	const context = useFollowingContext();
+	const [isFollowed, setIsFollowed] = useState(false);
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -53,6 +42,11 @@ const UserInfo = ({
 			path: pathname,
 		});
 	};
+
+	useEffect(() => {
+		setIsFollowed(context.followingIds.includes(user._id as string));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [context.followingIds]);
 
 	return (
 		<div className="bg-background rounded-xl border border-border relative overflow-clip">
@@ -74,27 +68,43 @@ const UserInfo = ({
 						<div className="text-[12px] text-muted-foreground mx-4">
 							{currentUserId !== user._id && (
 								<Button
-									className={`mr-4 w-[90px] ${followed && "bg-destructive"}`}
+									className={`mr-4 w-[90px] ${isFollowed && "bg-destructive"}`}
 									disabled={updating}
 									onClick={async () => {
 										setUpdating(true);
 										await handlefollowUnfollow(user._id as string);
-										setTimeout(() => {
-											setUpdating(false);
-										}, 1000);
+										setUpdating(false);
+										setIsFollowed(!isFollowed);
+
+										if (isFollowed) {
+											context.setFollowingIds(
+												context.followingIds.filter((id) => id !== user._id)
+											);
+										} else {
+											context.setFollowingIds([
+												...context.followingIds,
+												user._id as string,
+											]);
+										}
 									}}
 								>
-									{followed ? "Unfollow" : "Follow"}
+									{isFollowed ? "Unfollow" : "Follow"}
 								</Button>
 							)}
-							<FollowerShow followers={followers} userId={currentUserId}>
+							<FollowerShow
+								otherUserId={user?._id || ""}
+								userId={currentUserId}
+							>
 								<span className="cursor-pointer">
 									{user.followers?.length || "0"} followers
 								</span>
 							</FollowerShow>
 
 							<span> &nbsp;|&nbsp; </span>
-							<FollowingShow followings={followings} userId={currentUserId}>
+							<FollowingShow
+								otherUserId={user?._id || ""}
+								userId={currentUserId}
+							>
 								<span className="cursor-pointer">
 									{user.following?.length || "0"} following
 								</span>

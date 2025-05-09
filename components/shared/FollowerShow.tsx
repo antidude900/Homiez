@@ -6,12 +6,18 @@ import {
 	DialogTrigger,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
+import {
+	followUnfollowUser,
+	getFollowers,
+	getUserId,
+} from "@/lib/actions/user.action";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useFollowingContext } from "@/context/FollowingContext";
+
 
 type User = {
 	_id: string;
@@ -23,15 +29,17 @@ type User = {
 
 export function FollowerShow({
 	children,
-	followers,
+	otherUserId,
 	userId,
 }: {
 	children: React.ReactNode;
-	followers: User[];
+	otherUserId: string;
 	userId: string;
 }) {
 	const pathname = usePathname();
 	const [updating, setUpdating] = useState(false);
+	const [followers, setFollowers] = useState<User[] | null>(null);
+	const context = useFollowingContext();
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -43,6 +51,16 @@ export function FollowerShow({
 		});
 	};
 
+	useEffect(() => {
+		const fetchFollowers = async () => {
+			const result = await getFollowers(otherUserId).then((e) => JSON.parse(e));
+			setFollowers(result);
+		};
+
+		fetchFollowers();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [context.followingIds]);
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -52,50 +70,68 @@ export function FollowerShow({
 				<DialogTitle className="text-[20px] absolute top-2 left-2 font-bold">
 					Followers
 				</DialogTitle>
-				<div className="mt-10 space-y-2">
-					{followers.length === 0 ? (
-						<p className="text-sm text-muted-foreground">No Followers yet.</p>
-					) : (
-						followers.map((follower) => (
-							<div
-								key={follower.username}
-								className="flex justify-between w-full"
-							>
-								<div className="flex items-center gap-3">
-									<Avatar className="">
-										<AvatarImage src={follower.picture} />
-										<AvatarFallback className="bg-green-700">
-											{follower.name[0]}
-										</AvatarFallback>
-									</Avatar>
-									<Link href={`/user/${follower.username}`} className="">
-										<p className="text-sm font-semibold">{follower.name}</p>
-										<p className="text-xs text-muted-foreground">
-											@{follower.username}
-										</p>
-									</Link>
-								</div>
-								{userId !== follower._id && (
-									<Button
-										className={`mr-4 w-[90px] ${
-											follower.followed && "bg-destructive"
-										}`}
-										disabled={updating}
-										onClick={async () => {
-											setUpdating(true);
-											await handlefollowUnfollow(follower._id as string);
-											setTimeout(() => {
+				{followers === null || userId === null ? (
+					<div>Loading...</div>
+				) : (
+					<div className="mt-10 space-y-2">
+						{followers.length === 0 ? (
+							<p className="text-sm text-muted-foreground">No Followers yet.</p>
+						) : (
+							followers.map((follower) => (
+								<div
+									key={follower.username}
+									className="flex justify-between w-full"
+								>
+									<div className="flex items-center gap-3">
+										<Avatar className="">
+											<AvatarImage src={follower.picture} />
+											<AvatarFallback className="bg-green-700">
+												{follower.name[0]}
+											</AvatarFallback>
+										</Avatar>
+										<Link href={`/user/${follower.username}`} className="">
+											<p className="text-sm font-semibold">{follower.name}</p>
+											<p className="text-xs text-muted-foreground">
+												@{follower.username}
+											</p>
+										</Link>
+									</div>
+									{userId !== follower._id && (
+										<Button
+											className={`mr-4 w-[90px] ${
+												follower.followed && "bg-destructive"
+											}`}
+											disabled={updating}
+											onClick={async () => {
+												setUpdating(true);
+												await handlefollowUnfollow(follower._id as string);
 												setUpdating(false);
-											}, 1000);
-										}}
-									>
-										{follower.followed ? "Unfollow" : "Follow"}
-									</Button>
-								)}
-							</div>
-						))
-					)}
-				</div>
+												const followed = follower.followed;
+												follower.followed = !follower.followed;
+												setFollowers([...followers]);
+
+												if (followed) {
+													context.setFollowingIds(
+														context.followingIds.filter(
+															(id) => id !== follower._id
+														)
+													);
+												} else {
+													context.setFollowingIds([
+														...context.followingIds,
+														follower._id as string,
+													]);
+												}
+											}}
+										>
+											{follower.followed ? "Unfollow" : "Follow"}
+										</Button>
+									)}
+								</div>
+							))
+						)}
+					</div>
+				)}
 			</DialogContent>
 		</Dialog>
 	);

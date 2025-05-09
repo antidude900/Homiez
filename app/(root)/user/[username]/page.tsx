@@ -1,12 +1,7 @@
 import UserInfo from "@/components/UserInfo";
 import UserPost from "@/components/UserPost/UserPost";
 import { getAllPost } from "@/lib/actions/post.action";
-import {
-	getFollowers,
-	getFollowing,
-	getUserByUserName,
-	getUserId,
-} from "@/lib/actions/user.action";
+import { getUserByUserName, getUserId } from "@/lib/actions/user.action";
 import { SearchX } from "lucide-react";
 
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
@@ -22,8 +17,6 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 		);
 	}
 
-	const followers = await getFollowers(user._id).then((e) => JSON.parse(e));
-	const followings = await getFollowing(user._id).then((e) => JSON.parse(e));
 	const userId = await getUserId().then((e) => JSON.parse(e));
 
 	const posts = await getAllPost({ userId: user._id }).then((e) =>
@@ -33,13 +26,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 	return (
 		<>
 			<div className="mb-4">
-				<UserInfo
-					user={user}
-					currentUserId={userId}
-					followed={user.followers.includes(userId)}
-					followers={followers}
-					followings={followings}
-				/>
+				<UserInfo user={user} currentUserId={userId} />
 			</div>
 			<div className="grid gap-4">
 				{posts.length > 0 ? (

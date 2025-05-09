@@ -1,14 +1,13 @@
 import Image from "next/image";
 import ProfileCard from "./ProfileCard";
 import Link from "next/link";
-import { getSuggestedUsers, getUserInfo } from "@/lib/actions/user.action";
+import { getUserInfo } from "@/lib/actions/user.action";
 import CreatePostForm from "./CreatePostForm";
 import SuggestedUsers from "./SuggestedUsers";
 import { Search } from "lucide-react";
 
 const LeftSideBar = async () => {
 	const user = await getUserInfo();
-	const suggestedUsers = await getSuggestedUsers().then((e) => JSON.parse(e));
 
 	return (
 		<div className="pt-2 pb-4 h-screen border-r border-r-border flex flex-col">
@@ -43,7 +42,7 @@ const LeftSideBar = async () => {
 			</div>
 
 			<div className="mt-auto min-h-0 px-2">
-				<SuggestedUsers suggestedUsers={suggestedUsers} />
+				<SuggestedUsers />
 			</div>
 		</div>
 	);

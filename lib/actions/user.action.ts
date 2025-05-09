@@ -246,6 +246,22 @@ export async function getFollowing(user: string) {
 	}
 }
 
+export async function getFollowersAndFollowingIds() {
+	try {
+		await connectToDatabase();
+
+		const userId = await getUserId().then((e) => JSON.parse(e));
+		const { followers, following } = await User.findById(userId).select(
+			"followers following"
+		);
+
+		return JSON.stringify({ followers, following });
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
 export async function getUserSearchResults(query: string) {
 	try {
 		await connectToDatabase();
