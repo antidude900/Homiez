@@ -68,7 +68,7 @@ export function FollowingShow({
 											{following.name[0]}
 										</AvatarFallback>
 									</Avatar>
-									<Link href={`/${following.username}`} className="">
+									<Link href={`/user/${following.username}`} className="">
 										<p className="text-sm font-semibold">{following.name}</p>
 										<p className="text-xs text-muted-foreground">
 											@{following.username}

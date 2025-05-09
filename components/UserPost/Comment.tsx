@@ -40,7 +40,7 @@ const Comment = ({
 				<div className="w-full">
 					<div className="flex mb-4 justify-between">
 						<div className="space-y-1">
-							<Link href={`/${author.username}`}>
+							<Link href={`/user/${author.username}`}>
 								<span className="font-bold mr-2 cursor-pointer">
 									{author.name}
 								</span>

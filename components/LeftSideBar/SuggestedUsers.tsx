@@ -52,7 +52,7 @@ const SuggestedUsers = ({ suggestedUsers }: { suggestedUsers: User[] }) => {
 									{suggestedUser.name[0]}
 								</AvatarFallback>
 							</Avatar>
-							<Link href={`/${suggestedUser.username}`}>
+							<Link href={`/user/${suggestedUser.username}`}>
 								<p className="text-sm font-semibold">{suggestedUser.name}</p>
 								<p className="text-xs text-muted-foreground">
 									@{suggestedUser.username}

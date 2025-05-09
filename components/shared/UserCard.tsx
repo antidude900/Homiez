@@ -43,7 +43,7 @@ const UserCard = ({
 					<AvatarImage src={picture} />
 					<AvatarFallback className="bg-green-700">{name[0]}</AvatarFallback>
 				</Avatar>
-				<Link href={`/${username}`}>
+				<Link href={`/user/${username}`}>
 					<p className="text-sm font-semibold">{name}</p>
 					<p className="text-xs text-muted-foreground">@{username}</p>
 				</Link>

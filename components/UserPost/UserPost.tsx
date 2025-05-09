@@ -51,7 +51,7 @@ const UserPost = ({
 	return (
 		<div className="bg-background rounded-xl border border-border">
 			<div className="flex px-2 py-4">
-				<Link href={`/${author.username}`}>
+				<Link href={`/user/${author.username}`}>
 					<Avatar className="w-16 h-16 mr-5">
 						<AvatarImage src={author.picture} />
 						<AvatarFallback>CN</AvatarFallback>
@@ -60,7 +60,7 @@ const UserPost = ({
 				<div className="w-full">
 					<div className="flex mb-4 justify-between">
 						<div className="space-y-1">
-							<Link href={`/${author.username}`}>
+							<Link href={`/user/${author.username}`}>
 								<span className="font-bold mr-2 cursor-pointer">
 									{author.name}
 								</span>
@@ -71,13 +71,13 @@ const UserPost = ({
 							</Link>
 
 							<Link
-								href={`/${author.username}/post/${postId}`}
+								href={`/user/${author.username}/post/${postId}`}
 								className="block"
 							>
 								<div className="">{postText}</div>
 							</Link>
 						</div>
-						<div className=" flex mr-2 items-center h-fit">
+						<div className="flex mr-2 items-center h-fit">
 							<span className="text-muted-foreground">
 								{getTimestamp(postedAt) + " ago"}
 							</span>
@@ -93,7 +93,7 @@ const UserPost = ({
 
 					{postImg && (
 						<Link
-							href={`/${author.username}/post/${postId}`}
+							href={`/user/${author.username}/post/${postId}`}
 							className="w-full mb-1"
 						>
 							<Image
@@ -119,7 +119,7 @@ const UserPost = ({
 						</LikeUsersShow>
 
 						<span> &nbsp;|&nbsp; </span>
-						<Link href={`/${author.username}/post/${postId}`}>
+						<Link href={`/user/${author.username}/post/${postId}`}>
 							<span className="cursor-pointer">{repliesCount} replies</span>
 						</Link>
 					</div>

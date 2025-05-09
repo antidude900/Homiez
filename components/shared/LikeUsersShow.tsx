@@ -107,7 +107,7 @@ export function LikeUsersShow({
 											{user.name[0]}
 										</AvatarFallback>
 									</Avatar>
-									<Link href={`/${user.username}`} className="">
+									<Link href={`/user/${user.username}`} className="">
 										<p className="text-sm font-semibold">{user.name}</p>
 										<p className="text-xs text-muted-foreground">
 											@{user.username}
