@@ -44,7 +44,10 @@ const UserInfo = ({
 	};
 
 	useEffect(() => {
-		setIsFollowed(context.followingIds.includes(user._id as string));
+		const validFollowingIds = context.followingIds.map(
+			(item: { _id: string }) => item._id
+		);
+		setIsFollowed(validFollowingIds.includes(user._id as string));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [context.followingIds]);
 
@@ -78,12 +81,18 @@ const UserInfo = ({
 
 										if (isFollowed) {
 											context.setFollowingIds(
-												context.followingIds.filter((id) => id !== user._id)
+												context.followingIds.filter((f) => f._id !== user._id)
 											);
 										} else {
 											context.setFollowingIds([
 												...context.followingIds,
-												user._id as string,
+												{
+													_id: user._id as string,
+													name: user?.name || "",
+													username: user?.username || "",
+													picture: user?.picture || "",
+													followed: isFollowed,
+												},
 											]);
 										}
 									}}

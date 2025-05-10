@@ -6,18 +6,14 @@ import {
 	DialogTrigger,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import {
-	followUnfollowUser,
-	getSuggestedUsers,
-	getUserId,
-} from "@/lib/actions/user.action";
+import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
 import { useFollowingContext } from "@/context/FollowingContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type User = {
 	_id: string;
@@ -46,16 +42,6 @@ export function SuggestionsMore({
 			path: pathname,
 		});
 	};
-
-	useEffect(() => {
-		const fetchSuggestedUsers = async () => {
-			const result = await getSuggestedUsers().then((e) => JSON.parse(e));
-			updateUsers(result);
-		};
-
-		fetchSuggestedUsers();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [context.followingIds]);
 
 	return (
 		<Dialog>
@@ -100,7 +86,13 @@ export function SuggestionsMore({
 
 									context.setFollowingIds([
 										...context.followingIds,
-										user._id as string,
+										{
+											_id: user._id,
+											name: user.name,
+											username: user.username,
+											picture: user.picture,
+											followed: true,
+										},
 									]);
 								}}
 							>

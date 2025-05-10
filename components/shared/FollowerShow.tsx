@@ -9,6 +9,7 @@ import {
 import {
 	followUnfollowUser,
 	getFollowers,
+	getSelf,
 	getUserId,
 } from "@/lib/actions/user.action";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -17,7 +18,6 @@ import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFollowingContext } from "@/context/FollowingContext";
-
 
 type User = {
 	_id: string;
@@ -58,6 +58,35 @@ export function FollowerShow({
 		};
 
 		fetchFollowers();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		if (userId !== otherUserId) {
+			const validFollowingIds = context.followingIds.map(
+				(item: { _id: string }) => item._id
+			);
+			const validFollowerIds =
+				followers?.map((item: { _id: string }) => item._id) || [];
+
+			if (
+				validFollowerIds.includes(userId) &&
+				!validFollowingIds.includes(userId)
+			) {
+				const filteredFollowings =
+					followers?.filter((user) => user._id != userId) || [];
+				setFollowers(filteredFollowings);
+			} else if (
+				!validFollowerIds.includes(userId) &&
+				validFollowingIds.includes(otherUserId)
+			) {
+				const getUser = async () => {
+					const result = await getSelf().then((e) => JSON.parse(e));
+					setFollowers([...(followers || []), result]);
+				};
+				getUser();
+			}
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [context.followingIds]);
 
@@ -113,13 +142,13 @@ export function FollowerShow({
 												if (followed) {
 													context.setFollowingIds(
 														context.followingIds.filter(
-															(id) => id !== follower._id
+															(f) => f._id !== follower._id
 														)
 													);
 												} else {
 													context.setFollowingIds([
 														...context.followingIds,
-														follower._id as string,
+														follower,
 													]);
 												}
 											}}

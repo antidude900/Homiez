@@ -179,6 +179,8 @@ export async function getSuggestedUsers() {
 			)
 			.sort((a, b) => b.followers.length - a.followers.length);
 
+		
+
 		return JSON.stringify(sortedUsers);
 	} catch (error) {
 		console.log(error);
@@ -223,6 +225,10 @@ export async function getFollowing(user: string) {
 		const userId = await getUserId().then((e) => JSON.parse(e));
 		const currentUser = await User.findById(userId).select("following");
 
+		if (user === "self") {
+			user = userId;
+		}
+
 		const users = await User.findById(user, "following").populate([
 			{
 				path: "following",
@@ -240,22 +246,6 @@ export async function getFollowing(user: string) {
 		}));
 
 		return JSON.stringify(result);
-	} catch (error) {
-		console.log(error);
-		throw error;
-	}
-}
-
-export async function getFollowersAndFollowingIds() {
-	try {
-		await connectToDatabase();
-
-		const userId = await getUserId().then((e) => JSON.parse(e));
-		const { followers, following } = await User.findById(userId).select(
-			"followers following"
-		);
-
-		return JSON.stringify({ followers, following });
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -305,6 +295,29 @@ export async function getUserSearchResults(query: string) {
 			picture: user.picture,
 			followed: currentUser.following.includes(user._id),
 		}));
+
+		return JSON.stringify(result);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function getSelf() {
+	try {
+		await connectToDatabase();
+
+		const userId = await getUserId().then((e) => JSON.parse(e));
+
+		const user = await User.findById(userId).select("name username picture");
+
+		const result = {
+			_id: user._id,
+			name: user.name,
+			username: user.username,
+			picture: user.picture,
+			followed: false,
+		};
 
 		return JSON.stringify(result);
 	} catch (error) {

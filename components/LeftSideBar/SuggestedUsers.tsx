@@ -26,6 +26,7 @@ const SuggestedUsers = () => {
 	const [updating, setUpdating] = useState(false);
 	const context = useFollowingContext();
 	const [suggestedUsers, setSuggestedUsers] = useState<User[] | null>(null);
+	const [history, setHistory] = useState<User[] | null>(null);
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -40,10 +41,41 @@ const SuggestedUsers = () => {
 	useEffect(() => {
 		const fetchSuggestedUsers = async () => {
 			const result = await getSuggestedUsers().then((e) => JSON.parse(e));
+			console.log("result", result);
 			setSuggestedUsers(result);
+			setHistory(result);
 		};
 
 		fetchSuggestedUsers();
+	}, []);
+
+	useEffect(() => {
+		const validFollowingIds = context.followingIds.map(
+			(item: { _id: string }) => item._id
+		);
+
+		const filteredUsers =
+			suggestedUsers?.filter((user) => !validFollowingIds.includes(user._id)) ||
+			[]; // Filter out the new followed users
+
+		if (JSON.stringify(filteredUsers) !== JSON.stringify(suggestedUsers)) {
+			setSuggestedUsers(filteredUsers);
+		} else {
+			const unFollowedUser =
+				history?.filter(
+					(user) =>
+						!(
+							validFollowingIds.includes(user._id) ||
+							suggestedUsers?.includes(user)
+						)
+				) || [];
+
+			if (unFollowedUser.length === 1) {
+				setSuggestedUsers([...(suggestedUsers || []), unFollowedUser[0]]);
+			}
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [context.followingIds]);
 
 	return (
@@ -61,7 +93,7 @@ const SuggestedUsers = () => {
 						>
 							<div className="flex items-center gap-3">
 								<Avatar className="w-10 h-10">
-									<AvatarImage src={suggestedUser.picture} />
+									<AvatarImage src={suggestedUser?.picture || ""} />
 									<AvatarFallback className="bg-green-700">
 										{suggestedUser.name[0]}
 									</AvatarFallback>
@@ -88,10 +120,16 @@ const SuggestedUsers = () => {
 									);
 
 									setUpdating(false);
-
+									console.log("user", suggestedUser);
 									context.setFollowingIds([
 										...context.followingIds,
-										suggestedUser._id as string,
+										{
+											_id: suggestedUser._id,
+											name: suggestedUser.name,
+											username: suggestedUser.username,
+											picture: suggestedUser.picture,
+											followed: true,
+										},
 									]);
 								}}
 							>

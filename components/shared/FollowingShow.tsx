@@ -52,12 +52,24 @@ export function FollowingShow({
 
 	useEffect(() => {
 		const fetchFollowings = async () => {
-			const result = await getFollowing(otherUserId).then((e) => JSON.parse(e));
-
-			setFollowings(result);
+			if (userId !== otherUserId) {
+				const result = await getFollowing(otherUserId).then((e) =>
+					JSON.parse(e)
+				);
+				setFollowings(result);
+			}
 		};
 
 		fetchFollowings();
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		if (userId === otherUserId) {
+			setFollowings(context.followingIds);
+			console.log("followinggg", context.followingIds);
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [context.followingIds]);
 
@@ -125,13 +137,13 @@ export function FollowingShow({
 												if (followed) {
 													context.setFollowingIds(
 														context.followingIds.filter(
-															(id) => id !== following._id
+															(f) => f._id !== following._id
 														)
 													);
 												} else {
 													context.setFollowingIds([
 														...context.followingIds,
-														following._id as string,
+														following,
 													]);
 												}
 											}}
