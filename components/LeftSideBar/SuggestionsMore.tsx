@@ -6,12 +6,18 @@ import {
 	DialogTrigger,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { followUnfollowUser, getUserId } from "@/lib/actions/user.action";
+import {
+	followUnfollowUser,
+	getSuggestedUsers,
+	getUserId,
+} from "@/lib/actions/user.action";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
+import { useFollowingContext } from "@/context/FollowingContext";
+import { useEffect, useState } from "react";
 
 type User = {
 	_id: string;
@@ -20,8 +26,16 @@ type User = {
 	picture: string;
 };
 
-export function SuggestionsMore({ suggestions }: { suggestions: User[] }) {
+export function SuggestionsMore({
+	suggestions,
+	updateUsers,
+}: {
+	suggestions: User[];
+	updateUsers: React.Dispatch<React.SetStateAction<User[] | null>>;
+}) {
 	const pathname = usePathname();
+	const [updating, setUpdating] = useState(false);
+	const context = useFollowingContext();
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -32,6 +46,16 @@ export function SuggestionsMore({ suggestions }: { suggestions: User[] }) {
 			path: pathname,
 		});
 	};
+
+	useEffect(() => {
+		const fetchSuggestedUsers = async () => {
+			const result = await getSuggestedUsers().then((e) => JSON.parse(e));
+			updateUsers(result);
+		};
+
+		fetchSuggestedUsers();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [context.followingIds]);
 
 	return (
 		<Dialog>
@@ -62,8 +86,22 @@ export function SuggestionsMore({ suggestions }: { suggestions: User[] }) {
 
 							<Button
 								className="mr-4 w-[90px]"
+								disabled={updating}
 								onClick={async () => {
-									await handlefollowUnfollow(user._id as string);
+									setUpdating(true);
+
+									await handlefollowUnfollow(user._id);
+									updateUsers(
+										(prev) =>
+											prev?.filter((past) => past._id !== user._id) || []
+									);
+
+									setUpdating(false);
+
+									context.setFollowingIds([
+										...context.followingIds,
+										user._id as string,
+									]);
 								}}
 							>
 								Follow

@@ -103,7 +103,10 @@ const SuggestedUsers = () => {
 			</div>
 
 			{suggestedUsers && suggestedUsers.length > 3 && (
-				<SuggestionsMore suggestions={suggestedUsers} />
+				<SuggestionsMore
+					suggestions={suggestedUsers}
+					updateUsers={setSuggestedUsers}
+				/>
 			)}
 		</div>
 	);
