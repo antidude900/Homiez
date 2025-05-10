@@ -77,9 +77,10 @@ const UserInfo = ({
 										setUpdating(true);
 										await handlefollowUnfollow(user._id as string);
 										setUpdating(false);
+										const followed = isFollowed;
 										setIsFollowed(!isFollowed);
 
-										if (isFollowed) {
+										if (followed) {
 											context.setFollowingIds(
 												context.followingIds.filter((f) => f._id !== user._id)
 											);
@@ -91,7 +92,7 @@ const UserInfo = ({
 													name: user?.name || "",
 													username: user?.username || "",
 													picture: user?.picture || "",
-													followed: isFollowed,
+													followed: true,
 												},
 											]);
 										}

@@ -26,7 +26,7 @@ const SuggestedUsers = () => {
 	const [updating, setUpdating] = useState(false);
 	const context = useFollowingContext();
 	const [suggestedUsers, setSuggestedUsers] = useState<User[] | null>(null);
-	const [history, setHistory] = useState<User[] | null>(null);
+	const [history, setHistory] = useState<User[]>([]);
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -61,14 +61,13 @@ const SuggestedUsers = () => {
 		if (JSON.stringify(filteredUsers) !== JSON.stringify(suggestedUsers)) {
 			setSuggestedUsers(filteredUsers);
 		} else {
-			const unFollowedUser =
-				history?.filter(
-					(user) =>
-						!(
-							validFollowingIds.includes(user._id) ||
-							suggestedUsers?.includes(user)
-						)
-				) || [];
+			const unFollowedUser = history.filter(
+				(user) =>
+					!(
+						validFollowingIds.includes(user._id) ||
+						suggestedUsers?.includes(user)
+					)
+			);
 
 			if (unFollowedUser.length === 1) {
 				setSuggestedUsers([...(suggestedUsers || []), unFollowedUser[0]]);
