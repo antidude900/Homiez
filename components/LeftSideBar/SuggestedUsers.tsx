@@ -40,13 +40,17 @@ const SuggestedUsers = () => {
 
 	useEffect(() => {
 		const fetchSuggestedUsers = async () => {
-			const result = await getSuggestedUsers().then((e) => JSON.parse(e));
-			console.log("result", result);
-			setSuggestedUsers(result);
-			setHistory(result);
+			const [followings, suggestions] = await Promise.all([
+				context.refreshFollowers(), // Ensure it returns an empty array if void
+				getSuggestedUsers().then((e) => JSON.parse(e)),
+			]);
+			console.log("result", suggestions, followings);
+			setSuggestedUsers(suggestions);
+			setHistory([...suggestions, ...followings]);
 		};
 
 		fetchSuggestedUsers();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {

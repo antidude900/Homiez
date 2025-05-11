@@ -1,13 +1,7 @@
 "use client";
 
 import { getFollowing } from "@/lib/actions/user.action";
-import {
-	createContext,
-	useContext,
-	useState,
-	ReactNode,
-	useEffect,
-} from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 type User = {
 	_id: string;
@@ -20,7 +14,7 @@ type User = {
 type FollowingContextType = {
 	followingIds: User[];
 	setFollowingIds: (ids: User[]) => void;
-	refreshFollowers: () => Promise<void>;
+	refreshFollowers: () => Promise<[]>;
 };
 
 const FollowingContext = createContext<FollowingContextType | null>(null);
@@ -39,11 +33,8 @@ export const FollowingProvider = ({ children }: { children: ReactNode }) => {
 	const refreshFollowers = async () => {
 		const result = await getFollowing("self").then((e) => JSON.parse(e));
 		setFollowingIds(result);
+		return result;
 	};
-
-	useEffect(() => {
-		refreshFollowers();
-	}, []);
 
 	return (
 		<FollowingContext.Provider
