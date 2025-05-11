@@ -44,7 +44,7 @@ const SuggestedUsers = () => {
 				context.refreshFollowers(), // Ensure it returns an empty array if void
 				getSuggestedUsers().then((e) => JSON.parse(e)),
 			]);
-			console.log("result", suggestions, followings);
+	
 			setSuggestedUsers(suggestions);
 			setHistory([...suggestions, ...followings]);
 		};
@@ -54,7 +54,7 @@ const SuggestedUsers = () => {
 	}, []);
 
 	useEffect(() => {
-		const validFollowingIds = context.followingIds.map(
+		const validFollowingIds = context.followings.map(
 			(item: { _id: string }) => item._id
 		);
 
@@ -79,7 +79,7 @@ const SuggestedUsers = () => {
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [context.followingIds]);
+	}, [context.followings]);
 
 	return (
 		<div className="bg-background w-full p-2 rounded-xl h-full border border-border flex flex-col">
@@ -123,9 +123,9 @@ const SuggestedUsers = () => {
 									);
 
 									setUpdating(false);
-									console.log("user", suggestedUser);
-									context.setFollowingIds([
-										...context.followingIds,
+							
+									context.setFollowings([
+										...context.followings,
 										{
 											_id: suggestedUser._id,
 											name: suggestedUser.name,

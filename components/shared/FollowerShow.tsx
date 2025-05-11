@@ -63,7 +63,7 @@ export function FollowerShow({
 
 	useEffect(() => {
 		if (userId !== otherUserId) {
-			const validFollowingIds = context.followingIds.map(
+			const validFollowingIds = context.followings.map(
 				(item: { _id: string }) => item._id
 			);
 			const validFollowerIds =
@@ -88,7 +88,7 @@ export function FollowerShow({
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [context.followingIds]);
+	}, [context.followings]);
 
 	return (
 		<Dialog>
@@ -140,14 +140,14 @@ export function FollowerShow({
 												setFollowers([...followers]);
 
 												if (followed) {
-													context.setFollowingIds(
-														context.followingIds.filter(
+													context.setFollowings(
+														context.followings.filter(
 															(f) => f._id !== follower._id
 														)
 													);
 												} else {
-													context.setFollowingIds([
-														...context.followingIds,
+													context.setFollowings([
+														...context.followings,
 														follower,
 													]);
 												}

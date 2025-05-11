@@ -38,8 +38,7 @@ const Page = async ({
 			</div>
 		);
 	}
-	console.log(post.comments);
-
+	
 	return (
 		<>
 			<div className="mb-4">

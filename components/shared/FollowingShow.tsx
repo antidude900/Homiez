@@ -67,11 +67,11 @@ export function FollowingShow({
 
 	useEffect(() => {
 		if (userId === otherUserId) {
-			setFollowings(context.followingIds);
-			console.log("followinggg", context.followingIds);
+			setFollowings(context.followings);
+	
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [context.followingIds]);
+	}, [context.followings]);
 
 	return (
 		<Dialog>
@@ -135,14 +135,14 @@ export function FollowingShow({
 												}
 
 												if (followed) {
-													context.setFollowingIds(
-														context.followingIds.filter(
+													context.setFollowings(
+														context.followings.filter(
 															(f) => f._id !== following._id
 														)
 													);
 												} else {
-													context.setFollowingIds([
-														...context.followingIds,
+													context.setFollowings([
+														...context.followings,
 														following,
 													]);
 												}

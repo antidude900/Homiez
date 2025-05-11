@@ -84,8 +84,8 @@ export function SuggestionsMore({
 
 									setUpdating(false);
 
-									context.setFollowingIds([
-										...context.followingIds,
+									context.setFollowings([
+										...context.followings,
 										{
 											_id: user._id,
 											name: user.name,

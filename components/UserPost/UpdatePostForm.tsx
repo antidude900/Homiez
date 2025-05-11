@@ -38,7 +38,7 @@ export default function UpdatePostForm({
 	const [imagePreview, setImagePreview] = useState<string>(img);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	console.log("our image", imagePreview);
+
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0] || null;

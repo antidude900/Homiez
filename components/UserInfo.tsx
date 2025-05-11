@@ -44,12 +44,12 @@ const UserInfo = ({
 	};
 
 	useEffect(() => {
-		const validFollowingIds = context.followingIds.map(
+		const validFollowingIds = context.followings.map(
 			(item: { _id: string }) => item._id
 		);
 		setIsFollowed(validFollowingIds.includes(user._id as string));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [context.followingIds]);
+	}, [context.followings]);
 
 	return (
 		<div className="bg-background rounded-xl border border-border relative overflow-clip">
@@ -81,12 +81,12 @@ const UserInfo = ({
 										setIsFollowed(!isFollowed);
 
 										if (followed) {
-											context.setFollowingIds(
-												context.followingIds.filter((f) => f._id !== user._id)
+											context.setFollowings(
+												context.followings.filter((f) => f._id !== user._id)
 											);
 										} else {
-											context.setFollowingIds([
-												...context.followingIds,
+											context.setFollowings([
+												...context.followings,
 												{
 													_id: user._id as string,
 													name: user?.name || "",

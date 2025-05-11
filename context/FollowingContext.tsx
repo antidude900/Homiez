@@ -12,8 +12,8 @@ type User = {
 };
 
 type FollowingContextType = {
-	followingIds: User[];
-	setFollowingIds: (ids: User[]) => void;
+	followings: User[];
+	setFollowings: (ids: User[]) => void;
 	refreshFollowers: () => Promise<[]>;
 };
 
@@ -28,19 +28,19 @@ export const useFollowingContext = () => {
 };
 
 export const FollowingProvider = ({ children }: { children: ReactNode }) => {
-	const [followingIds, setFollowingIds] = useState<User[]>([]);
+	const [followings, setFollowings] = useState<User[]>([]);
 
 	const refreshFollowers = async () => {
 		const result = await getFollowing("self").then((e) => JSON.parse(e));
-		setFollowingIds(result);
+		setFollowings(result);
 		return result;
 	};
 
 	return (
 		<FollowingContext.Provider
 			value={{
-				followingIds,
-				setFollowingIds,
+				followings,
+				setFollowings,
 				refreshFollowers,
 			}}
 		>
