@@ -62,6 +62,8 @@ export function FollowerShow({
 	}, []);
 
 	useEffect(() => {
+		if (followers === null) return;
+
 		if (userId !== otherUserId) {
 			const validFollowingIds = context.followings.map(
 				(item: { _id: string }) => item._id
@@ -71,14 +73,14 @@ export function FollowerShow({
 
 			if (
 				validFollowerIds.includes(userId) &&
-				!validFollowingIds.includes(userId)
+				!validFollowingIds.includes(otherUserId) //we unfollowed the user
 			) {
 				const filteredFollowings =
 					followers?.filter((user) => user._id != userId) || [];
 				setFollowers(filteredFollowings);
 			} else if (
 				!validFollowerIds.includes(userId) &&
-				validFollowingIds.includes(otherUserId)
+				validFollowingIds.includes(otherUserId) //we followed the user
 			) {
 				const getUser = async () => {
 					const result = await getSelf().then((e) => JSON.parse(e));
