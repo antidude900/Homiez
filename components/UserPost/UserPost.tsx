@@ -13,6 +13,7 @@ import { LikeUsersShow } from "../shared/LikeUsersShow";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import EditDeletePost from "./EditDeletePost";
+import { Skeleton } from "../ui/skeleton";
 
 interface UserPostProps {
 	author: Partial<IUser>;
@@ -46,7 +47,25 @@ const UserPost = ({
 		setClient(true);
 	}, []);
 
-	if (!client) return <div>Loading</div>;
+	if (!client)
+		return (
+			<div className="rounded-xl border border-border flex px-4 py-4">
+				<div className="flex-shrink-0 mr-5">
+					<Skeleton className="w-16 h-16 rounded-full" />
+				</div>
+
+				<div className="w-full vertical-flex space-y-2 mr-5">
+					<div className="flex items-center">
+						<Skeleton className="h-5 w-24 mr-2" />
+						<Skeleton className="h-4 w-10" />
+					</div>
+
+					<Skeleton className="h-4 w-1/2" />
+
+					<Skeleton className="w-full h-[300px] rounded-xl mb-1" />
+				</div>
+			</div>
+		);
 
 	return (
 		<div className="bg-background rounded-xl border border-border">
