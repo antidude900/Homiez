@@ -41,32 +41,7 @@ const UserPost = ({
 	const pathname = usePathname();
 	const [fetched, setFetched] = useState(false);
 	const [disabled, setDisabled] = useState(false);
-	const [client, setClient] = useState(false);
-
-	useEffect(() => {
-		setClient(true);
-	}, []);
-
-	if (!client)
-		return (
-			<div className="rounded-xl border border-border flex px-4 py-4">
-				<div className="flex-shrink-0 mr-5">
-					<Skeleton className="w-16 h-16 rounded-full" />
-				</div>
-
-				<div className="w-full vertical-flex space-y-2 mr-5">
-					<div className="flex items-center">
-						<Skeleton className="h-5 w-24 mr-2" />
-						<Skeleton className="h-4 w-10" />
-					</div>
-
-					<Skeleton className="h-4 w-1/2" />
-
-					<Skeleton className="w-full h-[300px] rounded-xl mb-1" />
-				</div>
-			</div>
-		);
-
+	
 	return (
 		<div className="bg-background rounded-xl border border-border">
 			<div className="flex px-2 py-4">
@@ -184,3 +159,21 @@ const UserPost = ({
 };
 
 export default UserPost;
+
+// Skeleton
+			// <div className="rounded-xl border border-border flex px-4 py-4">
+			// 	<div className="flex-shrink-0 mr-5">
+			// 		<Skeleton className="w-16 h-16 rounded-full" />
+			// 	</div>
+
+			// 	<div className="w-full vertical-flex space-y-2 mr-5">
+			// 		<div className="flex items-center">
+			// 			<Skeleton className="h-5 w-24 mr-2" />
+			// 			<Skeleton className="h-4 w-10" />
+			// 		</div>
+
+			// 		<Skeleton className="h-4 w-1/2" />
+
+			// 		<Skeleton className="w-full h-[300px] rounded-xl mb-1" />
+			// 	</div>
+			// </div>
