@@ -17,10 +17,12 @@ const Editable = ({
 	children,
 	className = "",
 	type,
+	isSelf = true,
 }: {
 	children: React.ReactNode;
 	className?: string;
 	type: string;
+	isSelf?: boolean;
 }) => {
 	const originalValue = children?.toString() || "";
 	const [isEditable, setIsEditable] = useState(false);
@@ -140,7 +142,7 @@ const Editable = ({
 
 	return (
 		<div className="relative group inline-block w-fit cursor-pointer">
-			{isEditable ? (
+			{isEditable && isSelf ? (
 				<>
 					{overlay_sections.map((section) => {
 						return createPortal(
@@ -187,17 +189,21 @@ const Editable = ({
 						)}
 						{originalValue}
 
-						<Pencil
-							onClick={() => {
-								setIsEditable(true);
-								if (inputRef.current) {
-									inputRef.current.focus();
-								}
-							}}
-							className={`absolute right-0 top-0 translate-x-full ${
-								type === "bio" ? "translate-y-1/4" : "-translate-y-1/4 -right-1"
-							} w-4 h-4 opacity-0 group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-700 transition-opacity`}
-						/>
+						{isSelf && (
+							<Pencil
+								onClick={() => {
+									setIsEditable(true);
+									if (inputRef.current) {
+										inputRef.current.focus();
+									}
+								}}
+								className={`absolute right-0 top-0 translate-x-full ${
+									type === "bio"
+										? "translate-y-1/4"
+										: "-translate-y-1/4 -right-1"
+								} w-4 h-4 opacity-0 group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-700 transition-opacity`}
+							/>
+						)}
 					</div>
 				</>
 			)}

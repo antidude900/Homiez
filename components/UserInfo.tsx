@@ -55,16 +55,16 @@ const UserInfo = ({
 		<div className="bg-background rounded-xl border border-border relative overflow-clip">
 			<div className=" flex w-full p-2">
 				<div className="flex-1 relative vertical-flex">
-					<Editable className="text-2xl font-bold" type="name">
+					<Editable className="text-2xl font-bold" type="name" isSelf={currentUserId === user._id}>
 						{user.name}
 					</Editable>
 
-					<Editable className="" type="username">
+					<Editable className="" type="username" isSelf={currentUserId === user._id}>
 						{user.username}
 					</Editable>
 
 					<div className="font-semibold">
-						<Editable className="italic" type="bio">
+						<Editable className="italic" type="bio" isSelf={currentUserId === user._id}>
 							{user.bio}
 						</Editable>
 
