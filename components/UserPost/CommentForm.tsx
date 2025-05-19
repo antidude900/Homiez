@@ -81,7 +81,7 @@ export default function CreateCommentForm({ postId }: { postId: string }) {
 								placeholder="Write it down..."
 								value={text}
 								onChange={(e) => setText(e.target.value)}
-								className="min-h-[100px]"
+								className="min-h-[100px] resize-none"
 							/>
 						</div>
 
