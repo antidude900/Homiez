@@ -12,7 +12,7 @@ const LeftSideBar = async () => {
 	return (
 		<div className="pt-2 pb-4 h-screen border-r border-r-border flex flex-col">
 			<div className="mb-4 flex items-center px-2">
-				<Link href="/home">
+				<Link href="/">
 					<Image
 						src="/icons/handshake_square.png"
 						alt="logo"
