@@ -45,3 +45,49 @@ export async function sendMessage(receiverId: string, message: string) {
 		throw error;
 	}
 }
+
+export async function getMessages(otherUserId: string) {
+	const senderId = await getUserId().then((e) => JSON.parse(e));
+
+	try {
+		const conversation = await Conversation.findOne({
+			participants: { $all: [senderId, otherUserId] },
+		});
+
+		if (!conversation) {
+			return null;
+		}
+
+		const messages = await Message.find({
+			conversationId: conversation._id,
+		}).sort({ createdAt: 1 });
+
+		return messages;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function getConversations() {
+	const senderId = await getUserId().then((e) => JSON.parse(e));
+	try {
+		const conversations = await Conversation.find({
+			participants: senderId,
+		}).populate({
+			path: "participants",
+			select: "name username picture",
+		});
+
+		conversations.forEach((conversation) => {
+			conversation.participants = conversation.participants.filter(
+				(participant: { _id: string }) =>
+					participant._id.toString() !== senderId.toString()
+			);
+		});
+		return JSON.stringify(conversations);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
