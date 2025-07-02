@@ -1,22 +1,31 @@
 "use client";
 
 import { Fullscreen, Search, X } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
-const RightSideBarHeader = () => {
+const RightSideBarHeader = ({
+	fullScreenOption = true,
+}: {
+	fullScreenOption?: boolean;
+}) => {
 	const [showSearch, setShowSearch] = useState(false);
 	return (
 		<div className="bg-background rounded-xl border border-border relative mb-4 h-[40px] flex items-center justify-between px-4 box-content overflow-hidden">
 			{!showSearch && (
 				<>
-					<div className="font-bold text-lg">Chat</div>
+					<div className="font-bold text-lg">Chats</div>
 					<div className="flex items-center gap-4">
 						<Search
 							size={20}
 							className="text-muted-foreground cursor-pointer"
 							onClick={() => setShowSearch(true)}
 						/>
-						<Fullscreen size={20} className="text-muted-foreground" />
+						{fullScreenOption && (
+							<Link href="/chat">
+								<Fullscreen size={20} className="text-muted-foreground" />
+							</Link>
+						)}
 					</div>
 				</>
 			)}

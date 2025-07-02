@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { CheckCheck } from "lucide-react";
 import { getUserId } from "@/lib/actions/user.action";
+import RightSideBarHeader from "../RightSideBar/RightSideBarHeader";
 
 type Participant = {
 	username: string;
@@ -24,6 +25,7 @@ type Conversation = {
 
 const ConversationList = () => {
 	const [conversations, setConversations] = useState<Conversation[]>([]);
+
 	const [loading, setLoading] = useState(true);
 	const userIdRef = useRef<string | null>(null);
 
@@ -42,7 +44,7 @@ const ConversationList = () => {
 
 	return (
 		<div className="pt-4 px-4 h-screen border-r border-border flex flex-col">
-			<h2 className="text-2xl font-bold mb-4">Chats</h2>
+			<RightSideBarHeader fullScreenOption={false} />
 
 			{loading ? (
 				<div className="text-center text-muted-foreground mt-10">

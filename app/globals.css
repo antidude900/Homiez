@@ -75,3 +75,15 @@
 .animate-loading-bar {
 	animation: loading-bar 1s linear infinite;
 }
+
+::-webkit-scrollbar {
+	width: 7px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #555;
+}
