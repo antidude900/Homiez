@@ -119,6 +119,19 @@ export async function getUserInfo() {
 		throw error;
 	}
 }
+export async function getUserPicture() {
+	try {
+		await connectToDatabase();
+
+		const { userId: clerkId } = await auth();
+
+		const user = await User.findOne({ clerkId });
+		return user.picture;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
 
 export async function checkUsernameUnique(username: string) {
 	try {

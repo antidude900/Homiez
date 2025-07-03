@@ -1,41 +1,35 @@
-import Image from "next/image";
+import { useSelectedChat } from "@/context/SelectChatContext";
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+
 import React from "react";
 
 interface MessageProps {
 	ownMessage: boolean;
+	message: string;
 }
 
-export const Message = ({ ownMessage }: MessageProps) => {
+export const Message = ({ ownMessage, message }: MessageProps) => {
+	const { selectedChat } = useSelectedChat();
 	return (
 		<>
 			{ownMessage ? (
 				<div className="flex gap-2 self-end">
 					<div className="max-w-[350px] bg-blue-400 p-2 rounded-md text-white text-sm">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed
-						adipisci pariatur rerum, esse sapiente perferendis incidunt autem
+						{message}
 					</div>
-					<Image
-						src="/avatar.png"
-						alt="Avatar"
-						width={28}
-						height={28}
-						className="rounded-full"
-					/>
+					{/* <Avatar className="w-10 h-10">
+						<AvatarImage src={selectedChat.userProfilePic} />
+						<AvatarFallback>CN</AvatarFallback>
+					</Avatar> */}
 				</div>
 			) : (
-				<div className="flex gap-2">
-					<Image
-						src="/avatar.png"
-						alt="Avatar"
-						width={28}
-						height={28}
-						className="rounded-full"
-					/>
+				<div className="flex gap-4">
+					<Avatar className="w-10 h-10">
+						<AvatarImage src={selectedChat.userProfilePic} />
+						<AvatarFallback>CN</AvatarFallback>
+					</Avatar>
 					<div className="max-w-[350px] bg-gray-400 p-2 rounded-md text-white text-sm">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed
-						adipisci pariatur rerum, esse sapiente perferendis incidunt autem
-						saepe voluptatibus ipsum assumenda soluta cupiditate sunt aut
-						reprehenderit doloribus! Inventore laudantium fugit et, enim
+						{message}
 					</div>
 				</div>
 			)}

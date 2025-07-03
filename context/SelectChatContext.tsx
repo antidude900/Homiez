@@ -5,6 +5,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 interface SelectedChat {
 	_id: string;
 	userId: string;
+	name:string;
 	username: string;
 	userProfilePic: string;
 }
@@ -20,6 +21,7 @@ export const SelectedChatProvider = ({ children }: { children: ReactNode }) => {
 	const [selectedChat, setSelectedChat] = useState<SelectedChat>({
 		_id: "",
 		userId: "",
+		name: "",
 		username: "",
 		userProfilePic: "",
 	});

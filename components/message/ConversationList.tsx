@@ -3,15 +3,16 @@
 import { getConversations } from "@/lib/actions/message.action";
 import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import Link from "next/link";
 import { CheckCheck } from "lucide-react";
 import { getUserId } from "@/lib/actions/user.action";
 import RightSideBarHeader from "../RightSideBar/RightSideBarHeader";
+import { useSelectedChat } from "@/context/SelectChatContext";
 
 type Participant = {
-	username: string;
+	_id: string;
 	name: string;
-	picture?: string;
+	username: string;
+	picture: string;
 };
 
 type Conversation = {
@@ -21,6 +22,7 @@ type Conversation = {
 		sender: string;
 		seen: boolean;
 	};
+	_id: string;
 };
 
 const ConversationList = () => {
@@ -28,6 +30,9 @@ const ConversationList = () => {
 
 	const [loading, setLoading] = useState(true);
 	const userIdRef = useRef<string | null>(null);
+	const { selectedChat, setSelectedChat } = useSelectedChat();
+
+	console.log("selectedChat", selectedChat);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -61,12 +66,20 @@ const ConversationList = () => {
 						const isUnseen = !conversation.lastMessage.seen && !isMe;
 
 						return (
-							<Link
-								href={`/user/${conversation.participants[0].username}`}
-								key={conversation.participants[0].username}
+							<div
+								onClick={() =>
+									setSelectedChat({
+										_id: conversation._id,
+										name: conversation.participants[0].name,
+										userId: conversation.participants[0]._id,
+										username: conversation.participants[0].username,
+										userProfilePic: conversation.participants[0].picture,
+									})
+								}
+								key={conversation._id}
 								className={`flex items-center justify-between p-3 rounded-lg transition cursor-pointer hover:bg-muted ${
 									isUnseen ? "bg-accent/30" : ""
-								}`}
+								} ${selectedChat?._id === conversation._id && "bg-muted"}`}
 							>
 								<div className="flex items-center gap-3 min-w-0">
 									<Avatar className="w-12 h-12">
@@ -116,7 +129,7 @@ const ConversationList = () => {
 								{isUnseen && (
 									<div className="w-2.5 h-2.5 bg-blue-500 rounded-full" />
 								)}
-							</Link>
+							</div>
 						);
 					})}
 				</div>

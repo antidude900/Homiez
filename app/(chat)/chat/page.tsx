@@ -8,14 +8,14 @@ const Page = () => {
 	const { selectedChat } = useSelectedChat();
 	return (
 		<div className="h-full">
-			{/* {!selectedChat._id ? (
+			{!selectedChat._id ? (
 				<div className="flex flex-col justify-center items-center h-full text-center text-gray-600">
 					<MessagesSquare className="w-20 h-20 mb-4" />
 					<div>Select a chat to start messaging</div>
 				</div>
-			) : ( */}
+			) : (
 				<ChatContainer />
-			{/* )} */}
+			)}
 		</div>
 	);
 };

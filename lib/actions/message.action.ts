@@ -54,15 +54,11 @@ export async function getMessages(otherUserId: string) {
 			participants: { $all: [senderId, otherUserId] },
 		});
 
-		if (!conversation) {
-			return null;
-		}
-
 		const messages = await Message.find({
 			conversationId: conversation._id,
 		}).sort({ createdAt: 1 });
 
-		return messages;
+		return JSON.stringify(messages)
 	} catch (error) {
 		console.log(error);
 		throw error;

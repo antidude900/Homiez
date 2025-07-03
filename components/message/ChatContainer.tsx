@@ -1,28 +1,60 @@
 "use client";
 
-import Image from "next/image";
 import { Message } from "./Message";
+import { MessageSendBar } from "./MessageSendBar";
+import { useSelectedChat } from "@/context/SelectChatContext";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getMessages } from "@/lib/actions/message.action";
+import { useState, useEffect, useRef } from "react";
+import { getUserId } from "@/lib/actions/user.action";
+
+type Message = {
+	_id: string;
+	conversationId: string;
+	sender: string;
+	text: string;
+};
 
 export const ChatContainer = () => {
-	const showSkeleton = false; // Replace with actual loading state
+	const { selectedChat } = useSelectedChat();
+	const [messages, setMessages] = useState<Message[]>([]);
+	const [loading, setLoading] = useState(true);
+	const userId = useRef<string | null>(null);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const data = await getMessages(selectedChat.userId).then((e) =>
+				JSON.parse(e)
+			);
+
+			const id = await getUserId().then((e) => JSON.parse(e));
+			userId.current = id;
+
+			setMessages(data);
+			setLoading(false);
+			console.log("messages", data);
+		};
+
+		fetchData();
+	}, []);
 
 	return (
-		<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-[95vh]">
+		<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-screen max-h-[95vh]">
 			<div className="flex items-center gap-2 w-full h-[10%] p-2">
-				<Image
-					src="/avatar.png"
-					alt="Avatar"
-					width={32}
-					height={32}
-					className="rounded-full"
-				/>
-				<div className="flex items-center text-black dark:text-white">XYZ</div>
+				<Avatar className="w-10 h-10">
+					<AvatarImage src={selectedChat.userProfilePic} />
+					<AvatarFallback>CN</AvatarFallback>
+				</Avatar>
+
+				<div className="flex items-center text-black dark:text-white">
+					{selectedChat.name}
+				</div>
 			</div>
 
 			<hr className="border-t border-gray-300 dark:border-gray-700" />
 
 			<div className="flex flex-col gap-4 p-4 h-[80%] overflow-y-auto">
-				{showSkeleton && (
+				{loading && (
 					<>
 						{[...Array(5)].map((_, i) => (
 							<div
@@ -47,28 +79,17 @@ export const ChatContainer = () => {
 					</>
 				)}
 
-				<Message ownMessage={true} />
-				<Message ownMessage={false} />
-				<Message ownMessage={true} />
-				<Message ownMessage={true} />
-				<Message ownMessage={false} />
-				<Message ownMessage={false} />
-				<Message ownMessage={true} />
+				{!loading &&
+					messages.map((message) => (
+						<Message
+							key={message._id}
+							message={message.text}
+							ownMessage={message.sender === userId.current}
+						/>
+					))}
 			</div>
-
-			<hr className="border-t border-gray-300 dark:border-gray-700" />
-
-			<div className="flex items-center p-2 h-[10%]">
-				<div className="flex-1">
-					<input
-						type="text"
-						placeholder="Type a message..."
-						className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-					/>
-				</div>
-				<button className="ml-2 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-					Send
-				</button>
+			<div className="w-full p-2">
+				<MessageSendBar />
 			</div>
 		</div>
 	);
