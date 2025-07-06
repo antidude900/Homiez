@@ -40,6 +40,8 @@ export async function sendMessage(receiverId: string, message: string) {
 				},
 			}),
 		]);
+
+		return JSON.stringify(newMessage);
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -58,7 +60,7 @@ export async function getMessages(otherUserId: string) {
 			conversationId: conversation._id,
 		}).sort({ createdAt: 1 });
 
-		return JSON.stringify(messages)
+		return JSON.stringify(messages);
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -67,6 +69,7 @@ export async function getMessages(otherUserId: string) {
 
 export async function getConversations() {
 	const senderId = await getUserId().then((e) => JSON.parse(e));
+	console.log("senderId", senderId);
 	try {
 		const conversations = await Conversation.find({
 			participants: senderId,

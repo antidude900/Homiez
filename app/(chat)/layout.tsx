@@ -1,5 +1,6 @@
 import ConversationList from "@/components/message/ConversationList";
 import { SelectedChatProvider } from "@/context/SelectChatContext";
+import { UserProvider } from "@/context/UserContext";
 import { getUserId } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 
@@ -18,7 +19,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 				</div>
 
 				<div className="flex-1 p-2 px-4 relative" id="main">
-					{children}
+					<UserProvider>{children}</UserProvider>
 				</div>
 			</div>
 		</SelectedChatProvider>

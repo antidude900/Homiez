@@ -1,9 +1,25 @@
+"use client";
+
+import { useUser } from "@/context/UserContext";
+import { sendMessage } from "@/lib/actions/message.action";
+
 import { SendHorizonal } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
-export const MessageSendBar = () => {
+type Message = {
+	_id: string;
+	sender: string;
+	text: string;
+};
+	
+export const MessageSendBar = ({
+	setMessages,
+}: {
+	setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+}) => {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
-	const [message, setMessage] = useState("");
+	const [text, setText] = useState("");
+	const { user } = useUser();
 
 	useEffect(() => {
 		const textarea = textareaRef.current;
@@ -27,12 +43,18 @@ export const MessageSendBar = () => {
 		}
 	};
 
-	const handleSend = () => {
-		if (!message.trim()) return; // Prevent empty messages
-		console.log("Sending:", message);
+	if (user === null) throw new Error("User not found");
 
-		// Clear input
-		setMessage("");
+	const handleSend = async () => {
+		if (!text.trim()) return; // Prevent empty messages
+
+		const newMessage = await sendMessage(user._id, text.trim()).then((e) =>
+			JSON.parse(e)
+		);
+
+		setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+		setText("");
 
 		// Reset height
 		const textarea = textareaRef.current;
@@ -56,8 +78,8 @@ export const MessageSendBar = () => {
 					placeholder="Type a message"
 					style={{ maxHeight: "150px" }}
 					className="flex-grow resize-none overflow-auto p-2 placeholder-gray-500 bg-transparent outline-none transition-all"
-					value={message}
-					onChange={(e) => setMessage(e.target.value)}
+					value={text}
+					onChange={(e) => setText(e.target.value)}
 					onKeyDown={handleKeyDown}
 				/>
 				<div

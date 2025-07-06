@@ -1,5 +1,3 @@
-"use client";
-
 import { Message } from "./Message";
 import { MessageSendBar } from "./MessageSendBar";
 import { useSelectedChat } from "@/context/SelectChatContext";
@@ -10,7 +8,6 @@ import { getUserId } from "@/lib/actions/user.action";
 
 type Message = {
 	_id: string;
-	conversationId: string;
 	sender: string;
 	text: string;
 };
@@ -89,7 +86,7 @@ export const ChatContainer = () => {
 					))}
 			</div>
 			<div className="w-full p-2">
-				<MessageSendBar />
+				<MessageSendBar setMessages={setMessages} />
 			</div>
 		</div>
 	);

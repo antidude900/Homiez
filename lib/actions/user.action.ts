@@ -97,9 +97,9 @@ export async function getUserId() {
 		await connectToDatabase();
 
 		const { userId: clerkId } = await auth();
-		const { _id: userId } = await User.findOne({ clerkId }).select("_id");
+		const { _id } = await User.findOne({ clerkId }).select("_id");
 
-		return JSON.stringify(userId);
+		return JSON.stringify(_id);
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -113,12 +113,13 @@ export async function getUserInfo() {
 		const { userId: clerkId } = await auth();
 
 		const user = await User.findOne({ clerkId });
-		return JSON.parse(JSON.stringify(user));
+		return JSON.stringify(user);
 	} catch (error) {
 		console.log(error);
 		throw error;
 	}
 }
+
 export async function getUserPicture() {
 	try {
 		await connectToDatabase();
@@ -191,8 +192,6 @@ export async function getSuggestedUsers() {
 					user._id.toString() !== userId && !followingList.includes(user._id)
 			)
 			.sort((a, b) => b.followers.length - a.followers.length);
-
-		
 
 		return JSON.stringify(sortedUsers);
 	} catch (error) {

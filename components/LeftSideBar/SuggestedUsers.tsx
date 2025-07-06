@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SuggestionsMore } from "./SuggestionsMore";
 import { useFollowingContext } from "@/context/FollowingContext";
+import { useUser } from "@clerk/nextjs";
 
 interface User {
 	_id: string;
@@ -27,6 +28,8 @@ const SuggestedUsers = () => {
 	const context = useFollowingContext();
 	const [suggestedUsers, setSuggestedUsers] = useState<User[] | null>(null);
 	const [history, setHistory] = useState<User[]>([]);
+	const { user } = useUser();
+	console.log("userr", user);
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
@@ -44,7 +47,7 @@ const SuggestedUsers = () => {
 				context.refreshFollowers(), // Ensure it returns an empty array if void
 				getSuggestedUsers().then((e) => JSON.parse(e)),
 			]);
-	
+
 			setSuggestedUsers(suggestions);
 			setHistory([...suggestions, ...followings]);
 		};
@@ -123,7 +126,7 @@ const SuggestedUsers = () => {
 									);
 
 									setUpdating(false);
-							
+
 									context.setFollowings([
 										...context.followings,
 										{

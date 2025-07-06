@@ -7,7 +7,7 @@ import SuggestedUsers from "./SuggestedUsers";
 import { Search } from "lucide-react";
 
 const LeftSideBar = async () => {
-	const user = await getUserInfo();
+	const user = await getUserInfo().then((res) => JSON.parse(res));
 
 	return (
 		<div className="pt-2 pb-4 h-screen border-r border-r-border flex flex-col">

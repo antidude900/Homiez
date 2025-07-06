@@ -41,6 +41,7 @@ const ConversationList = () => {
 
 			const data = await getConversations().then((e) => JSON.parse(e));
 			setConversations(data);
+			console.log("conversations", data);
 			setLoading(false);
 		};
 

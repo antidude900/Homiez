@@ -2,6 +2,7 @@ import { ThemeProvider } from "@/context/theme-provider";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ToastContainer } from "react-toastify";
+import { UserProvider } from "@/context/UserContext";
 
 export default function RootLayout({
 	children,
@@ -25,7 +26,7 @@ export default function RootLayout({
 						defaultTheme="system"
 						disableTransitionOnChange
 					>
-						{children}
+						<UserProvider>{children}</UserProvider>
 
 						<ToastContainer hideProgressBar position="bottom-right" />
 					</ThemeProvider>
