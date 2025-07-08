@@ -2,6 +2,7 @@ import { useChat } from "@/context/ChatContext";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 import React from "react";
+import { useUser } from "@/context/UserContext";
 
 interface MessageProps {
 	ownMessage: boolean;
@@ -10,6 +11,8 @@ interface MessageProps {
 
 export const Message = ({ ownMessage, message }: MessageProps) => {
 	const { selectedConversation } = useChat();
+	const { user } = useUser();
+
 	return (
 		<>
 			{ownMessage ? (
@@ -18,7 +21,7 @@ export const Message = ({ ownMessage, message }: MessageProps) => {
 						{message}
 					</div>
 					<Avatar className="w-10 h-10">
-						<AvatarImage src={selectedConversation.userProfilePic} />
+						<AvatarImage src={user?.picture || ""} />
 						<AvatarFallback>CN</AvatarFallback>
 					</Avatar>
 				</div>

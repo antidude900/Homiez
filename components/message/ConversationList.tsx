@@ -63,7 +63,9 @@ const ConversationList = () => {
 								key={conversation._id}
 								className={`flex items-center justify-between p-3 rounded-lg transition cursor-pointer hover:bg-muted ${
 									isUnseen ? "bg-accent/30" : ""
-								} ${selectedConversation?._id === conversation._id && "bg-muted"}`}
+								} ${
+									selectedConversation?._id === conversation._id && "bg-muted"
+								}`}
 							>
 								<div className="flex items-center gap-3 min-w-0">
 									<Avatar className="w-12 h-12">
@@ -85,7 +87,7 @@ const ConversationList = () => {
 										</p>
 
 										<div
-											className={`flex items-center gap-1 text-sm truncate max-w-[200px] ${
+											className={`flex items-center gap-1 text-sm max-w-[200px] ${
 												isUnseen
 													? "font-medium text-foreground"
 													: "text-muted-foreground"
@@ -93,14 +95,14 @@ const ConversationList = () => {
 										>
 											{isMe && (
 												<CheckCheck
-													className={`w-4 h-4 ${
+													className={`w-4 h-4 flex-shrink-0 ${
 														conversation.lastMessage.seen
 															? "text-blue-500"
 															: "text-muted-foreground"
 													}`}
 												/>
 											)}
-											<span>
+											<span className="truncate min-w-0">
 												{conversation.lastMessage.text.length > 30
 													? conversation.lastMessage.text.substring(0, 30) +
 													  "..."
