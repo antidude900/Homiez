@@ -1,5 +1,5 @@
 import ConversationList from "@/components/message/ConversationList";
-import { SelectedChatProvider } from "@/context/SelectChatContext";
+import { ChatProvider } from "@/context/ChatContext";
 import { UserProvider } from "@/context/UserContext";
 import { getUserId } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
@@ -12,7 +12,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 	}
 
 	return (
-		<SelectedChatProvider>
+		<ChatProvider>
 			<div className="flex min-h-screen">
 				<div className="w-[25%] flex-none sticky top-0 h-screen">
 					<ConversationList />
@@ -22,7 +22,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 					<UserProvider>{children}</UserProvider>
 				</div>
 			</div>
-		</SelectedChatProvider>
+		</ChatProvider>
 	);
 };
 

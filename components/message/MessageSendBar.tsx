@@ -1,5 +1,6 @@
 "use client";
 
+import { useChat } from "@/context/ChatContext";
 import { useUser } from "@/context/UserContext";
 import { sendMessage } from "@/lib/actions/message.action";
 
@@ -11,7 +12,7 @@ type Message = {
 	sender: string;
 	text: string;
 };
-	
+
 export const MessageSendBar = ({
 	setMessages,
 }: {
@@ -20,6 +21,7 @@ export const MessageSendBar = ({
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [text, setText] = useState("");
 	const { user } = useUser();
+	const { setConversations, selectedConversation } = useChat();
 
 	useEffect(() => {
 		const textarea = textareaRef.current;
@@ -56,7 +58,22 @@ export const MessageSendBar = ({
 
 		setText("");
 
-		// Reset height
+		setConversations((prevConvo) => {
+			const updatedConvo = prevConvo.map((convo) => {
+				if (convo._id === selectedConversation._id) {
+					return {
+						...convo,
+						lastMessage: {
+							text: text.trim(),
+							sender: user._id,
+						},
+					};
+				}
+				return convo;
+			});
+			return updatedConvo;
+		});
+
 		const textarea = textareaRef.current;
 		if (textarea) {
 			textarea.style.height = "auto";

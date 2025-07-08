@@ -6,33 +6,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CheckCheck } from "lucide-react";
 import { getUserId } from "@/lib/actions/user.action";
 import RightSideBarHeader from "../RightSideBar/RightSideBarHeader";
-import { useSelectedChat } from "@/context/SelectChatContext";
-
-type Participant = {
-	_id: string;
-	name: string;
-	username: string;
-	picture: string;
-};
-
-type Conversation = {
-	participants: Participant[];
-	lastMessage: {
-		text: string;
-		sender: string;
-		seen: boolean;
-	};
-	_id: string;
-};
+import { useChat } from "@/context/ChatContext";
 
 const ConversationList = () => {
-	const [conversations, setConversations] = useState<Conversation[]>([]);
+	const { conversations, setConversations } = useChat();
 
 	const [loading, setLoading] = useState(true);
 	const userIdRef = useRef<string | null>(null);
-	const { selectedChat, setSelectedChat } = useSelectedChat();
+	const { selectedConversation, setSelectedConversation } = useChat();
 
-	console.log("selectedChat", selectedChat);
+	console.log("selectedConversation", selectedConversation);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -69,7 +52,7 @@ const ConversationList = () => {
 						return (
 							<div
 								onClick={() =>
-									setSelectedChat({
+									setSelectedConversation({
 										_id: conversation._id,
 										name: conversation.participants[0].name,
 										userId: conversation.participants[0]._id,
@@ -80,7 +63,7 @@ const ConversationList = () => {
 								key={conversation._id}
 								className={`flex items-center justify-between p-3 rounded-lg transition cursor-pointer hover:bg-muted ${
 									isUnseen ? "bg-accent/30" : ""
-								} ${selectedChat?._id === conversation._id && "bg-muted"}`}
+								} ${selectedConversation?._id === conversation._id && "bg-muted"}`}
 							>
 								<div className="flex items-center gap-3 min-w-0">
 									<Avatar className="w-12 h-12">

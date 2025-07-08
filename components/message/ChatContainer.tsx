@@ -1,6 +1,6 @@
 import { Message } from "./Message";
 import { MessageSendBar } from "./MessageSendBar";
-import { useSelectedChat } from "@/context/SelectChatContext";
+import { useChat } from "@/context/ChatContext";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getMessages } from "@/lib/actions/message.action";
 import { useState, useEffect, useRef } from "react";
@@ -13,14 +13,14 @@ type Message = {
 };
 
 export const ChatContainer = () => {
-	const { selectedChat } = useSelectedChat();
+	const { selectedConversation } = useChat();
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [loading, setLoading] = useState(true);
 	const userId = useRef<string | null>(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const data = await getMessages(selectedChat.userId).then((e) =>
+			const data = await getMessages(selectedConversation.userId).then((e) =>
 				JSON.parse(e)
 			);
 
@@ -39,12 +39,12 @@ export const ChatContainer = () => {
 		<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-screen max-h-[95vh]">
 			<div className="flex items-center gap-2 w-full h-[10%] p-2">
 				<Avatar className="w-10 h-10">
-					<AvatarImage src={selectedChat.userProfilePic} />
+					<AvatarImage src={selectedConversation.userProfilePic} />
 					<AvatarFallback>CN</AvatarFallback>
 				</Avatar>
 
 				<div className="flex items-center text-black dark:text-white">
-					{selectedChat.name}
+					{selectedConversation.name}
 				</div>
 			</div>
 
