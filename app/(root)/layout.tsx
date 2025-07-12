@@ -1,5 +1,6 @@
 import LeftSideBar from "@/components/LeftSideBar/LeftSideBar";
 import RightSideBar from "@/components/RightSideBar/RightSideBar";
+import { ChatProvider } from "@/context/ChatContext";
 import { FollowingProvider } from "@/context/FollowingContext";
 import { UserProvider } from "@/context/UserContext";
 import { getUserId } from "@/lib/actions/user.action";
@@ -14,27 +15,32 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 
 	return (
 		<FollowingProvider>
-			<div className="flex min-h-screen">
-				<div
-					className="w-[25%] flex-none sticky top-0 h-screen"
-					id="left-sidebar"
-				>
-					<LeftSideBar />
-				</div>
+			<ChatProvider>
+				<UserProvider>
+					<div className="flex min-h-screen">
+						<div
+							className="w-[25%] flex-none sticky top-0 h-screen"
+							id="left-sidebar"
+						>
+							<LeftSideBar />
+						</div>
 
-				<div className="flex-1 p-2 px-4 relative" id="main">
-					<UserProvider>{children}</UserProvider>
-				</div>
+						<div className="flex-1 p-2 px-4 relative" id="main">
+							{children}
+						</div>
 
-				<div
-					className="w-[25%] flex-none sticky top-0 h-screen"
-					id="right-sidebar"
-				>
-					<RightSideBar />
-				</div>
-			</div>
+						<div
+							className="w-[25%] flex-none sticky top-0 h-screen"
+							id="right-sidebar"
+						>
+							<RightSideBar />
+						</div>
+					</div>
+				</UserProvider>
+			</ChatProvider>
 		</FollowingProvider>
 	);
 };
 
 export default Layout;
+	

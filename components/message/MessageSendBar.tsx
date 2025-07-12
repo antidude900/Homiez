@@ -50,9 +50,10 @@ export const MessageSendBar = ({
 	const handleSend = async () => {
 		if (!text.trim()) return; // Prevent empty messages
 
-		const newMessage = await sendMessage(user._id, text.trim()).then((e) =>
-			JSON.parse(e)
-		);
+		const newMessage = await sendMessage(
+			selectedConversation.userId,
+			text.trim()
+		).then((e) => JSON.parse(e));
 
 		setMessages((prevMessages) => [...prevMessages, newMessage]);
 

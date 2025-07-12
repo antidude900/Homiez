@@ -19,6 +19,8 @@ export const ChatContainer = () => {
 	const userId = useRef<string | null>(null);
 
 	useEffect(() => {
+		setMessages([]);
+		setLoading(true);
 		const fetchData = async () => {
 			const data = await getMessages(selectedConversation.userId).then((e) =>
 				JSON.parse(e)
@@ -33,7 +35,7 @@ export const ChatContainer = () => {
 		};
 
 		fetchData();
-	}, []);
+	}, [selectedConversation.userId]);
 
 	return (
 		<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-screen max-h-[95vh]">

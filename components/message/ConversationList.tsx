@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CheckCheck } from "lucide-react";
 import { getUserId } from "@/lib/actions/user.action";
-import RightSideBarHeader from "../RightSideBar/RightSideBarHeader";
 import { useChat } from "@/context/ChatContext";
+import ChatSearchHeader from "../RightSideBar/ChatSearchHeader";
 
 const ConversationList = () => {
 	const { conversations, setConversations } = useChat();
@@ -33,7 +33,7 @@ const ConversationList = () => {
 
 	return (
 		<div className="pt-4 px-4 h-screen border-r border-border flex flex-col">
-			<RightSideBarHeader fullScreenOption={false} />
+			<ChatSearchHeader fullScreenOption={false} />
 
 			{loading ? (
 				<div className="text-center text-muted-foreground mt-10">

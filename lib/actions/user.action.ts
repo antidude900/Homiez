@@ -274,8 +274,8 @@ export async function getUserSearchResults(query: string) {
 		const users = await User.find(
 			{
 				$or: [
-					{ name: { $regex: query, $options: "i" } },
-					{ username: { $regex: query, $options: "i" } },
+					{ name: { $regex: `^${query}`, $options: "i" } },
+					{ username: { $regex: `^${query}`, $options: "i" } },
 				],
 			},
 			"name username picture"
