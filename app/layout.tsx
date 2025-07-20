@@ -3,6 +3,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ToastContainer } from "react-toastify";
 import { UserProvider } from "@/context/UserContext";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function RootLayout({
 	children,
@@ -26,7 +27,10 @@ export default function RootLayout({
 						defaultTheme="system"
 						disableTransitionOnChange
 					>
-						<UserProvider>{children}</UserProvider>
+						<UserProvider>
+							{children}
+							<SpeedInsights />
+						</UserProvider>
 
 						<ToastContainer hideProgressBar position="bottom-right" />
 					</ThemeProvider>
