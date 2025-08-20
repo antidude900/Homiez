@@ -17,10 +17,30 @@ export const ChatContainer = () => {
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [loading, setLoading] = useState(true);
 	const userId = useRef<string | null>(null);
+	const messagesEndRef = useRef<HTMLDivElement>(null);
+	const isInitialLoad = useRef<boolean>(true);
+
+	const scrollToBottom = (smooth = false) => {
+		messagesEndRef.current?.scrollIntoView({
+			behavior: smooth ? "smooth" : "auto",
+		});
+	};
+
+	useEffect(() => {
+		if (loading) return;
+
+		if (isInitialLoad.current) {
+			scrollToBottom(false);
+			isInitialLoad.current = false;
+		} else {
+			scrollToBottom(true);
+		}
+	}, [messages, loading]);
 
 	useEffect(() => {
 		setMessages([]);
 		setLoading(true);
+		isInitialLoad.current = true;
 		const fetchData = async () => {
 			const data = await getMessages(selectedConversation.userId).then((e) =>
 				JSON.parse(e)
@@ -86,6 +106,9 @@ export const ChatContainer = () => {
 							ownMessage={message.sender === userId.current}
 						/>
 					))}
+
+				{/* Invisible div to scroll to */}
+				<div ref={messagesEndRef} />
 			</div>
 			<div className="w-full p-2">
 				<MessageSendBar setMessages={setMessages} />

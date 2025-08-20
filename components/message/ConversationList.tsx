@@ -1,6 +1,9 @@
 "use client";
 
-import { getConversations } from "@/lib/actions/message.action";
+import {
+	getConversations,
+	markConversationSeen,
+} from "@/lib/actions/message.action";
 import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CheckCheck } from "lucide-react";
@@ -51,15 +54,18 @@ const ConversationList = () => {
 
 						return (
 							<div
-								onClick={() =>
+								onClick={() => {
 									setSelectedConversation({
 										_id: conversation._id,
 										name: conversation.participants[0].name,
 										userId: conversation.participants[0]._id,
 										username: conversation.participants[0].username,
 										userProfilePic: conversation.participants[0].picture,
-									})
-								}
+									});
+
+									if (!conversation.lastMessage.seen)
+										markConversationSeen(conversation._id);
+								}}
 								key={conversation._id}
 								className={`flex items-center justify-between p-3 rounded-lg transition cursor-pointer hover:bg-muted ${
 									isUnseen ? "bg-accent/30" : ""

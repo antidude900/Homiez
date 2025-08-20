@@ -115,3 +115,17 @@ export async function getConversationId(otherUserId: string) {
 		throw error;
 	}
 }
+
+export async function markConversationSeen(conversationId: string) {
+	const senderId = await getUserId().then((e) => JSON.parse(e));
+
+	try {
+		await Conversation.updateOne(
+			{ _id: conversationId, participants: { $in: [senderId] } },
+			{ $set: { "lastMessage.seen": true } }
+		);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
