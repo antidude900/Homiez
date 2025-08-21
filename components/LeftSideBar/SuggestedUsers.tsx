@@ -13,7 +13,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SuggestionsMore } from "./SuggestionsMore";
 import { useFollowingContext } from "@/context/FollowingContext";
-import { useUser } from "@clerk/nextjs";
 
 interface User {
 	_id: string;
