@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 
-// -------- Types --------
 export type Participant = {
 	_id: string;
 	name: string;

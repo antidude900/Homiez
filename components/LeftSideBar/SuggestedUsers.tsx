@@ -28,8 +28,6 @@ const SuggestedUsers = () => {
 	const context = useFollowingContext();
 	const [suggestedUsers, setSuggestedUsers] = useState<User[] | null>(null);
 	const [history, setHistory] = useState<User[]>([]);
-	const { user } = useUser();
-	console.log("userr", user);
 
 	const handlefollowUnfollow = async (userId: string) => {
 		const followingId = await getUserId().then((e) => JSON.parse(e));
