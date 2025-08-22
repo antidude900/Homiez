@@ -13,7 +13,14 @@ const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
-	const httpServer = createServer(handler);
+	const httpServer = createServer((req, res) => {
+		if (req.url === "/health") {
+			res.writeHead(200, { "Content-Type": "text/plain" });
+			return res.end("OK");
+		}
+
+		return handler(req, res);
+	});
 
 	const io = new Server(httpServer);
 
