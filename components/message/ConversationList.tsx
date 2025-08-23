@@ -10,6 +10,7 @@ import { CheckCheck } from "lucide-react";
 import { getUserId } from "@/lib/actions/user.action";
 import { useChat } from "@/context/ChatContext";
 import ChatSearchHeader from "../RightSideBar/ChatSearchHeader";
+import { useSocket } from "@/context/SocketContext";
 
 const ConversationList = () => {
 	const { conversations, setConversations } = useChat();
@@ -17,6 +18,7 @@ const ConversationList = () => {
 	const [loading, setLoading] = useState(true);
 	const userIdRef = useRef<string | null>(null);
 	const { selectedConversation, setSelectedConversation } = useChat();
+	const { onlineUsers } = useSocket();
 
 	console.log("selectedConversation", selectedConversation);
 
@@ -52,6 +54,9 @@ const ConversationList = () => {
 					{conversations.map((conversation) => {
 						const isMe = conversation.lastMessage.sender === userIdRef.current;
 						const isUnseen = !conversation.lastMessage.seen && !isMe;
+						const isOnline = onlineUsers.includes(
+							conversation.participants[0]._id
+						);
 
 						return (
 							<div
@@ -75,13 +80,18 @@ const ConversationList = () => {
 								}`}
 							>
 								<div className="flex items-center gap-3 min-w-0">
-									<Avatar className="w-12 h-12">
-										<AvatarImage src={conversation.participants[0].picture} />
-										<AvatarFallback className="bg-green-700 text-white">
-											{conversation.participants[0].name[0]}
-										</AvatarFallback>
-									</Avatar>
+									<div className="relative">
+										<Avatar className="w-12 h-12">
+											<AvatarImage src={conversation.participants[0].picture} />
+											<AvatarFallback className="bg-green-700 text-white">
+												{conversation.participants[0].name[0]}
+											</AvatarFallback>
+										</Avatar>
 
+										{isOnline && (
+											<span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-[0.5px] border-white rounded-full"></span>
+										)}
+									</div>
 									<div className="flex flex-col min-w-0">
 										<p
 											className={`text-sm truncate ${

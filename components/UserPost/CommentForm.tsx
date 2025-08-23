@@ -70,7 +70,7 @@ export default function CreateCommentForm({ postId }: { postId: string }) {
 			<DialogContent className="sm:max-w-[500px] [&>button]:hidden">
 				<form onSubmit={handleSubmit}>
 					<DialogHeader className="mb-4">
-						<DialogTitle>Create a new post</DialogTitle>
+						<DialogTitle>Comment</DialogTitle>
 						<DialogDescription>What&apos;s on your mind?</DialogDescription>
 					</DialogHeader>
 					<div className="grid gap-4 mb-4">

@@ -11,6 +11,9 @@ const port = process.env.PORT || 3000;
 
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
+console.log("hey");
+
+const OnlineUsersMap = {};
 
 app.prepare().then(() => {
 	const httpServer = createServer((req, res) => {
@@ -19,7 +22,7 @@ app.prepare().then(() => {
 			return res.end("OK");
 		}
 
-		return handler(req, res);
+		handler(req, res);
 	});
 
 	const io = new Server(httpServer);
@@ -27,8 +30,16 @@ app.prepare().then(() => {
 	io.on("connection", (socket) => {
 		console.log("connected with id:", socket.id);
 
+		const userId = socket.handshake.query.userId;
+		if (userId) OnlineUsersMap[userId] = socket.id;
+
+		io.emit("getOnlineUsers", Object.keys(OnlineUsersMap));
+		io.emit("getReceiver");
+
 		socket.on("disconnect", () => {
 			console.log("user disconnected");
+			delete OnlineUsersMap[userId];
+			io.emit("getOnlineUsers", Object.keys(OnlineUsersMap));
 		});
 	});
 
@@ -41,3 +52,7 @@ app.prepare().then(() => {
 			console.log(`> Ready on http://${hostname}:${port}`);
 		});
 });
+
+export const getReceiverId = (receiverId) => {
+	return OnlineUsersMap[receiverId];
+};

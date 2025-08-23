@@ -128,7 +128,6 @@ export async function getFeedPost(userId: string) {
 		}
 
 		const following = user.following;
-		const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
 		const followingPosts = await Post.find({ author: { $in: following } })
 			.sort({ createdAt: -1 })
@@ -136,7 +135,6 @@ export async function getFeedPost(userId: string) {
 
 		const userRecentPosts = await Post.find({
 			author: user._id,
-			createdAt: { $gte: oneDayAgo },
 		})
 			.sort({ createdAt: -1 })
 			.populate("author", "name username picture");

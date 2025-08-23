@@ -27,7 +27,6 @@ export interface SelectedConversation {
 	userProfilePic: string;
 }
 
-// -------- Context Type --------
 interface ChatContextType {
 	conversations: Conversation[];
 	setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>;
@@ -36,10 +35,8 @@ interface ChatContextType {
 	setSelectedConversation: (chat: SelectedConversation) => void;
 }
 
-// -------- Create Context --------
 const ChatContext = createContext<ChatContextType | null>(null);
 
-// -------- Provider --------
 export const ChatProvider = ({ children }: { children: ReactNode }) => {
 	const [conversations, setConversations] = useState<Conversation[]>([]);
 	const [selectedConversation, setSelectedConversation] =
@@ -65,7 +62,6 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-// -------- Hook --------
 export const useChat = () => {
 	const context = useContext(ChatContext);
 	if (!context) {

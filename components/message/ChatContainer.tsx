@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getMessages } from "@/lib/actions/message.action";
 import { useState, useEffect, useRef } from "react";
 import { getUserId } from "@/lib/actions/user.action";
+import { useSocket } from "@/context/SocketContext";
 
 type Message = {
 	_id: string;
@@ -19,6 +20,8 @@ export const ChatContainer = () => {
 	const userId = useRef<string | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const isInitialLoad = useRef<boolean>(true);
+	const { onlineUsers } = useSocket();
+	const isOnline = onlineUsers.includes(selectedConversation.userId);
 
 	const scrollToBottom = (smooth = false) => {
 		messagesEndRef.current?.scrollIntoView({
@@ -60,10 +63,15 @@ export const ChatContainer = () => {
 	return (
 		<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-screen max-h-[95vh]">
 			<div className="flex items-center gap-2 w-full h-[10%] p-2">
-				<Avatar className="w-10 h-10">
-					<AvatarImage src={selectedConversation.userProfilePic} />
-					<AvatarFallback>CN</AvatarFallback>
-				</Avatar>
+				<div className="relative">
+					<Avatar className="w-10 h-10">
+						<AvatarImage src={selectedConversation.userProfilePic} />
+						<AvatarFallback>CN</AvatarFallback>
+					</Avatar>
+					{isOnline && (
+						<span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-[0.5px] border-white rounded-full"></span>
+					)}
+				</div>
 
 				<div className="flex items-center text-black dark:text-white">
 					{selectedConversation.name}

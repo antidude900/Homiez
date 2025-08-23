@@ -136,7 +136,7 @@ const UserPost = ({
 								}
 							}}
 							className={`${
-								isSelf || disabled
+							isSelf || disabled
 									? "cursor-not-allowed opacity-20"
 									: "cursor-pointer"
 							}`}
