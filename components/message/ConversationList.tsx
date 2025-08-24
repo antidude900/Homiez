@@ -1,9 +1,6 @@
 "use client";
 
-import {
-	getConversations,
-	markConversationSeen,
-} from "@/lib/actions/message.action";
+import { getConversations } from "@/lib/actions/message.action";
 import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CheckCheck } from "lucide-react";
@@ -22,7 +19,7 @@ const ConversationList = () => {
 
 	const [loading, setLoading] = useState(true);
 	const userIdRef = useRef<string | null>(null);
-	const { socket, onlineUsers } = useSocket();
+	const { onlineUsers } = useSocket();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -37,65 +34,6 @@ const ConversationList = () => {
 		fetchData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	useEffect(() => {
-		if (!socket) return;
-
-		socket.on("messageSeen", ({ conversationId }) => {
-			setConversations((prev) =>
-				prev.map((convo) =>
-					convo._id === conversationId
-						? {
-								...convo,
-								lastMessage: {
-									...convo.lastMessage,
-									seen: true,
-								},
-						  }
-						: convo
-				)
-			);
-		});
-
-		return () => {
-			socket.off("messageSeen");
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [socket]);
-
-	useEffect(() => {
-		if (!selectedConversation?._id) return;
-
-		const markSeen = async () => {
-			const current = conversations.find(
-				(c) => c._id === selectedConversation._id
-			);
-
-			// Only mark unseen messages from the other user
-			if (
-				current &&
-				!current.lastMessage.seen &&
-				current.lastMessage.sender !== userIdRef.current
-			) {
-				await markConversationSeen(current._id);
-
-				setConversations((prev) =>
-					prev.map((c) =>
-						c._id === current._id
-							? { ...c, lastMessage: { ...c.lastMessage, seen: true } }
-							: c
-					)
-				);
-				socket?.emit("messageSeen", {
-					conversationId: selectedConversation._id,
-					receiverId: current.lastMessage.sender,
-				});
-			}
-		};
-
-		markSeen();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedConversation, conversations]);
 
 	return (
 		<div className="pt-4 px-4 h-screen border-r border-border flex flex-col">
