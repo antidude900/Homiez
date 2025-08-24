@@ -34,7 +34,23 @@ app.prepare().then(() => {
 		if (userId) OnlineUsersMap[userId] = socket.id;
 
 		io.emit("getOnlineUsers", Object.keys(OnlineUsersMap));
-		io.emit("getReceiver");
+
+		socket.on("message", ({ newMessage, receiverId }) => {
+			console.log("message received from socket:", newMessage);
+			const receiverSocketId = OnlineUsersMap[receiverId];
+			console.log("receiver socket id is:", receiverSocketId);
+			if (receiverSocketId) {
+				io.to(receiverSocketId).emit("message", newMessage);
+			}
+		});
+
+		socket.on("messageSeen", ({ conversationId, receiverId }) => {
+			console.log("message seen:", conversationId, receiverId);
+			const receiverSocketId = OnlineUsersMap[receiverId];
+			if (receiverSocketId) {
+				io.to(receiverSocketId).emit("messageSeen", conversationId);
+			}
+		});
 
 		socket.on("disconnect", () => {
 			console.log("user disconnected");

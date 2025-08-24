@@ -14,13 +14,13 @@ type Message = {
 };
 
 export const ChatContainer = () => {
-	const { selectedConversation } = useChat();
+	const { selectedConversation, setConversations } = useChat();
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [loading, setLoading] = useState(true);
 	const userId = useRef<string | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const isInitialLoad = useRef<boolean>(true);
-	const { onlineUsers } = useSocket();
+	const { socket, onlineUsers } = useSocket();
 	const isOnline = onlineUsers.includes(selectedConversation.userId);
 
 	const scrollToBottom = (smooth = false) => {
@@ -54,11 +54,42 @@ export const ChatContainer = () => {
 
 			setMessages(data);
 			setLoading(false);
-			console.log("messages", data);
 		};
 
 		fetchData();
 	}, [selectedConversation.userId]);
+
+	useEffect(() => {
+		socket?.on("message", (newMessage) => {
+			console.log("new message", newMessage);
+
+			if (selectedConversation._id === newMessage.conversationId) {
+				console.log("messages getting changed");
+				setMessages((prev) => [...prev, newMessage]);
+			}
+
+			setConversations((prev) => {
+				const updatedConversations = prev.map((conversation) => {
+					if (conversation._id === newMessage.conversationId) {
+						return {
+							...conversation,
+							lastMessage: {
+								text: newMessage.text,
+								sender: newMessage.sender,
+							},
+						};
+					}
+					return conversation;
+				});
+				return updatedConversations;
+			});
+		});
+
+		return () => {
+			socket?.off("message");
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [socket, selectedConversation]);
 
 	return (
 		<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-screen max-h-[95vh]">

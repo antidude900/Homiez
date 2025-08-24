@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from "@/context/ChatContext";
+import { useSocket } from "@/context/SocketContext";
 import { useUser } from "@/context/UserContext";
 import { sendMessage } from "@/lib/actions/message.action";
 
@@ -22,6 +23,7 @@ export const MessageSendBar = ({
 	const [text, setText] = useState("");
 	const { user } = useUser();
 	const { setConversations, selectedConversation } = useChat();
+	const { socket } = useSocket();
 
 	useEffect(() => {
 		const textarea = textareaRef.current;
@@ -54,6 +56,12 @@ export const MessageSendBar = ({
 			selectedConversation.userId,
 			text.trim()
 		).then((e) => JSON.parse(e));
+
+		console.log("sending message to socket with data:", newMessage);
+		socket?.emit("message", {
+			newMessage,
+			receiverId: selectedConversation.userId,
+		});
 
 		setMessages((prevMessages) => [...prevMessages, newMessage]);
 

@@ -23,9 +23,6 @@ export async function sendMessage(receiverId: string, message: string) {
 				},
 			});
 			await conversation.save();
-			console.log("New conversation created:", conversation);
-		} else {
-			console.log("Existing conversation found:", conversation);
 		}
 
 		const newMessage = new Message({
