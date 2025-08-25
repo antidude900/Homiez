@@ -1,6 +1,9 @@
 "use client";
 
-import { getConversations } from "@/lib/actions/message.action";
+import {
+	getConversations,
+	markConversationSeen,
+} from "@/lib/actions/message.action";
 import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CheckCheck } from "lucide-react";
@@ -19,7 +22,7 @@ const ConversationList = () => {
 
 	const [loading, setLoading] = useState(true);
 	const userIdRef = useRef<string | null>(null);
-	const { onlineUsers } = useSocket();
+	const { socket, onlineUsers } = useSocket();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -28,12 +31,74 @@ const ConversationList = () => {
 
 			const data = await getConversations().then((e) => JSON.parse(e));
 			setConversations(data);
+
 			setLoading(false);
 		};
 
 		fetchData();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		if (!socket) return;
+
+		socket.on("messageSeen", (conversationId) => {
+			setConversations((prev) =>
+				prev.map((convo) =>
+					convo._id === conversationId
+						? {
+								...convo,
+								lastMessage: {
+									...convo.lastMessage,
+									seen: true,
+								},
+						  }
+						: convo
+				)
+			);
+		});
+
+		return () => {
+			socket.off("messageSeen");
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [socket]);
+
+	useEffect(() => {
+		if (!selectedConversation?._id || selectedConversation._id === "temp")
+			return;
+
+		const markSeen = async () => {
+			const current = conversations.find(
+				(c) => c._id === selectedConversation._id
+			);
+
+			// Only mark unseen messages from the other user
+			if (
+				current &&
+				!current.lastMessage.seen &&
+				current.lastMessage.sender !== userIdRef.current
+			) {
+				await markConversationSeen(current._id);
+
+				setConversations((prev) =>
+					prev.map((c) =>
+						c._id === current._id
+							? { ...c, lastMessage: { ...c.lastMessage, seen: true } }
+							: c
+					)
+				);
+				socket?.emit("messageSeen", {
+					conversationId: selectedConversation._id,
+					receiverId: current.lastMessage.sender,
+				});
+			}
+		};
+
+		markSeen();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedConversation, conversations]);
+	console.log(conversations);
 
 	return (
 		<div className="pt-4 px-4 h-screen border-r border-border flex flex-col">
@@ -50,6 +115,10 @@ const ConversationList = () => {
 			) : (
 				<div className="flex flex-col gap-2 overflow-y-auto pr-2 h-full">
 					{conversations.map((conversation) => {
+						if (!conversation.lastMessage) {
+							console.log("errored one", conversation);
+							return null;
+						}
 						const isMe = conversation.lastMessage.sender === userIdRef.current;
 						const isUnseen = !conversation.lastMessage.seen;
 

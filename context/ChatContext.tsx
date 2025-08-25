@@ -32,7 +32,7 @@ interface ChatContextType {
 	setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>;
 
 	selectedConversation: SelectedConversation;
-	setSelectedConversation: (chat: SelectedConversation) => void;
+	setSelectedConversation: React.Dispatch<React.SetStateAction<SelectedConversation>>;
 }
 
 const ChatContext = createContext<ChatContextType | null>(null);

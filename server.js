@@ -44,6 +44,14 @@ app.prepare().then(() => {
 			}
 		});
 
+		socket.on("messageSeen", ({ conversationId, receiverId }) => {
+			console.log("message seen:", conversationId, receiverId);
+			const receiverSocketId = OnlineUsersMap[receiverId];
+			if (receiverSocketId) {
+				io.to(receiverSocketId).emit("messageSeen", conversationId);
+			}
+		});
+
 		socket.on("disconnect", () => {
 			console.log("user disconnected");
 			delete OnlineUsersMap[userId];

@@ -141,8 +141,8 @@ const ChatSearchHeader = ({
 												username: user.username,
 												userProfilePic: user.picture,
 											});
+
 											setShowDropdown(false);
-											console.log(user._id, "selected user id");
 										}}
 									>
 										{user.name}

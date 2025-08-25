@@ -3,7 +3,7 @@
 import { useChat } from "@/context/ChatContext";
 import { useSocket } from "@/context/SocketContext";
 import { useUser } from "@/context/UserContext";
-import { sendMessage } from "@/lib/actions/message.action";
+import { getConversation, sendMessage } from "@/lib/actions/message.action";
 
 import { SendHorizonal } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
@@ -22,7 +22,8 @@ export const MessageSendBar = ({
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [text, setText] = useState("");
 	const { user } = useUser();
-	const { setConversations, selectedConversation } = useChat();
+	const { setConversations, selectedConversation, setSelectedConversation } =
+		useChat();
 	const { socket } = useSocket();
 
 	useEffect(() => {
@@ -57,7 +58,20 @@ export const MessageSendBar = ({
 			text.trim()
 		).then((e) => JSON.parse(e));
 
-		console.log("sending message to socket with data:", newMessage);
+		if (selectedConversation._id === "temp") {
+			const conversation = await getConversation(
+				selectedConversation.userId
+			).then((e) => JSON.parse(e));
+			console.log("new conversation", conversation);
+
+			setConversations((prev) => [...prev, conversation]);
+
+			setSelectedConversation((prev) => ({
+				...prev,
+				_id: conversation._id,
+			}));
+		}
+
 		socket?.emit("message", {
 			newMessage,
 			receiverId: selectedConversation.userId,

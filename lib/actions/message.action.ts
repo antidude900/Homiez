@@ -87,6 +87,7 @@ export async function getConversations() {
 					participant._id.toString() !== userId.toString()
 			);
 		});
+
 		return JSON.stringify(conversations);
 	} catch (error) {
 		console.log(error);
@@ -113,12 +114,33 @@ export async function getConversationId(otherUserId: string) {
 	}
 }
 
-export async function markConversationSeen(conversationId: string) {
+export async function getConversation(otherUserId: string) {
 	const senderId = await getUserId().then((e) => JSON.parse(e));
 
 	try {
+		const conversation = await Conversation.findOne({
+			participants: { $all: [senderId, otherUserId] },
+		}).populate({
+			path: "participants",
+			select: "name username picture",
+		});
+
+		conversation.participants = conversation.participants.filter(
+			(participant: { _id: string }) =>
+				participant._id.toString() !== senderId.toString()
+		);
+
+		return JSON.stringify(conversation);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function markConversationSeen(conversationId: string) {
+	try {
 		await Conversation.updateOne(
-			{ _id: conversationId, participants: { $in: [senderId] } },
+			{ _id: conversationId },
 			{ $set: { "lastMessage.seen": true } }
 		);
 	} catch (error) {
