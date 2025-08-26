@@ -26,16 +26,18 @@ const ConversationList = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			if (!loading) {
+				return;
+			}
 			const id = await getUserId().then((e) => JSON.parse(e));
 			userIdRef.current = id;
 
 			const data = await getConversations().then((e) => JSON.parse(e));
 			setConversations(data);
-
-			setLoading(false);
 		};
 
 		fetchData();
+		setLoading(false);
 	}, []);
 
 	useEffect(() => {
@@ -66,8 +68,10 @@ const ConversationList = () => {
 		if (!socket) return;
 
 		socket.on("newConversation", (conversation) => {
+			console.log("received",conversation)
 			setConversations((prev) => [...prev, conversation]);
 		});
+		console.log
 
 		return () => {
 			socket.off("newConversation");
@@ -119,92 +123,101 @@ const ConversationList = () => {
 				</div>
 			) : (
 				<div className="flex flex-col gap-2 overflow-y-auto px-1 py-2 h-full">
-					{conversations.map((conversation) => {
-						if (!conversation.lastMessage) {
-							console.log("errored one", conversation);
-							return null;
-						}
-						const isMe = conversation.lastMessage.sender === userIdRef.current;
-						const isUnseen = !conversation.lastMessage.seen;
+					{conversations &&
+						conversations.map((conversation) => {
+							console.log(conversations);
+							if (!conversation.lastMessage) {
+								console.log("errored one", conversation);
+								return null;
+							}
+							const isMe =
+								conversation.lastMessage.sender === userIdRef.current;
+							const isUnseen = !conversation.lastMessage.seen;
 
-						const isOnline = onlineUsers.includes(
-							conversation.participants[0]._id
-						);
+							const isOnline = onlineUsers.includes(
+								conversation.participants[0]._id
+							);
 
-						return (
-							<div
-								onClick={() => {
-									setSelectedConversation({
-										_id: conversation._id,
-										name: conversation.participants[0].name,
-										userId: conversation.participants[0]._id,
-										username: conversation.participants[0].username,
-										userProfilePic: conversation.participants[0].picture,
-									});
-								}}
-								key={conversation._id}
-								className={`flex items-center justify-between px-2 py-2 rounded-lg transition cursor-pointer hover:bg-muted ${
-									isUnseen ? "bg-accent/30" : ""
-								} ${
-									selectedConversation?._id === conversation._id && "bg-muted"
-								}`}
-							>
-								<div className="flex items-center gap-3 min-w-0">
-									<div className="relative">
-										<Avatar className="w-12 h-12">
-											<AvatarImage src={conversation.participants[0].picture} />
-											<AvatarFallback className="bg-green-700 text-white">
-												{conversation.participants[0].name[0]}
-											</AvatarFallback>
-										</Avatar>
-
-										{isOnline && (
-											<span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-[0.5px] border-white rounded-full"></span>
-										)}
-									</div>
-									<div className="flex flex-col min-w-0">
-										<p
-											className={`text-sm truncate ${
-												isUnseen && !isMe
-													? "font-bold"
-													: "font-semibold text-muted-foreground"
-											}`}
-										>
-											{conversation.participants[0].name}
-										</p>
-
-										<div
-											className={`flex items-center gap-1 text-sm max-w-[200px] ${
-												isUnseen && !isMe
-													? "font-medium text-foreground"
-													: "text-muted-foreground"
-											}`}
-										>
-											{isMe && (
-												<CheckCheck
-													className={`w-4 h-4 flex-shrink-0 ${
-														conversation.lastMessage.seen
-															? "text-blue-500"
-															: "text-muted-foreground"
-													}`}
+							return (
+								<div
+									onClick={() => {
+										setSelectedConversation({
+											_id: conversation._id,
+											name: conversation.participants[0].name,
+											userId: conversation.participants[0]._id,
+											username: conversation.participants[0].username,
+											userProfilePic: conversation.participants[0].picture,
+										});
+										console.log(
+											"selectedConversation User",
+											selectedConversation
+										);
+									}}
+									key={conversation._id}
+									className={`flex items-center justify-between px-2 py-2 rounded-lg transition cursor-pointer hover:bg-muted ${
+										isUnseen ? "bg-accent/30" : ""
+									} ${
+										selectedConversation?._id === conversation._id && "bg-muted"
+									}`}
+								>
+									<div className="flex items-center gap-3 min-w-0">
+										<div className="relative">
+											<Avatar className="w-12 h-12">
+												<AvatarImage
+													src={conversation.participants[0].picture}
 												/>
+												<AvatarFallback className="bg-green-700 text-white">
+													{conversation.participants[0].name[0]}
+												</AvatarFallback>
+											</Avatar>
+
+											{isOnline && (
+												<span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-[0.5px] border-white rounded-full"></span>
 											)}
-											<span className="truncate min-w-0">
-												{conversation.lastMessage.text.length > 30
-													? conversation.lastMessage.text.substring(0, 30) +
-													  "..."
-													: conversation.lastMessage.text}
-											</span>
+										</div>
+										<div className="flex flex-col min-w-0">
+											<p
+												className={`text-sm truncate ${
+													isUnseen && !isMe
+														? "font-bold"
+														: "font-semibold text-muted-foreground"
+												}`}
+											>
+												{conversation.participants[0].name}
+											</p>
+
+											<div
+												className={`flex items-center gap-1 text-sm max-w-[200px] ${
+													isUnseen && !isMe
+														? "font-medium text-foreground"
+														: "text-muted-foreground"
+												}`}
+											>
+												{isMe && (
+													<CheckCheck
+														className={`w-4 h-4 flex-shrink-0 ${
+															conversation.lastMessage.seen
+																? "text-blue-500"
+																: "text-muted-foreground"
+														}`}
+													/>
+												)}
+												<span className="truncate min-w-0">
+													{conversation.lastMessage.text.length > 30
+														? conversation.lastMessage.text.substring(0, 30) +
+														  "..."
+														: conversation.lastMessage.text}
+												</span>
+											</div>
 										</div>
 									</div>
-								</div>
 
-								{isUnseen && !isMe && (
-									<div className="w-2.5 h-2.5 bg-blue-500 rounded-full" />
-								)}
-							</div>
-						);
-					})}
+									{isUnseen && !isMe && (
+										<div className="w-2.5 h-2.5 bg-blue-500 rounded-full" />
+									)}
+								</div>
+							);
+						})}
 				</div>
 			)}
 		</div>

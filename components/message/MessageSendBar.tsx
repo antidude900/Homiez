@@ -14,10 +14,17 @@ type Message = {
 	text: string;
 };
 
+type Participant = {
+	_id: string;
+	name: string;
+	username: string;
+	picture: string;
+};
+
 export const MessageSendBar = ({
 	setMessages,
 }: {
-	setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+	setMessages: React.Dispatch<React.SetStateAction<Record<string, Message[]>>>;
 }) => {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [text, setText] = useState("");
@@ -58,11 +65,13 @@ export const MessageSendBar = ({
 			text.trim()
 		).then((e) => JSON.parse(e));
 
+		let conversationId = selectedConversation._id;
+
 		if (selectedConversation._id === "temp") {
 			const conversation = await getConversation(
 				selectedConversation.userId
 			).then((e) => JSON.parse(e));
-			console.log("new conversation", conversation);
+			conversationId = conversation._id;
 
 			setConversations((prev) => [...prev, conversation]);
 
@@ -71,16 +80,23 @@ export const MessageSendBar = ({
 				_id: conversation._id,
 			}));
 
-			conversation.participants.pop();
-			conversation.participants.push({
-				_id: user._id,
-				name: user.name,
-				username: user.username,
-				picture: user.picture,
-			});
-
+			const conversationCopy = {
+				...conversation,
+				participants: [
+					...conversation.participants.filter(
+						(p: Participant) => p._id !== user._id
+					),
+					{
+						_id: user._id,
+						name: user.name,
+						username: user.username,
+						picture: user.picture,
+					},
+				],
+			};
+			console.log("sent ", conversationCopy);
 			socket?.emit("newConversation", {
-				conversation,
+				conversationCopy,
 				receiverId: selectedConversation.userId,
 			});
 		}
@@ -90,7 +106,14 @@ export const MessageSendBar = ({
 			receiverId: selectedConversation.userId,
 		});
 
-		setMessages((prevMessages) => [...prevMessages, newMessage]);
+		console.log("updated or not", conversationId);
+		setMessages((prev) => {
+			const currentMessages = prev[conversationId] || [];
+			return {
+				...prev,
+				[conversationId]: [...currentMessages, newMessage],
+			};
+		});
 
 		setText("");
 

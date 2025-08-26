@@ -4,9 +4,9 @@ import { useChat } from "@/context/ChatContext";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getMessages } from "@/lib/actions/message.action";
 import { useState, useEffect, useRef } from "react";
-import { getUserId } from "@/lib/actions/user.action";
 import { useSocket } from "@/context/SocketContext";
 import { MessagesSquare } from "lucide-react";
+import { useUser } from "@/context/UserContext";
 
 type Message = {
 	_id: string;
@@ -16,9 +16,10 @@ type Message = {
 
 export const ChatContainer = () => {
 	const { selectedConversation, setConversations } = useChat();
-	const [messages, setMessages] = useState<Message[]>([]);
+	const [messages, setMessages] = useState<Record<string, Message[]>>({});
+	const currentMessages = messages[selectedConversation._id] || [];
 	const [loading, setLoading] = useState(true);
-	const userId = useRef<string | null>(null);
+	const { user } = useUser();
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const isInitialLoad = useRef<boolean>(true);
 	const { socket, onlineUsers } = useSocket();
@@ -45,22 +46,31 @@ export const ChatContainer = () => {
 		if (!selectedConversation.userId) {
 			return;
 		}
-		setMessages([]);
+
 		setLoading(true);
 		isInitialLoad.current = true;
 		const fetchData = async () => {
+			if (
+				messages[selectedConversation._id] ||
+				selectedConversation._id === "temp"
+			) {
+				return;
+			}
+
+			setLoading(true);
 			const data = await getMessages(selectedConversation.userId).then((e) =>
 				JSON.parse(e)
 			);
 
-			const id = await getUserId().then((e) => JSON.parse(e));
-			userId.current = id;
-
-			setMessages(data);
-			setLoading(false);
+			setMessages((prev) => ({
+				...prev,
+				[selectedConversation._id]: data,
+			}));
 		};
 
 		fetchData();
+		setLoading(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedConversation.userId]);
 
 	useEffect(() => {
@@ -69,16 +79,20 @@ export const ChatContainer = () => {
 		}
 
 		socket.on("message", (newMessage) => {
-			if (selectedConversation._id === newMessage.conversationId) {
-				setMessages((prev) => {
-					// Check if message already exists to prevent duplicates
-					const messageExists = prev.some((msg) => msg._id === newMessage._id);
-					if (messageExists) {
-						return prev;
-					}
-					return [...prev, newMessage];
-				});
-			}
+			setMessages((prev) => {
+				const currentMessages = prev[selectedConversation._id] || [];
+
+				// Prevent duplicates
+				const messageExists = currentMessages.some(
+					(msg) => msg._id === newMessage._id
+				);
+				if (messageExists) return prev;
+
+				return {
+					...prev,
+					[selectedConversation._id]: [...currentMessages, newMessage],
+				};
+			});
 
 			setConversations((prev) => {
 				const updatedConversations = prev.map((conversation) => {
@@ -102,6 +116,8 @@ export const ChatContainer = () => {
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket, selectedConversation._id]);
+
+	if (!user) return <div>Loading User...</div>;
 
 	return (
 		<>
@@ -157,15 +173,14 @@ export const ChatContainer = () => {
 						)}
 
 						{!loading &&
-							messages.map((message, index) => (
+							currentMessages.map((message, index) => (
 								<Message
 									key={`${message._id}-${index}`}
 									message={message.text}
-									ownMessage={message.sender === userId.current}
+									ownMessage={message.sender === user._id}
 								/>
 							))}
 
-						{/* Invisible div to scroll to */}
 						<div ref={messagesEndRef} />
 					</div>
 					<div className="w-full p-2">

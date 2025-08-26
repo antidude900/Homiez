@@ -51,13 +51,16 @@ app.prepare().then(() => {
 			}
 		});
 
-		socket.on("newConversation", ({ conversation, receiverId }) => {
-			console.log("new conversation:", conversation);
-			const receiverSocketId = OnlineUsersMap[receiverId];
-			if (receiverSocketId) {
-				io.to(receiverSocketId).emit("newConversation", conversation);
+		socket.on(
+			"newConversation",
+			({ conversationCopy: conversation, receiverId }) => {
+				console.log("new conversation:", conversation);
+				const receiverSocketId = OnlineUsersMap[receiverId];
+				if (receiverSocketId) {
+					io.to(receiverSocketId).emit("newConversation", conversation);
+				}
 			}
-		});
+		);
 
 		socket.on("disconnect", () => {
 			console.log("user disconnected");
