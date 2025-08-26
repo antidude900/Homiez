@@ -7,6 +7,7 @@ import { getUserSearchResults } from "@/lib/actions/user.action";
 import { Fullscreen, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 type UserSearchResult = {
 	_id: string;
@@ -114,7 +115,6 @@ const ChatSearchHeader = ({
 				)}
 			</div>
 
-			{/* Dropdown */}
 			{showDropdown && (
 				<div className="absolute top-[48px] left-0 w-full rounded-xl shadow z-50 bg-background border border-border">
 					<ul className="max-h-60 overflow-y-auto">
@@ -145,7 +145,18 @@ const ChatSearchHeader = ({
 											setShowDropdown(false);
 										}}
 									>
-										{user.name}
+										<div className="flex items-center gap-1">
+											<Avatar>
+												<AvatarImage src={user.picture} />
+												<AvatarFallback>{user.name[0]}</AvatarFallback>
+											</Avatar>
+											<div>
+												<p className="text-center">{user.name}</p>
+												<p className="text-muted-foreground text-sm -mt-1">
+													@{user.username}
+												</p>
+											</div>
+										</div>
 									</li>
 								)
 							)

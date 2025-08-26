@@ -38,7 +38,6 @@ app.prepare().then(() => {
 		socket.on("message", ({ newMessage, receiverId }) => {
 			console.log("message received from socket:", newMessage);
 			const receiverSocketId = OnlineUsersMap[receiverId];
-			console.log("receiver socket id is:", receiverSocketId);
 			if (receiverSocketId) {
 				io.to(receiverSocketId).emit("message", newMessage);
 			}
@@ -49,6 +48,14 @@ app.prepare().then(() => {
 			const receiverSocketId = OnlineUsersMap[receiverId];
 			if (receiverSocketId) {
 				io.to(receiverSocketId).emit("messageSeen", conversationId);
+			}
+		});
+
+		socket.on("newConversation", ({ conversation, receiverId }) => {
+			console.log("new conversation:", conversation);
+			const receiverSocketId = OnlineUsersMap[receiverId];
+			if (receiverSocketId) {
+				io.to(receiverSocketId).emit("newConversation", conversation);
 			}
 		});
 
@@ -68,7 +75,3 @@ app.prepare().then(() => {
 			console.log(`> Ready on http://${hostname}:${port}`);
 		});
 });
-
-export const getReceiverId = (receiverId) => {
-	return OnlineUsersMap[receiverId];
-};

@@ -70,6 +70,19 @@ export const MessageSendBar = ({
 				...prev,
 				_id: conversation._id,
 			}));
+
+			conversation.participants.pop();
+			conversation.participants.push({
+				_id: user._id,
+				name: user.name,
+				username: user.username,
+				picture: user.picture,
+			});
+
+			socket?.emit("newConversation", {
+				conversation,
+				receiverId: selectedConversation.userId,
+			});
 		}
 
 		socket?.emit("message", {

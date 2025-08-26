@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import {
@@ -9,7 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CheckCheck } from "lucide-react";
 import { getUserId } from "@/lib/actions/user.action";
 import { useChat } from "@/context/ChatContext";
-import ChatSearchHeader from "../RightSideBar/ChatSearchHeader";
 import { useSocket } from "@/context/SocketContext";
 
 const ConversationList = () => {
@@ -36,7 +36,6 @@ const ConversationList = () => {
 		};
 
 		fetchData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -61,7 +60,18 @@ const ConversationList = () => {
 		return () => {
 			socket.off("messageSeen");
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [socket]);
+
+	useEffect(() => {
+		if (!socket) return;
+
+		socket.on("newConversation", (conversation) => {
+			setConversations((prev) => [...prev, conversation]);
+		});
+
+		return () => {
+			socket.off("newConversation");
+		};
 	}, [socket]);
 
 	useEffect(() => {
@@ -73,7 +83,6 @@ const ConversationList = () => {
 				(c) => c._id === selectedConversation._id
 			);
 
-			// Only mark unseen messages from the other user
 			if (
 				current &&
 				!current.lastMessage.seen &&
@@ -96,14 +105,10 @@ const ConversationList = () => {
 		};
 
 		markSeen();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedConversation, conversations]);
-	console.log(conversations);
 
 	return (
-		<div className="pt-4 px-4 h-screen border-r border-border flex flex-col">
-			<ChatSearchHeader fullScreenOption={false} />
-
+		<div className="flex flex-col bg-background mx-2 rounded-lg">
 			{loading ? (
 				<div className="text-center text-muted-foreground mt-10">
 					Loading conversations...
@@ -113,7 +118,7 @@ const ConversationList = () => {
 					No conversations yet
 				</div>
 			) : (
-				<div className="flex flex-col gap-2 overflow-y-auto pr-2 h-full">
+				<div className="flex flex-col gap-2 overflow-y-auto px-1 py-2 h-full">
 					{conversations.map((conversation) => {
 						if (!conversation.lastMessage) {
 							console.log("errored one", conversation);
@@ -138,7 +143,7 @@ const ConversationList = () => {
 									});
 								}}
 								key={conversation._id}
-								className={`flex items-center justify-between p-3 rounded-lg transition cursor-pointer hover:bg-muted ${
+								className={`flex items-center justify-between px-2 py-2 rounded-lg transition cursor-pointer hover:bg-muted ${
 									isUnseen ? "bg-accent/30" : ""
 								} ${
 									selectedConversation?._id === conversation._id && "bg-muted"
@@ -160,7 +165,7 @@ const ConversationList = () => {
 									<div className="flex flex-col min-w-0">
 										<p
 											className={`text-sm truncate ${
-												isUnseen
+												isUnseen && !isMe
 													? "font-bold"
 													: "font-semibold text-muted-foreground"
 											}`}
@@ -170,7 +175,7 @@ const ConversationList = () => {
 
 										<div
 											className={`flex items-center gap-1 text-sm max-w-[200px] ${
-												isUnseen
+												isUnseen && !isMe
 													? "font-medium text-foreground"
 													: "text-muted-foreground"
 											}`}
