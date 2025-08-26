@@ -48,7 +48,7 @@ export const MessageSendBar = ({
 		}
 	};
 
-	if (user === null) throw new Error("User not found");
+	if (user === null) return <div>Loading</div>;
 
 	const handleSend = async () => {
 		if (!text.trim()) return; // Prevent empty messages
