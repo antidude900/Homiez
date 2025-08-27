@@ -1,4 +1,5 @@
 import LeftSideBar from "@/components/LeftSideBar/LeftSideBar";
+import ChatContainerMini from "@/components/message/ChatContainterMini";
 import RightSideBar from "@/components/RightSideBar/RightSideBar";
 
 import { getUserId } from "@/lib/actions/user.action";
@@ -29,6 +30,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 				id="right-sidebar"
 			>
 				<RightSideBar />
+				<ChatContainerMini />
 			</div>
 		</div>
 	);

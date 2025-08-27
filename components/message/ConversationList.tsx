@@ -68,10 +68,9 @@ const ConversationList = () => {
 		if (!socket) return;
 
 		socket.on("newConversation", (conversation) => {
-			console.log("received",conversation)
+			console.log("received", conversation);
 			setConversations((prev) => [...prev, conversation]);
 		});
-		console.log
 
 		return () => {
 			socket.off("newConversation");

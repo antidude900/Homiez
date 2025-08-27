@@ -54,8 +54,11 @@ export const ChatContainer = () => {
 				messages[selectedConversation._id] ||
 				selectedConversation._id === "temp"
 			) {
+				console.log("should go from here");
+				setLoading(false);
 				return;
 			}
+			console.log("but went from here");
 
 			setLoading(true);
 			const data = await getMessages(selectedConversation.userId).then((e) =>
@@ -66,10 +69,11 @@ export const ChatContainer = () => {
 				...prev,
 				[selectedConversation._id]: data,
 			}));
+			setLoading(false);
 		};
 
 		fetchData();
-		setLoading(false);
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedConversation.userId]);
 
@@ -127,7 +131,7 @@ export const ChatContainer = () => {
 					<div>Select a chat to start messaging</div>
 				</div>
 			) : (
-				<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-screen max-h-[95vh]">
+				<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-full">
 					<div className="flex items-center gap-2 w-full h-[10%] p-2">
 						<div className="relative">
 							<Avatar className="w-10 h-10">
