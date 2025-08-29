@@ -19,6 +19,7 @@ const ConversationList = () => {
 		setConversations,
 		selectedConversation,
 		setSelectedConversation,
+		setMessages,
 	} = useChat();
 
 	const [loading, setLoading] = useState(true);
@@ -124,6 +125,51 @@ const ConversationList = () => {
 
 		markSeen();
 	}, [selectedConversation, conversations]);
+
+	useEffect(() => {
+		if (!socket) {
+			return;
+		}
+
+		socket.on("receiveMessage", ({ newMessage, senderId }) => {
+			setMessages((prev) => {
+				const prevMessages = prev[senderId];
+
+				if (prevMessages) {
+					return {
+						...prev,
+						[senderId]: [...prevMessages, newMessage],
+					};
+				}
+				return prev;
+			});
+
+			if (selectedConversation._id !== newMessage.conversationId) {
+				const sound = new Audio("/discord-notification.mp3");
+				sound.play();
+			}
+
+			setConversations((prev) => {
+				const updatedConversations = prev.map((conversation) => {
+					if (conversation._id === newMessage.conversationId) {
+						return {
+							...conversation,
+							lastMessage: {
+								text: newMessage.text,
+								sender: newMessage.sender,
+							},
+						};
+					}
+					return conversation;
+				});
+				return updatedConversations;
+			});
+		});
+
+		return () => {
+			socket?.off("receiveMessage");
+		};
+	}, [socket, selectedConversation._id]);
 
 	if (!user) return <div>Loading User Context</div>;
 	return (

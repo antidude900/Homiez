@@ -59,13 +59,13 @@ export const MessageSendBar = () => {
 			text.trim()
 		).then((e) => JSON.parse(e));
 
-		let conversationId = selectedConversation._id;
+		let conversationUserId = selectedConversation.userId;
 
 		if (selectedConversation._id === "temp") {
 			const conversation = await getConversation(
 				selectedConversation.userId
 			).then((e) => JSON.parse(e));
-			conversationId = conversation._id;
+			conversationUserId = conversation.participants[0]._id;
 
 			setConversations((prev) => [...prev, conversation]);
 
@@ -95,17 +95,17 @@ export const MessageSendBar = () => {
 			});
 		}
 
-		socket?.emit("message", {
+		socket?.emit("sendMessage", {
 			newMessage,
 			receiverId: selectedConversation.userId,
+			senderId: user._id,
 		});
 
-		console.log("updated or not", conversationId);
 		setMessages((prev) => {
-			const currentMessages = prev[conversationId] || [];
+			const currentMessages = prev[conversationUserId] || [];
 			return {
 				...prev,
-				[conversationId]: [...currentMessages, newMessage],
+				[conversationUserId]: [...currentMessages, newMessage],
 			};
 		});
 

@@ -35,11 +35,15 @@ app.prepare().then(() => {
 
 		io.emit("getOnlineUsers", Object.keys(OnlineUsersMap));
 
-		socket.on("message", ({ newMessage, receiverId }) => {
+		socket.on("sendMessage", ({ newMessage, receiverId, senderId }) => {
 			console.log("message received from socket:", newMessage);
 			const receiverSocketId = OnlineUsersMap[receiverId];
 			if (receiverSocketId) {
-				io.to(receiverSocketId).emit("message", newMessage);
+				console.log("sending message by:", senderId);
+				io.to(receiverSocketId).emit("receiveMessage", {
+					newMessage,
+					senderId,
+				});
 			}
 		});
 

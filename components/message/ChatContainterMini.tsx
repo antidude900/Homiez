@@ -38,7 +38,7 @@ export default function ChatContainerMini() {
 				</div>
 
 				<DialogClose asChild>
-					<button className="absolute right-5 top-5 rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700">
+					<button className="absolute right-2 top-2 rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700">
 						<X className="h-5 w-5" />
 					</button>
 				</DialogClose>

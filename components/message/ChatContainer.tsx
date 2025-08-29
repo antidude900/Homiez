@@ -3,7 +3,7 @@ import { MessageSendBar } from "./MessageSendBar";
 import { useChat } from "@/context/ChatContext";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getMessages } from "@/lib/actions/message.action";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useSocket } from "@/context/SocketContext";
 import { MessagesSquare } from "lucide-react";
 import { useUser } from "@/context/UserContext";
@@ -15,32 +15,32 @@ type Message = {
 };
 
 export const ChatContainer = () => {
-	const { selectedConversation, setConversations, messages, setMessages } =
-		useChat();
-	const currentMessages = messages[selectedConversation._id] || [];
+	const { selectedConversation, messages, setMessages } = useChat();
+
+	const currentMessages = useMemo(
+		() => messages[selectedConversation.userId] || [],
+		[messages, selectedConversation.userId]
+	);
 	const [loading, setLoading] = useState(true);
 	const { user } = useUser();
 	const messagesEndRef = useRef<HTMLDivElement>(null);
-	const isInitialLoad = useRef<boolean>(true);
-	const { socket, onlineUsers } = useSocket();
+	const { onlineUsers } = useSocket();
 	const isOnline = onlineUsers.includes(selectedConversation.userId);
 
-	const scrollToBottom = (smooth = false) => {
+	const scrollToBottom = ({ smoothScroll }: { smoothScroll: boolean }) => {
 		messagesEndRef.current?.scrollIntoView({
-			behavior: smooth ? "smooth" : "auto",
+			behavior: smoothScroll ? "smooth" : "auto",
 		});
 	};
 
 	useEffect(() => {
 		if (loading) return;
-
-		if (isInitialLoad.current) {
-			scrollToBottom(false);
-			isInitialLoad.current = false;
-		} else {
-			scrollToBottom(true);
-		}
-	}, [messages, loading]);
+		scrollToBottom({ smoothScroll: true });
+	}, [currentMessages, loading]);
+	useEffect(() => {
+		if (loading) return;
+		scrollToBottom({ smoothScroll: false });
+	}, [selectedConversation._id, loading]);
 
 	useEffect(() => {
 		if (!selectedConversation.userId) {
@@ -48,17 +48,15 @@ export const ChatContainer = () => {
 		}
 
 		setLoading(true);
-		isInitialLoad.current = true;
+
 		const fetchData = async () => {
 			if (
-				messages[selectedConversation._id] ||
+				messages[selectedConversation.userId] ||
 				selectedConversation._id === "temp"
 			) {
-				console.log("should go from here");
 				setLoading(false);
 				return;
 			}
-			console.log("but went from here");
 
 			const data = await getMessages(selectedConversation.userId).then((e) =>
 				JSON.parse(e)
@@ -66,7 +64,7 @@ export const ChatContainer = () => {
 
 			setMessages((prev) => ({
 				...prev,
-				[selectedConversation._id]: data,
+				[selectedConversation.userId]: data,
 			}));
 			setLoading(false);
 		};
@@ -75,50 +73,6 @@ export const ChatContainer = () => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedConversation.userId]);
-
-	useEffect(() => {
-		if (!socket) {
-			return;
-		}
-
-		socket.on("message", (newMessage) => {
-			setMessages((prev) => {
-				const currentMessages = prev[selectedConversation._id] || [];
-
-				// Prevent duplicates
-				const messageExists = currentMessages.some(
-					(msg) => msg._id === newMessage._id
-				);
-				if (messageExists) return prev;
-
-				return {
-					...prev,
-					[selectedConversation._id]: [...currentMessages, newMessage],
-				};
-			});
-
-			setConversations((prev) => {
-				const updatedConversations = prev.map((conversation) => {
-					if (conversation._id === newMessage.conversationId) {
-						return {
-							...conversation,
-							lastMessage: {
-								text: newMessage.text,
-								sender: newMessage.sender,
-							},
-						};
-					}
-					return conversation;
-				});
-				return updatedConversations;
-			});
-		});
-
-		return () => {
-			socket?.off("message");
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [socket, selectedConversation._id]);
 
 	if (!user) return <div>Loading User...</div>;
 
