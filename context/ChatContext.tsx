@@ -27,12 +27,23 @@ export interface SelectedConversation {
 	userProfilePic: string;
 }
 
+export type Message = {
+	_id: string;
+	sender: string;
+	text: string;
+};
+
 interface ChatContextType {
 	conversations: Conversation[];
 	setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>;
 
 	selectedConversation: SelectedConversation;
-	setSelectedConversation: React.Dispatch<React.SetStateAction<SelectedConversation>>;
+	setSelectedConversation: React.Dispatch<
+		React.SetStateAction<SelectedConversation>
+	>;
+
+	messages: Record<string, Message[]>;
+	setMessages: React.Dispatch<React.SetStateAction<Record<string, Message[]>>>;
 }
 
 const ChatContext = createContext<ChatContextType | null>(null);
@@ -47,6 +58,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
 			username: "",
 			userProfilePic: "",
 		});
+	const [messages, setMessages] = useState<Record<string, Message[]>>({});
 
 	return (
 		<ChatContext.Provider
@@ -55,6 +67,8 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
 				setConversations,
 				selectedConversation,
 				setSelectedConversation,
+				messages,
+				setMessages,
 			}}
 		>
 			{children}

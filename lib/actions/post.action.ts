@@ -151,8 +151,19 @@ export async function getFeedPost(userId: string) {
 export async function getPostsSearchResults(query: string) {
 	try {
 		await connectToDatabase();
+
+		const userIds = await User.distinct("_id", {
+			$or: [
+				{ name: { $regex: `^${query}`, $options: "i" } },
+				{ username: { $regex: `^${query}`, $options: "i" } },
+			],
+		});
+
 		const posts = await Post.find({
-			text: { $regex: query, $options: "i" },
+			$or: [
+				{ text: { $regex: query, $options: "i" } },
+				{ author: { $in: userIds } },
+			],
 		})
 			.sort({ createdAt: -1 })
 			.populate("author", "name username picture");

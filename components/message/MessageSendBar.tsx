@@ -8,12 +8,6 @@ import { getConversation, sendMessage } from "@/lib/actions/message.action";
 import { SendHorizonal } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
-type Message = {
-	_id: string;
-	sender: string;
-	text: string;
-};
-
 type Participant = {
 	_id: string;
 	name: string;
@@ -21,16 +15,16 @@ type Participant = {
 	picture: string;
 };
 
-export const MessageSendBar = ({
-	setMessages,
-}: {
-	setMessages: React.Dispatch<React.SetStateAction<Record<string, Message[]>>>;
-}) => {
+export const MessageSendBar = () => {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [text, setText] = useState("");
 	const { user } = useUser();
-	const { setConversations, selectedConversation, setSelectedConversation } =
-		useChat();
+	const {
+		setConversations,
+		selectedConversation,
+		setSelectedConversation,
+		setMessages,
+	} = useChat();
 	const { socket } = useSocket();
 
 	useEffect(() => {

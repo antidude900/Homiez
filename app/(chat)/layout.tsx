@@ -21,7 +21,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 				<ConversationList />
 			</div>
 
-			<div className="flex-1 p-2 px-4 relative" id="main">
+			<div className="flex-1 relative" id="main">
 				<UserProvider>{children}</UserProvider>
 			</div>
 		</div>

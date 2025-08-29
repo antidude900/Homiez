@@ -15,8 +15,8 @@ type Message = {
 };
 
 export const ChatContainer = () => {
-	const { selectedConversation, setConversations } = useChat();
-	const [messages, setMessages] = useState<Record<string, Message[]>>({});
+	const { selectedConversation, setConversations, messages, setMessages } =
+		useChat();
 	const currentMessages = messages[selectedConversation._id] || [];
 	const [loading, setLoading] = useState(true);
 	const { user } = useUser();
@@ -60,7 +60,6 @@ export const ChatContainer = () => {
 			}
 			console.log("but went from here");
 
-			setLoading(true);
 			const data = await getMessages(selectedConversation.userId).then((e) =>
 				JSON.parse(e)
 			);
@@ -188,7 +187,7 @@ export const ChatContainer = () => {
 						<div ref={messagesEndRef} />
 					</div>
 					<div className="w-full p-2">
-						<MessageSendBar setMessages={setMessages} />
+						<MessageSendBar />
 					</div>
 				</div>
 			)}

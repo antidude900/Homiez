@@ -5,12 +5,13 @@ import {
 	getConversations,
 	markConversationSeen,
 } from "@/lib/actions/message.action";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CheckCheck } from "lucide-react";
-import { getUserId } from "@/lib/actions/user.action";
-import { useChat } from "@/context/ChatContext";
 import { useSocket } from "@/context/SocketContext";
+import { usePathname } from "next/navigation";
+import { useUser } from "@/context/UserContext";
+import { useChat } from "@/context/ChatContext";
 
 const ConversationList = () => {
 	const {
@@ -21,23 +22,37 @@ const ConversationList = () => {
 	} = useChat();
 
 	const [loading, setLoading] = useState(true);
-	const userIdRef = useRef<string | null>(null);
+	const { user } = useUser();
 	const { socket, onlineUsers } = useSocket();
+	const pathname = usePathname();
 
 	useEffect(() => {
+		setSelectedConversation({
+			_id: "",
+			userId: "",
+			name: "",
+			username: "",
+			userProfilePic: "",
+		});
+	}, [pathname]);
+
+	useEffect(() => {
+		if (conversations.length > 0) {
+			setLoading(false);
+			return;
+		}
+
 		const fetchData = async () => {
 			if (!loading) {
 				return;
 			}
-			const id = await getUserId().then((e) => JSON.parse(e));
-			userIdRef.current = id;
 
 			const data = await getConversations().then((e) => JSON.parse(e));
 			setConversations(data);
+			setLoading(false);
 		};
 
 		fetchData();
-		setLoading(false);
 	}, []);
 
 	useEffect(() => {
@@ -89,7 +104,7 @@ const ConversationList = () => {
 			if (
 				current &&
 				!current.lastMessage.seen &&
-				current.lastMessage.sender !== userIdRef.current
+				current.lastMessage.sender !== (user?._id || "")
 			) {
 				await markConversationSeen(current._id);
 
@@ -110,6 +125,7 @@ const ConversationList = () => {
 		markSeen();
 	}, [selectedConversation, conversations]);
 
+	if (!user) return <div>Loading User Context</div>;
 	return (
 		<div className="flex flex-col bg-background mx-2 rounded-lg">
 			{loading ? (
@@ -129,8 +145,7 @@ const ConversationList = () => {
 								console.log("errored one", conversation);
 								return null;
 							}
-							const isMe =
-								conversation.lastMessage.sender === userIdRef.current;
+							const isMe = conversation.lastMessage.sender === user._id;
 							const isUnseen = !conversation.lastMessage.seen;
 
 							const isOnline = onlineUsers.includes(
