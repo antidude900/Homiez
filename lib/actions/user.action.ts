@@ -10,6 +10,10 @@ import {
 } from "./shared.type";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
+import Post from "@/database/post.model";
+import Comment from "@/database/comment.model";
+import Conversation from "@/database/conversation.model";
+import Message from "@/database/message.model";
 
 export async function createUser(params: CreateUserParams) {
 	try {
@@ -332,6 +336,41 @@ export async function getSelf() {
 		};
 
 		return JSON.stringify(result);
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export async function deleteUser(clerkId: string) {
+	try {
+		await connectToDatabase();
+
+		const user = await User.findOne({ clerkId }).select("_id");
+		if (!user) return;
+		const id = user._id;
+
+		const conversationIds = await Conversation.find({ participants: id })
+			.select("_id")
+			.then((conversations) => conversations.map((c) => c._id));
+
+		await Promise.all([
+			Post.deleteMany({ author: id }),
+			Post.updateMany({ likes: id }, { $pull: { likes: id } }),
+
+			Comment.deleteMany({ author: id }),
+			Comment.updateMany({ likes: id }, { $pull: { likes: id } }),
+
+			Conversation.deleteMany({ _id: { $in: conversationIds } }),
+			Message.deleteMany({ conversationId: { $in: conversationIds } }),
+
+			User.updateMany(
+				{ $or: [{ following: id }, { followers: id }] },
+				{ $pull: { following: id, followers: id } }
+			),
+
+			User.deleteOne({ _id: id }),
+		]);
 	} catch (error) {
 		console.log(error);
 		throw error;
