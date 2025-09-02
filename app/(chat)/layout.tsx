@@ -1,6 +1,5 @@
 import ConversationList from "@/components/message/ConversationList";
 import ChatSearchHeader from "@/components/shared/ChatSearchHeader";
-import { UserProvider } from "@/context/UserContext";
 import { getUserId } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 
@@ -22,7 +21,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 			</div>
 
 			<div className="flex-1 relative" id="main">
-				<UserProvider>{children}</UserProvider>
+				{children}
 			</div>
 		</div>
 	);
