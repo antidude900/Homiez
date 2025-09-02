@@ -5,7 +5,6 @@ import { connectToDatabase } from "../mongoose";
 import {
 	CreateUserParams,
 	FollowUnfollowUserParams,
-	// FollowUnfollowUserParams,
 	UpdateUserParams,
 } from "./shared.type";
 import { revalidatePath } from "next/cache";

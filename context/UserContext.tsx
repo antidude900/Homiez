@@ -9,6 +9,7 @@ import {
 } from "react";
 import { getUserInfo } from "@/lib/actions/user.action";
 import { IUser } from "@/database/user.model";
+import { useAuth } from "@clerk/nextjs";
 
 interface UserContextProps {
 	user: IUser | null;
@@ -26,8 +27,11 @@ interface Props {
 
 export const UserProvider = ({ children }: Props) => {
 	const [user, setUser] = useState<IUser | null>(null);
+	const { isSignedIn } = useAuth();
 
 	useEffect(() => {
+		if (!isSignedIn) return;
+
 		let loading = true;
 
 		const fetchUser = async () => {
@@ -57,7 +61,7 @@ export const UserProvider = ({ children }: Props) => {
 		return () => {
 			loading = false;
 		};
-	}, []);
+	}, [isSignedIn]);
 
 	return (
 		<UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
