@@ -8,6 +8,9 @@ import { Fullscreen, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import ThemeToogle from "../ThemeToogle";
+import Image from "next/image";
+import { Skeleton } from "../ui/skeleton";
 
 type UserSearchResult = {
 	_id: string;
@@ -67,28 +70,54 @@ const ChatSearchHeader = ({
 		return () => clearTimeout(timeout);
 	}, [query]);
 
-	if (!filterUser) return <div>Loading User Context</div>;
-
 	return (
 		<div className="relative w-full mb-4">
-			{/* Header Container */}
-			<div className="bg-background rounded-xl border border-border h-[40px] flex items-center justify-between px-2 box-content">
+			<div className="bg-background rounded-xl border border-border h-[45px] flex items-center justify-between px-2 box-content">
 				{!showSearch ? (
-					<>
-						<div className="font-bold text-lg">Chats</div>
-						<div className="flex items-center gap-4">
-							<Search
-								size={20}
-								className="text-muted-foreground cursor-pointer"
-								onClick={() => setShowSearch(true)}
-							/>
-							{fullScreenOption && (
-								<Link href="/chat">
-									<Fullscreen size={20} className="text-muted-foreground" />
-								</Link>
-							)}
-						</div>
-					</>
+					!filterUser ? (
+						<>
+							<div className="flex items-center gap-2">
+								<Skeleton className="w-10 h-10 rounded-full bg-secondary" />
+								<Skeleton className="w-20 h-4 rounded bg-secondary" />
+							</div>
+
+							<div className="flex items-center gap-4">
+								<Skeleton className="w-5 h-5 rounded-full bg-secondary" />
+								<Skeleton className="w-5 h-5 rounded-full bg-secondary" />
+							</div>
+						</>
+					) : (
+						<>
+							<div className="flex items-center">
+								{!fullScreenOption && (
+									<Link href="/">
+										<Image
+											src="/icons/handshake_square.png"
+											alt="logo"
+											width={48}
+											height={48}
+											className="mr-2"
+										/>
+									</Link>
+								)}
+								<span className="font-bold text-lg text-center">Chats</span>
+							</div>
+							<div className="flex items-center gap-4">
+								<Search
+									size={20}
+									className="text-muted-foreground cursor-pointer"
+									onClick={() => setShowSearch(true)}
+								/>
+								{fullScreenOption ? (
+									<Link href="/chat">
+										<Fullscreen size={20} className="text-muted-foreground" />
+									</Link>
+								) : (
+									<ThemeToogle color="text-muted-foreground" />
+								)}
+							</div>
+						</>
+					)
 				) : (
 					<div className="flex w-full h-full items-center relative">
 						<span className="absolute left-2 text-muted-foreground">
@@ -115,7 +144,7 @@ const ChatSearchHeader = ({
 				)}
 			</div>
 
-			{showDropdown && (
+			{showDropdown && filterUser && (
 				<div className="absolute top-[48px] left-0 w-full rounded-xl shadow z-50 bg-background border border-border">
 					<ul className="max-h-60 overflow-y-auto">
 						{loading ? (

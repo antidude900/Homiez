@@ -11,29 +11,17 @@ import {
 	MenubarTrigger,
 } from "@/components/ui/menubar";
 import { themes } from "@/constants/themes";
+import { Moon, Sun } from "lucide-react";
 
-const ThemeToogle = () => {
+const ThemeToogle = ({ color }: { color?: string }) => {
 	const { setTheme, resolvedTheme } = useTheme();
 
 	return (
-		<Menubar className="relative border-none bg-transparent shadow-none">
+		<Menubar className="relative border-none bg-inherit shadow-none">
 			<MenubarMenu>
 				<MenubarTrigger className="cursor-pointer">
-					<Image
-						src="/icons/moon.svg"
-						width={20}
-						height={20}
-						alt="moon"
-						className="hidden dark:flex dark:invert"
-					/>
-
-					<Image
-						src="/icons/sun.svg"
-						width={20}
-						height={20}
-						alt="sun"
-						className="active-theme dark:hidden dark:invert"
-					/>
+					<Moon size={20} className={`hidden dark:flex ${color}`} />
+					<Sun size={20} className={`active-theme dark:hidden ${color}`} />
 				</MenubarTrigger>
 				<MenubarContent className="absolute -right-12 mt-3 min-w-[120px] rounded border">
 					{themes.map((theme) => (

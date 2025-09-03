@@ -12,6 +12,7 @@ import { useSocket } from "@/context/SocketContext";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import { useChat } from "@/context/ChatContext";
+import { Skeleton } from "../ui/skeleton";
 
 const ConversationList = () => {
 	const {
@@ -171,7 +172,23 @@ const ConversationList = () => {
 		};
 	}, [socket, selectedConversation._id]);
 
-	if (!user) return <div>Loading User Context</div>;
+	if (!user)
+		return (
+			<div className="flex flex-col gap-2 overflow-y-auto px-1 py-2 h-full">
+				{[...Array(3)].map((_, i) => (
+					<div className="flex items-center gap-3 min-w-0 p-2" key={i}>
+						<div className="relative">
+							<Skeleton className="w-12 h-12 rounded-full bg-secondary" />
+						</div>
+
+						<div className="flex flex-col min-w-0 gap-1">
+							<Skeleton className="w-32 h-4 rounded bg-secondary" />
+							<Skeleton className="w-48 h-3 rounded bg-secondary" />
+						</div>
+					</div>
+				))}
+			</div>
+		);
 	return (
 		<div className="flex flex-col bg-background mx-2 rounded-lg">
 			{loading ? (

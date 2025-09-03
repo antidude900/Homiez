@@ -7,6 +7,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useSocket } from "@/context/SocketContext";
 import { MessagesSquare } from "lucide-react";
 import { useUser } from "@/context/UserContext";
+import { Skeleton } from "../ui/skeleton";
 
 type Message = {
 	_id: string;
@@ -74,7 +75,7 @@ export const ChatContainer = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedConversation.userId]);
 
-	if (!user) return <div>Loading User...</div>;
+	if (!user) return;
 
 	return (
 		<>
@@ -105,28 +106,28 @@ export const ChatContainer = () => {
 
 					<div className="flex flex-col gap-4 p-4 h-[80%] overflow-y-auto">
 						{loading && (
-							<>
-								{[...Array(5)].map((_, i) => (
+							<div className="space-y-4">
+								{[...Array(3)].map((_, i) => (
 									<div
 										key={i}
-										className={`flex items-center gap-2 p-1 rounded-md self-${
-											i % 2 === 0 ? "start" : "end"
+										className={`flex items-center gap-2 p-1 rounded-md ${
+											i % 2 === 0 ? "justify-start" : "justify-end"
 										}`}
 									>
 										{i % 2 === 0 && (
-											<div className="w-7 h-7 rounded-full bg-gray-300 animate-pulse" />
+											<Skeleton className="w-7 h-7 rounded-full flex-shrink-0 bg-secondary" />
 										)}
 										<div className="flex flex-col gap-2">
-											<div className="w-[250px] h-2 bg-gray-300 animate-pulse rounded" />
-											<div className="w-[250px] h-2 bg-gray-300 animate-pulse rounded" />
-											<div className="w-[250px] h-2 bg-gray-300 animate-pulse rounded" />
+											<Skeleton className="w-[250px] h-2 bg-secondary" />
+											<Skeleton className="w-[200px] h-2 bg-secondary" />
+											<Skeleton className="w-[180px] h-2 bg-secondary" />
 										</div>
 										{i % 2 !== 0 && (
-											<div className="w-7 h-7 rounded-full bg-gray-300 animate-pulse" />
+											<Skeleton className="w-7 h-7 rounded-full flex-shrink-0 bg-secondary" />
 										)}
 									</div>
 								))}
-							</>
+							</div>
 						)}
 
 						{!loading &&
