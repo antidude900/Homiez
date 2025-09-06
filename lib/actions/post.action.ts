@@ -4,18 +4,13 @@ import Post from "@/database/post.model";
 import { connectToDatabase } from "../mongoose";
 import { CreatePostParams } from "./shared.type";
 import User, { IUser } from "@/database/user.model";
-import { v2 as cloudinary } from "cloudinary";
 import Comment from "@/database/comment.model";
 import { getUserId } from "./user.action";
 import { revalidatePath } from "next/cache";
+import cloudinary from "../cloudinary";
 
 export async function createPost(params: CreatePostParams) {
 	const { text, image } = params;
-	cloudinary.config({
-		cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-		api_key: process.env.CLOUDINARY_API_KEY,
-		api_secret: process.env.CLOUDINARY_API_SECRET,
-	});
 
 	let imgUrl = "";
 
