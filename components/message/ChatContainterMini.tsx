@@ -38,8 +38,6 @@ export default function ChatContainerMini() {
 					<ChatContainer />
 				</div>
 
-				<Fullscreen size={20} className="text-muted-foreground" />
-
 				<div className="absolute right-2 top-2 flex items-center gap-2">
 					<Link
 						href="/chat"
