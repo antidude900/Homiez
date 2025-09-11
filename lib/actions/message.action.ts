@@ -114,16 +114,30 @@ export async function getConversationId(otherUserId: string) {
 	}
 }
 
-export async function getConversation(otherUserId: string) {
+export async function getConversation({
+	otherUserId,
+	conversationId,
+}: {
+	otherUserId?: string;
+	conversationId?: string;
+}) {
 	const senderId = await getUserId().then((e) => JSON.parse(e));
 
 	try {
-		const conversation = await Conversation.findOne({
-			participants: { $all: [senderId, otherUserId] },
-		}).populate({
-			path: "participants",
-			select: "name username picture",
-		});
+		let conversation;
+		if (otherUserId) {
+			conversation = await Conversation.findOne({
+				participants: { $all: [senderId, otherUserId] },
+			}).populate({
+				path: "participants",
+				select: "name username picture",
+			});
+		} else if (conversationId) {
+			conversation = await Conversation.findById(conversationId).populate({
+				path: "participants",
+				select: "name username picture",
+			});
+		}
 
 		conversation.participants = conversation.participants.filter(
 			(participant: { _id: string }) =>

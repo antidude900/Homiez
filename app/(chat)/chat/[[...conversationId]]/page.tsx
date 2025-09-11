@@ -1,5 +1,3 @@
-"use client";
-
 import { ChatContainer } from "@/components/message/ChatContainer";
 
 const Page = () => {

@@ -44,7 +44,7 @@ export const UserProvider = ({ children }: Props) => {
 
 					if (!userData) {
 						console.log("User not ready yet, retrying...");
-						await new Promise((resolve) => setTimeout(resolve, 500)); // wait 500ms
+						await new Promise((resolve) => setTimeout(resolve, 500)); 
 					}
 				}
 

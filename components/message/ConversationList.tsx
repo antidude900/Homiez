@@ -29,6 +29,7 @@ const ConversationList = () => {
 	const pathname = usePathname();
 
 	useEffect(() => {
+		if (pathname.startsWith("/chat")) return;
 		setSelectedConversation({
 			_id: "",
 			userId: "",

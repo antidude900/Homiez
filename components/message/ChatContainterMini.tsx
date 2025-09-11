@@ -10,7 +10,8 @@ import {
 import { useChat } from "@/context/ChatContext";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ChatContainer } from "./ChatContainer";
-import { X } from "lucide-react";
+import { Fullscreen, X } from "lucide-react";
+import Link from "next/link";
 
 export default function ChatContainerMini() {
 	const { selectedConversation, setSelectedConversation } = useChat();
@@ -37,11 +38,22 @@ export default function ChatContainerMini() {
 					<ChatContainer />
 				</div>
 
-				<DialogClose asChild>
-					<button className="absolute right-2 top-2 rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700">
-						<X className="h-5 w-5" />
-					</button>
-				</DialogClose>
+				<Fullscreen size={20} className="text-muted-foreground" />
+
+				<div className="absolute right-2 top-2 flex items-center gap-2">
+					<Link
+						href="/chat"
+						className="rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700"
+					>
+						<Fullscreen className="h-5 w-5" />
+					</Link>
+
+					<DialogClose asChild>
+						<button className="rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700">
+							<X className="h-5 w-5" />
+						</button>
+					</DialogClose>
+				</div>
 			</DialogContent>
 		</Dialog>
 	);

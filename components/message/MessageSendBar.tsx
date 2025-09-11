@@ -62,9 +62,9 @@ export const MessageSendBar = () => {
 		let conversationUserId = selectedConversation.userId;
 
 		if (selectedConversation._id === "temp") {
-			const conversation = await getConversation(
-				selectedConversation.userId
-			).then((e) => JSON.parse(e));
+			const conversation = await getConversation({
+				otherUserId: selectedConversation.userId,
+			}).then((e) => JSON.parse(e));
 			conversationUserId = conversation.participants[0]._id;
 
 			setConversations((prev) => [...prev, conversation]);

@@ -1,13 +1,16 @@
+"use client";
+
 import { Message } from "./Message";
 import { MessageSendBar } from "./MessageSendBar";
 import { useChat } from "@/context/ChatContext";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getMessages } from "@/lib/actions/message.action";
+import { getConversation, getMessages } from "@/lib/actions/message.action";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useSocket } from "@/context/SocketContext";
 import { MessagesSquare } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { Skeleton } from "../ui/skeleton";
+import { useRouter, usePathname, useParams } from "next/navigation";
 
 type Message = {
 	_id: string;
@@ -16,7 +19,16 @@ type Message = {
 };
 
 export const ChatContainer = () => {
-	const { selectedConversation, messages, setMessages } = useChat();
+	const {
+		selectedConversation,
+		messages,
+		setMessages,
+		setSelectedConversation,
+	} = useChat();
+	const router = useRouter();
+	const pathname = usePathname();
+	const params = useParams<{ conversationId?: string[] }>();
+	const conversationId = params.conversationId?.[0];
 
 	const currentMessages = useMemo(
 		() => messages[selectedConversation.userId] || [],
@@ -35,47 +47,83 @@ export const ChatContainer = () => {
 	};
 
 	useEffect(() => {
+		const fetchData = async () => {
+			if (!pathname.startsWith("/chat")) return;
+			if (selectedConversation._id) {
+				router.push(`/chat/${selectedConversation._id}`);
+			}
+
+			if (conversationId && !selectedConversation._id) {
+				try {
+					const conversation = await getConversation({ conversationId }).then(
+						(e) => JSON.parse(e)
+					);
+
+					setSelectedConversation({
+						_id: conversation._id,
+						name: conversation.participants[0].name,
+						userId: conversation.participants[0]._id,
+						username: conversation.participants[0].username,
+						userProfilePic: conversation.participants[0].picture,
+					});
+				} catch (err) {
+					console.error("Error fetching conversation", err);
+				}
+			}
+		};
+		fetchData();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
 		if (loading) return;
 		scrollToBottom({ smoothScroll: true });
 	}, [currentMessages, loading]);
+
 	useEffect(() => {
 		if (loading) return;
 		scrollToBottom({ smoothScroll: false });
 	}, [selectedConversation._id, loading]);
 
 	useEffect(() => {
-		if (!selectedConversation.userId) {
-			return;
-		}
+		if (!selectedConversation.userId) return;
 
 		setLoading(true);
 
 		const fetchData = async () => {
+			// Only fetch if no messages are already cached
 			if (
-				messages[selectedConversation.userId] ||
+				messages[selectedConversation.userId] !== undefined ||
 				selectedConversation._id === "temp"
 			) {
 				setLoading(false);
 				return;
 			}
 
-			const data = await getMessages(selectedConversation.userId).then((e) =>
-				JSON.parse(e)
-			);
+			try {
+				console.log("fetching messages for", selectedConversation.userId);
 
-			setMessages((prev) => ({
-				...prev,
-				[selectedConversation.userId]: data,
-			}));
-			setLoading(false);
+				const data = await getMessages(selectedConversation.userId).then((e) =>
+					JSON.parse(e)
+				);
+				console.log("fetched messages", data);
+
+				setMessages((prev) => ({
+					...prev,
+					[selectedConversation.userId]: data,
+				}));
+			} catch (err) {
+				console.error("Error fetching messages", err);
+			} finally {
+				setLoading(false);
+			}
 		};
 
 		fetchData();
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedConversation.userId]);
 
-	if (!user) return;
+	if (!user) return null;
 
 	return (
 		<>
@@ -96,7 +144,6 @@ export const ChatContainer = () => {
 								<span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-[0.5px] border-white rounded-full"></span>
 							)}
 						</div>
-
 						<div className="flex items-center text-black dark:text-white">
 							{selectedConversation.name}
 						</div>
@@ -141,6 +188,7 @@ export const ChatContainer = () => {
 
 						<div ref={messagesEndRef} />
 					</div>
+
 					<div className="w-full p-2">
 						<MessageSendBar />
 					</div>
