@@ -8,6 +8,7 @@ import { Search } from "lucide-react";
 
 const LeftSideBar = async () => {
 	const user = await getUserInfo().then((res) => JSON.parse(res));
+	console.log("fetching user in left sidebar");
 
 	return (
 		<div className="pt-2 pb-4 h-screen border-r border-r-border flex flex-col">
@@ -30,6 +31,7 @@ const LeftSideBar = async () => {
 						placeholder="Search"
 						type="text"
 						name="query"
+						autoComplete="off"
 						className="bg-background p-2 rounded-xl flex-1 border border-border outline-none focus:ring-0 pl-10"
 					/>
 				</form>

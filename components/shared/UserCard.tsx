@@ -44,7 +44,9 @@ const UserCard = ({
 					<AvatarFallback className="bg-green-700">{name[0]}</AvatarFallback>
 				</Avatar>
 				<Link href={`/user/${username}`}>
-					<p className="text-sm font-semibold">{name}</p>
+					<p className="text-sm font-semibold truncate max-[420px]:max-w-[150px] whitespace-nowrap overflow-hidden text-ellipsis">
+						{name}
+					</p>
 					<p className="text-xs text-muted-foreground">@{username}</p>
 				</Link>
 			</div>

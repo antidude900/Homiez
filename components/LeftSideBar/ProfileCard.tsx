@@ -33,8 +33,9 @@ const ProfileCard = async ({ user }: { user: User }) => {
 					<AvatarImage src={user.picture} />
 					<AvatarFallback>CN</AvatarFallback>
 				</Avatar>
-
-				<ToolBar username={user.username} />
+				<div className="absolute right-1 top-0 ">
+					<ToolBar username={user.username} />
+				</div>
 			</div>
 
 			<div className="vertical-flex items-center mb-2">

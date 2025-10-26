@@ -5,7 +5,7 @@ import type React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Loader2, ImageIcon, X } from "lucide-react";
+import { Loader2, ImageIcon, X, BadgePlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -84,9 +84,12 @@ export default function CreatePostForm() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button className="w-full rounded-xl mx-2 text-[15px] p-6">
-					Create Post
-				</Button>
+				<div className="w-full">
+					<Button className="w-full rounded-xl mx-2 text-[15px] p-6 hidden xl:flex">
+						Create Post
+					</Button>
+					<BadgePlus className="xl:hidden cursor-pointer" size={20} />
+				</div>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[500px] [&>button]:hidden">
 				<form onSubmit={handleSubmit}>
