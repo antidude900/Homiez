@@ -6,6 +6,7 @@ import { UserProvider } from "@/context/UserContext";
 import { SocketContextProvider } from "@/context/SocketContext";
 import { ChatProvider } from "@/context/ChatContext";
 import { FollowingProvider } from "@/context/FollowingContext";
+import NextTopLoader from "nextjs-toploader";
 
 export default function RootLayout({
 	children,
@@ -24,6 +25,12 @@ export default function RootLayout({
 					/>
 				</head>
 				<body className="bg-[#E8F1F9] dark:bg-[#05141C] text-foreground">
+					<NextTopLoader
+						color="#3b82f6"
+						height={3}
+						showSpinner={false}
+						speed={200}
+					/>
 					<ThemeProvider
 						attribute="class"
 						defaultTheme="system"

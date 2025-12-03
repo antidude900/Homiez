@@ -17,7 +17,7 @@ export const Message = ({ ownMessage, message }: MessageProps) => {
 		<>
 			{ownMessage ? (
 				<div className="flex gap-2 self-end">
-					<div className="max-w-[350px] bg-accent p-2 rounded-md text-white text-sm">
+					<div className="max-w-[350px] bg-accent p-2 rounded-md text-white text-sm break-words whitespace-pre-wrap">
 						{message}
 					</div>
 					<Avatar className="w-10 h-10">
@@ -31,7 +31,7 @@ export const Message = ({ ownMessage, message }: MessageProps) => {
 						<AvatarImage src={selectedConversation.userProfilePic} />
 						<AvatarFallback>CN</AvatarFallback>
 					</Avatar>
-					<div className="max-w-[350px] bg-gray-400 p-2 rounded-md text-white text-sm">
+					<div className="max-w-[350px] bg-gray-400 p-2 rounded-md text-white text-sm break-words whitespace-pre-wrap">
 						{message}
 					</div>
 				</div>

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Message from "./message.model";
 
 const conversationSchema = new mongoose.Schema(
 	{
@@ -15,21 +14,6 @@ const conversationSchema = new mongoose.Schema(
 	},
 	{ timestamps: true }
 );
-
-conversationSchema.pre(
-	"deleteOne",
-	{ document: true, query: false },
-	async function () {
-		await Message.deleteMany({ conversationId: this._id });
-	}
-);
-
-conversationSchema.pre("findOneAndDelete", async function () {
-	const doc = await this.model.findOne(this.getFilter());
-	if (doc) {
-		await Message.deleteMany({ conversationId: doc._id });
-	}
-});
 
 const Conversation =
 	mongoose.models.Conversation ||

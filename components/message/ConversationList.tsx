@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CheckCheck } from "lucide-react";
 import { useSocket } from "@/context/SocketContext";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import { useChat } from "@/context/ChatContext";
 import { Skeleton } from "../ui/skeleton";
@@ -27,6 +27,7 @@ const ConversationList = () => {
 	const { user } = useUser();
 	const { socket, onlineUsers } = useSocket();
 	const pathname = usePathname();
+	const router = useRouter();
 
 	useEffect(() => {
 		if (pathname.startsWith("/chat")) return;
@@ -226,6 +227,10 @@ const ConversationList = () => {
 											username: conversation.participants[0].username,
 											userProfilePic: conversation.participants[0].picture,
 										});
+
+										if (pathname.startsWith("/chat")) {
+											router.push(`/chat/${conversation._id}`);
+										}
 										console.log(
 											"selectedConversation User",
 											selectedConversation
