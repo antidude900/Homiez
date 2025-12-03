@@ -123,9 +123,11 @@ const UserInfo = ({
 									<MessageCircleMore
 										className={`
    										w-6 h-6 
-										${!currentUser
-											? "text-muted-foreground cursor-not-allowed pointer-events-none animate-pulse"
-											: "text-primary cursor-pointer"}
+										${
+											!currentUser
+												? "text-muted-foreground cursor-not-allowed pointer-events-none animate-pulse"
+												: "text-primary cursor-pointer"
+										}
   							   			`}
 										onClick={async () => {
 											const id = await getConversationId(user._id);
@@ -169,29 +171,33 @@ const UserInfo = ({
 				</div>
 			</div>
 
-			<div className="absolute left-0 bottom-0 bg-muted-foreground px-2 rounded-sm">
-				<TooltipProvider>
-					<Tooltip delayDuration={0} open={isOpen} onOpenChange={setIsOpen}>
-						<TooltipTrigger
-							onClick={() => setIsOpen(true)}
-							className="cursor-default"
-							asChild
-						>
-							<div className="flex items-center gap-1 text-[#f5f5f5]">
-								<Pencil className="w-4 h-4" />
-								<span>Edit</span>
-							</div>
-						</TooltipTrigger>
-						<TooltipContent
-							side="bottom"
-							className="max-w-[350px] text-center cursor-default"
-						>
-							<p>Hover on the specific profile info to toogle an Edit Button</p>
-							<p> (Also works in the profile card at the left side)</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			</div>
+			{currentUserId === user._id && (
+				<div className="absolute left-0 bottom-0 bg-muted-foreground px-2 rounded-sm">
+					<TooltipProvider>
+						<Tooltip delayDuration={0} open={isOpen} onOpenChange={setIsOpen}>
+							<TooltipTrigger
+								onClick={() => setIsOpen(true)}
+								className="cursor-not-allowed"
+								asChild
+							>
+								<div className="flex items-center gap-1 text-[#f5f5f5]">
+									<Pencil className="w-4 h-4" />
+									<span>Edit</span>
+								</div>
+							</TooltipTrigger>
+							<TooltipContent
+								side="bottom"
+								className="max-w-[350px] text-center cursor-default"
+							>
+								<p>
+									Hover on the specific profile info to toogle an Edit Button
+								</p>
+								<p> (Also works in the profile card at the left side)</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+				</div>
+			)}
 			<div className="text-center p-2">Posts</div>
 			<hr className="border-t-4 rounded border-[#7BD8B9] dark:border-[#21CB99] w-[100px] absolute right-1/2 translate-x-1/2 bottom-0" />
 		</div>

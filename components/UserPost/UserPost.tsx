@@ -10,10 +10,11 @@ import CreateCommentForm from "./CommentForm";
 import { usePathname } from "next/navigation";
 import { likeUnlikePost } from "@/lib/actions/post.action";
 import { LikeUsersShow } from "../shared/LikeUsersShow";
+import { useUser } from "@/context/UserContext";
 
 import { toast } from "react-toastify";
 import EditDeletePost from "./EditDeletePost";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface UserPostProps {
 	author: Partial<IUser>;
@@ -39,8 +40,13 @@ const UserPost = ({
 	isSelf,
 }: UserPostProps) => {
 	const pathname = usePathname();
+	const { user } = useUser();
 	const [fetched, setFetched] = useState(false);
-	const [disabled, setDisabled] = useState(false);
+
+	const [isLiked, setIsLiked] = useState(liked);
+	const [likesCount, setLikesCount] = useState(likes.length);
+	const [likedUsers, setLikedUsers] = useState<string[]>(likes);
+	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
 	return (
 		<div className="bg-background rounded-xl border border-border py-4 px-6">
@@ -96,14 +102,12 @@ const UserPost = ({
 			<div className="flex justify-between px-1">
 				<div className="text-[14px] text-muted-foreground mb-2">
 					<LikeUsersShow
-						likedUsers={likes}
+						likedUsers={likedUsers}
 						fetched={fetched}
 						setFetched={setFetched}
-						disabled={disabled}
 					>
-						{likes.length}
-					</LikeUsersShow>
-
+						{likesCount}
+					</LikeUsersShow>{" "}
 					<span> &nbsp;|&nbsp; </span>
 					<Link href={`/user/${author.username}/post/${postId}`}>
 						<span className="cursor-pointer">{repliesCount} replies</span>
@@ -120,30 +124,38 @@ const UserPost = ({
 				onClick={(e) => e.preventDefault()}
 			>
 				<Heart
-					color={liked ? "red" : "currentColor"}
-					fill={liked ? "red" : "transparent"}
-					onClick={async () => {
-						if (!isSelf) {
-							setDisabled(true);
-							await likeUnlikePost(postId, pathname);
-							setTimeout(() => {
-								setFetched(false);
-								setDisabled(false);
-							}, 1000);
+					color={isLiked ? "red" : "currentColor"}
+					fill={isLiked ? "red" : "transparent"}
+					onClick={() => {
+						const newLikedState = !isLiked;
+						setIsLiked(newLikedState);
+						setLikesCount((prev) => (newLikedState ? prev + 1 : prev - 1));
+
+						if (user?._id) {
+							if (newLikedState) {
+								setLikedUsers((prev) => [...prev, user._id]);
+							} else {
+								setLikedUsers((prev) => prev.filter((id) => id !== user._id));
+							}
 						}
+
+						if (debounceTimerRef.current) {
+							clearTimeout(debounceTimerRef.current);
+						}
+
+						debounceTimerRef.current = setTimeout(async () => {
+							await likeUnlikePost(postId, pathname);
+							setFetched(false);
+						}, 250);
 					}}
-					className={`${
-						isSelf || disabled
-							? "cursor-not-allowed opacity-20"
-							: "cursor-pointer"
-					}`}
+					className="cursor-pointer"
 				/>
 				<CreateCommentForm postId={postId} />
 				<SquareArrowOutUpRight
 					className="cursor-pointer"
 					onClick={() => {
 						navigator.clipboard.writeText(
-							`https://social-media-app-gray-six.vercel.app/${author.username}/post/${postId}`
+							`https://homiez-rj3z.onrender.com/${author.username}/post/${postId}`
 						);
 						toast.success("Post Link copied!", { autoClose: 500 });
 					}}
@@ -154,21 +166,3 @@ const UserPost = ({
 };
 
 export default UserPost;
-
-// Skeleton
-// <div className="rounded-xl border border-border flex px-4 py-4">
-// 	<div className="flex-shrink-0 mr-5">
-// 		<Skeleton className="w-16 h-16 rounded-full" />
-// 	</div>
-
-// 	<div className="w-full vertical-flex space-y-2 mr-5">
-// 		<div className="flex items-center">
-// 			<Skeleton className="h-5 w-24 mr-2" />
-// 			<Skeleton className="h-4 w-10" />
-// 		</div>
-
-// 		<Skeleton className="h-4 w-1/2" />
-
-// 		<Skeleton className="w-full h-[300px] rounded-xl mb-1" />
-// 	</div>
-// </div>

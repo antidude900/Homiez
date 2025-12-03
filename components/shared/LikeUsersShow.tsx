@@ -11,7 +11,7 @@ import {
 	getLikedUsers,
 	getUserId,
 } from "@/lib/actions/user.action";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -30,28 +30,36 @@ export function LikeUsersShow({
 	likedUsers,
 	fetched,
 	setFetched,
-	disabled,
 }: {
 	children: React.ReactNode;
 	likedUsers: string[];
 	fetched: boolean;
 	setFetched: React.Dispatch<React.SetStateAction<boolean>>;
-	disabled: boolean;
 }) {
 	const [users, setUsers] = useState<User[]>([]);
 	const [userId, setUserId] = useState<string | null>(null);
 	const pathname = usePathname();
 	const [updating, setUpdating] = useState(false);
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		setFetched(false);
+	}, [likedUsers.length, setFetched]);
 
 	const fetchData = async () => {
-		if (!fetched || !disabled) {
-			const users = await getLikedUsers(likedUsers).then((e) => JSON.parse(e));
-			const userId = await getUserId().then((e) => JSON.parse(e));
-			setUsers(users);
-			setUserId(userId);
-		}
-		if (!disabled) {
-			setFetched(true);
+		if (!fetched && !loading) {
+			setLoading(true);
+			try {
+				const users = await getLikedUsers(likedUsers).then((e) =>
+					JSON.parse(e)
+				);
+				const userId = await getUserId().then((e) => JSON.parse(e));
+				setUsers(users);
+				setUserId(userId);
+				setFetched(true);
+			} finally {
+				setLoading(false);
+			}
 		}
 	};
 
@@ -79,12 +87,7 @@ export function LikeUsersShow({
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<span
-					className={`${
-						disabled ? "cursor-not-allowed opacity-20" : "cursor-pointer"
-					}`}
-					onMouseEnter={fetchData}
-				>
+				<span className="cursor-pointer" onMouseEnter={fetchData}>
 					{children?.toString()} likes
 				</span>
 			</DialogTrigger>
@@ -93,7 +96,7 @@ export function LikeUsersShow({
 					Likes
 				</DialogTitle>
 				<div className="mt-10 space-y-2">
-					{!fetched ? (
+					{loading ? (
 						<div>Loading...</div>
 					) : users.length === 0 ? (
 						<p className="text-sm text-muted-foreground">No likes yet.</p>
