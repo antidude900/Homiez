@@ -8,13 +8,6 @@ import { getConversation, sendMessage } from "@/lib/actions/message.action";
 import { SendHorizonal } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
-type Participant = {
-	_id: string;
-	name: string;
-	username: string;
-	picture: string;
-};
-
 export const MessageSendBar = () => {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [text, setText] = useState("");
@@ -77,15 +70,13 @@ export const MessageSendBar = () => {
 			const conversationCopy = {
 				...conversation,
 				participants: [
-					...conversation.participants.filter(
-						(p: Participant) => p._id !== user._id
-					),
 					{
 						_id: user._id,
 						name: user.name,
 						username: user.username,
 						picture: user.picture,
 					},
+					...conversation.participants,
 				],
 			};
 			console.log("sent ", conversationCopy);
