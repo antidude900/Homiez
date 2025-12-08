@@ -4,14 +4,19 @@ const isPublicRoute = createRouteMatcher([
 	"/sign-in(.*)",
 	"/sign-up(.*)",
 	"/api/webhook(.*)",
-	"/health",
+	"/api/health",
 ]);
 
-export default clerkMiddleware(async (auth, req) => {
-	if (!isPublicRoute(req)) {
-		await auth.protect();
+export default clerkMiddleware(
+	async (auth, req) => {
+		if (!isPublicRoute(req)) {
+			await auth.protect();
+		}
+	},
+	{
+		clockSkewInMs: 60000, // 60 seconds clock skew tolerance
 	}
-});
+);
 
 export const config = {
 	matcher: [

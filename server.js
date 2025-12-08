@@ -16,15 +16,7 @@ console.log("hey");
 const OnlineUsersMap = {};
 
 app.prepare().then(() => {
-	const httpServer = createServer((req, res) => {
-		if (req.url === "/health") {
-			res.writeHead(200, { "Content-Type": "text/plain" });
-			return res.end("OK");
-		}
-
-		handler(req, res);
-	});
-
+	const httpServer = createServer(handler);
 	const io = new Server(httpServer);
 
 	io.on("connection", (socket) => {
