@@ -43,6 +43,25 @@ const Editable = ({
 		}
 	}, [isEditable]);
 
+	// Function to remove consecutive spaces by checking from back
+	function removeConsecutiveSpaces(str: string): string {
+		let result = "";
+		for (let i = str.length - 1; i >= 0; i--) {
+			// Check if current character is a space and the one below it (next in result) is also a space
+			if (
+				str[i] === " " &&
+				result.length > 0 &&
+				result[0] === " "
+			) {
+				// Skip this space (don't add it)
+				continue;
+			}
+			// Add character to the beginning of result
+			result = str[i] + result;
+		}
+		return result;
+	}
+
 	async function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
 		if (e.key === "Escape") {
 			setIsEditable(false);
@@ -52,7 +71,7 @@ const Editable = ({
 				// Let the browser show its native validation message
 				return;
 			}
-
+			setValue(value.trim());
 			await handleValidation(e);
 		}
 	}
@@ -168,8 +187,11 @@ const Editable = ({
 								type === "bio" && "h-[50px] w-full"
 							}`}
 							size={Math.min(value.length + 2, 37)}
-							onChange={(e) => setValue(e.target.value)}
+							onChange={(e) =>
+								setValue(removeConsecutiveSpaces(e.target.value))
+							}
 							onBlur={async (e) => {
+								setValue(value.trim());
 								await handleValidation(e);
 							}}
 							onKeyDown={handleKeyDown}
