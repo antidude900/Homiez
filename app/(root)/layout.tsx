@@ -31,7 +31,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 			>
 				<RightSideBar />
 			</div>
-			<ChatContainerMini />
+			<ChatContainerMini workOnDefault={true} />
 			<div className="fixed top-2 left-0 xl:hidden">
 				<ToolBar username={user.username} />
 			</div>

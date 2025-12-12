@@ -48,23 +48,26 @@ export function SuggestionsMore({
 			<DialogTrigger asChild>
 				<div className="text-blue-500 font-bold cursor-pointer">More</div>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className="max-w-[95vw] w-full md:max-w-[500px] overflow-hidden">
 				<DialogTitle className="text-[20px] absolute top-2 left-2 font-bold">
 					Suggestions
 				</DialogTitle>
-				<div className="mt-10 space-y-4">
+				<div className="mt-10 space-y-4 max-h-[70vh] overflow-y-auto">
 					{suggestions.map((user) => (
-						<div key={user.username} className="flex justify-between w-full">
-							<div className="flex items-center gap-3">
+						<div
+							key={user.username}
+							className="flex justify-between w-full min-w-0"
+						>
+							<div className="flex items-center gap-3 mr-2 min-w-0">
 								<Avatar className="">
 									<AvatarImage src={user.picture} />
 									<AvatarFallback className="bg-green-700">
 										{user.name[0]}
 									</AvatarFallback>
 								</Avatar>
-								<Link href={`/user/${user.username}`} className="">
-									<p className="text-sm font-semibold">{user.name}</p>
-									<p className="text-xs text-muted-foreground">
+								<Link href={`/user/${user.username}`} className="min-w-0">
+									<p className="text-sm font-semibold truncate">{user.name}</p>
+									<p className="text-xs text-muted-foreground truncate">
 										@{user.username}
 									</p>
 								</Link>

@@ -12,13 +12,30 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ChatContainer } from "./ChatContainer";
 import { Fullscreen, X } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default function ChatContainerMini() {
+export default function ChatContainerMini({
+	workOnDefault = false,
+}: {
+	workOnDefault?: boolean;
+}) {
 	const { selectedConversation, setSelectedConversation } = useChat();
+	const [displayEnable, setDisplayEnable] = useState(false);
+
+	useEffect(() => {
+		const checkMobile = () => {
+			setDisplayEnable(workOnDefault || window.innerWidth < 768);
+		};
+
+		checkMobile();
+		window.addEventListener("resize", checkMobile);
+
+		return () => window.removeEventListener("resize", checkMobile);
+	}, []);
 
 	return (
 		<Dialog
-			open={selectedConversation.userId != ""}
+			open={selectedConversation.userId != "" && displayEnable}
 			onOpenChange={() =>
 				setSelectedConversation({
 					_id: "",
@@ -29,12 +46,12 @@ export default function ChatContainerMini() {
 				})
 			}
 		>
-			<DialogContent className="max-w-[50vw] [&>button:last-of-type]:hidden p-0">
+			<DialogContent className="max-w-[95vw] w-full md:max-w-[50vw] [&>button:last-of-type]:hidden p-0 overflow-hidden">
 				<VisuallyHidden>
 					<DialogTitle>Chat Window</DialogTitle>
 				</VisuallyHidden>
 
-				<div className="h-[80vh]">
+				<div className="h-[80vh] overflow-hidden">
 					<ChatContainer />
 				</div>
 

@@ -49,7 +49,7 @@ const UserPost = ({
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
 	return (
-		<div className="bg-background rounded-xl border border-border py-4 px-6">
+		<div className="bg-background rounded-xl border border-border py-4 px-6 mb-2">
 			<div className="flex mb-2">
 				<Link href={`/user/${author.username}`}>
 					<Avatar className="w-14 h-14 mr-2">
@@ -57,21 +57,21 @@ const UserPost = ({
 						<AvatarFallback>CN</AvatarFallback>
 					</Avatar>
 				</Link>
-				<div className="w-full">
-					<div className="flex mb-4 justify-between">
-						<div className="space-y-1">
+				<div className="w-full overflow-hidden">
+					<div className="flex mb-4 justify-between flex-1">
+						<div className="space-y-1 min-w-0 flex-1">
 							<Link href={`/user/${author.username}`}>
-								<div className="font-bold mr-2 cursor-pointer">
+								<div className="font-bold mr-2 cursor-pointer truncate">
 									{author.name}
 								</div>
 
-								<span className="text-muted-foreground text-sm cursor-pointer mr-5">
+								<span className="text-muted-foreground text-sm cursor-pointer mr-5 truncate block">
 									@{author.username}
 								</span>
 							</Link>
 						</div>
 
-						<div className="flex mr-2 items-center h-fit">
+						<div className="flex items-center h-fit">
 							{isSelf && (
 								<EditDeletePost
 									postId={postId}

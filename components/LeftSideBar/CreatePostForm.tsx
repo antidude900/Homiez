@@ -85,7 +85,7 @@ export default function CreatePostForm() {
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<div className="w-full">
-					<Button className="w-full rounded-xl mx-2 text-[15px] p-6 hidden xl:flex">
+					<Button className="w-full rounded-xl text-[15px] p-6 hidden xl:flex">
 						Create Post
 					</Button>
 					<BadgePlus className="xl:hidden cursor-pointer" size={20} />

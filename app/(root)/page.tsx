@@ -15,7 +15,7 @@ const page = async () => {
 				<hr className="border-t-4 rounded border-[#7BD8B9] dark:border-[#21CB99] w-[100px] absolute right-1/2 translate-x-1/2 bottom-0" />
 			</div>
 
-			<div className="grid gap-4">
+			<div className="">
 				{posts.length > 0 ? (
 					posts.map(
 						(post: {

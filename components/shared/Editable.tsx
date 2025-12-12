@@ -45,14 +45,11 @@ const Editable = ({
 
 	// Function to remove consecutive spaces by checking from back
 	function removeConsecutiveSpaces(str: string): string {
+		console.log("Removing consecutive spaces from:", str);
 		let result = "";
 		for (let i = str.length - 1; i >= 0; i--) {
 			// Check if current character is a space and the one below it (next in result) is also a space
-			if (
-				str[i] === " " &&
-				result.length > 0 &&
-				result[0] === " "
-			) {
+			if (str[i] === " " && result.length > 0 && result[0] === " ") {
 				// Skip this space (don't add it)
 				continue;
 			}
@@ -160,7 +157,7 @@ const Editable = ({
 	}
 
 	return (
-		<div className="relative group inline-block w-fit cursor-pointer">
+		<div className="relative group w-full cursor-pointer flex justify-center">
 			{isEditable && isSelf ? (
 				<>
 					{overlay_sections.map((section) => {
@@ -170,13 +167,10 @@ const Editable = ({
 						);
 					})}
 
-					<div className="absolute top-1 right-0 -translate-x-1 -translate-y-1 text-sm font-bold z-30 text-muted-foreground">
-						{value.length}
-					</div>
 					<form
 						onSubmit={handleSubmit}
 						noValidate={false}
-						className="relative z-20 w-fit border"
+						className="relative z-20 w-fit"
 					>
 						<input
 							ref={inputRef}
@@ -197,6 +191,9 @@ const Editable = ({
 							onKeyDown={handleKeyDown}
 							{...getValidationProps()}
 						/>
+						<div className="absolute -top-3 translate-x-full -translate-y-1/4 right-2 text-sm font-bold z-30 text-primary">
+							{value.length}
+						</div>
 					</form>
 				</>
 			) : (
@@ -205,6 +202,12 @@ const Editable = ({
 						className={`${className} border border-transparent ${
 							type === "bio" && "h-[50px]"
 						} max-w-fit break-all flex justify-center items-center relative mx-4`}
+						onClick={() => {
+							setIsEditable(true);
+							if (inputRef.current) {
+								inputRef.current.focus();
+							}
+						}}
 					>
 						{type === "username" && (
 							<span className="text-muted-foreground">@</span>
@@ -213,15 +216,9 @@ const Editable = ({
 
 						{isSelf && (
 							<Pencil
-								onClick={() => {
-									setIsEditable(true);
-									if (inputRef.current) {
-										inputRef.current.focus();
-									}
-								}}
-								className={`absolute right-0 top-0 translate-x-full ${
+								className={`absolute top-0 translate-x-full ${
 									type === "bio"
-										? "translate-y-1/4"
+										? "translate-y-1/4 right-0"
 										: "-translate-y-1/4 -right-1"
 								} w-4 h-4 opacity-0 group-hover:opacity-100 cursor-pointer text-gray-500 hover:text-gray-700 transition-opacity`}
 							/>

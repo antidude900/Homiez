@@ -1,3 +1,4 @@
+import ChatContainerMini from "@/components/message/ChatContainterMini";
 import ConversationList from "@/components/message/ConversationList";
 import ChatSearchHeader from "@/components/shared/ChatSearchHeader";
 import { getUserId } from "@/lib/actions/user.action";
@@ -12,7 +13,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 
 	return (
 		<div className="flex min-h-screen">
-			<div className="w-[25%] flex-none sticky top-0 h-screen border-r border-border">
+			<div className="w-full md:max-w-[33%] flex-none sticky top-0 h-screen border-r border-border overflow-y-auto">
 				<div className="pt-4 px-2">
 					<ChatSearchHeader fullScreenOption={false} />
 				</div>
@@ -20,9 +21,11 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 				<ConversationList />
 			</div>
 
-			<div className="flex-1 relative" id="main">
+			<div className="flex-1 relative min-w-0 hidden md:block" id="main">
 				{children}
 			</div>
+
+			<ChatContainerMini />
 		</div>
 	);
 };

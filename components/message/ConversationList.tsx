@@ -202,10 +202,9 @@ const ConversationList = () => {
 					No conversations yet
 				</div>
 			) : (
-				<div className="flex flex-col gap-2 overflow-y-auto px-1 py-2 h-full">
+				<div className="flex flex-col gap-2 overflow-y-auto px-1 py-2 h-full overflow-x-hidden">
 					{conversations &&
 						conversations.map((conversation) => {
-							console.log(conversations);
 							if (!conversation.lastMessage) {
 								console.log("errored one", conversation);
 								return null;
@@ -270,7 +269,7 @@ const ConversationList = () => {
 											</p>
 
 											<div
-												className={`flex items-center gap-1 text-sm max-w-[200px] ${
+												className={`flex items-center gap-1 text-sm ${
 													isUnseen && !isMe
 														? "font-medium text-foreground"
 														: "text-muted-foreground"
@@ -286,10 +285,7 @@ const ConversationList = () => {
 													/>
 												)}
 												<span className="truncate min-w-0">
-													{conversation.lastMessage.text.length > 30
-														? conversation.lastMessage.text.substring(0, 30) +
-														  "..."
-														: conversation.lastMessage.text}
+													{conversation.lastMessage.text}
 												</span>
 											</div>
 										</div>

@@ -21,8 +21,7 @@ const ProfileCard = async ({ user }: { user: User }) => {
 
 	return (
 		<div className="h-[330px] bg-background rounded-xl overflow-clip vertical-flex border border-border">
-			<div className="h-[30%] bg-white relative mb-[3.5rem]">
-				{/* h-24 means 6rem so half is 3rem and giving space of 0.5rem from there */}
+			<div className="h-[80px] bg-white relative mb-8 flex-shrink-0">
 				<Image
 					src="/cover-pic.jpg"
 					alt="cover"
@@ -38,13 +37,13 @@ const ProfileCard = async ({ user }: { user: User }) => {
 				</div>
 			</div>
 
-			<div className="vertical-flex items-center mb-2">
+			<div className="flex-1 vertical-flex items-center justify-center px-2 mt-1">
 				<Editable className="font-bold text-center" type={"name"}>
 					{user.name}
 				</Editable>
 
 				<Editable
-					className="text-muted-foreground text-center"
+					className="text-muted-foreground text-center mb-2"
 					type={"username"}
 				>
 					{user.username}
@@ -57,7 +56,7 @@ const ProfileCard = async ({ user }: { user: User }) => {
 
 			<hr className="border-1 border-muted-foreground" />
 
-			<div className="flex-1 flex items-center p-2">
+			<div className="flex items-center p-1">
 				<div className="flex-1 text-center">
 					<FollowerShow otherUserId={user._id} userId={userId}>
 						<div>{user.followers.length || "0"}</div>

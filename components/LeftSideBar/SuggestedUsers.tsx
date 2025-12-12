@@ -107,18 +107,21 @@ const SuggestedUsers = () => {
 								key={suggestedUser.username}
 								className="flex justify-between w-full"
 							>
-								<div className="flex items-center gap-3">
+								<div className="flex items-center gap-3 min-w-0 flex-1">
 									<Avatar className="w-10 h-10">
 										<AvatarImage src={suggestedUser?.picture || ""} />
 										<AvatarFallback className="bg-green-700">
 											{suggestedUser.name[0]}
 										</AvatarFallback>
 									</Avatar>
-									<Link href={`/user/${suggestedUser.username}`}>
-										<p className="text-sm font-semibold">
+									<Link
+										href={`/user/${suggestedUser.username}`}
+										className="min-w-0 flex-1"
+									>
+										<p className="text-sm font-semibold truncate">
 											{suggestedUser.name}
 										</p>
-										<p className="text-xs text-muted-foreground">
+										<p className="text-xs text-muted-foreground truncate">
 											@{suggestedUser.username}
 										</p>
 									</Link>

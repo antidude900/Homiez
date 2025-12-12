@@ -43,7 +43,7 @@ const LeftSideBar = async () => {
 				<CreatePostForm />
 			</div>
 
-			<div className="mt-auto min-h-0 px-2">
+			<div className="min-h-0 px-2">
 				<SuggestedUsers />
 			</div>
 		</div>

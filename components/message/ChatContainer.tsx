@@ -134,8 +134,8 @@ export const ChatContainer = () => {
 				</div>
 			) : (
 				<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-full">
-					<div className="flex items-center gap-2 w-full h-[10%] p-2">
-						<div className="relative">
+					<div className="flex items-center gap-2 w-full p-2 min-h-[60px] flex-shrink-0">
+						<div>
 							<Avatar className="w-10 h-10">
 								<AvatarImage src={selectedConversation.userProfilePic} />
 								<AvatarFallback>CN</AvatarFallback>
@@ -144,14 +144,12 @@ export const ChatContainer = () => {
 								<span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-[0.5px] border-white rounded-full"></span>
 							)}
 						</div>
-						<div className="flex items-center text-black dark:text-white">
-							{selectedConversation.name}
-						</div>
+						<div className="truncate min-w-0">{selectedConversation.name}</div>
 					</div>
 
 					<hr className="border-t border-gray-300 dark:border-gray-700" />
 
-					<div className="flex flex-col gap-4 p-4 h-[80%] overflow-y-auto">
+					<div className="flex flex-col gap-4 p-4 h-[80%] overflow-y-auto w-full">
 						{loading && (
 							<div className="space-y-4">
 								{[...Array(3)].map((_, i) => (

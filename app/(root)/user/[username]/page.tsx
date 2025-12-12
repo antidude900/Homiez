@@ -28,7 +28,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 			<div className="mb-4">
 				<UserInfo user={user} currentUserId={userId} />
 			</div>
-			<div className="grid gap-4">
+			<div className="">
 				{posts.length > 0 ? (
 					posts.map(
 						(post: {
