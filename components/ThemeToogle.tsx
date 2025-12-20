@@ -23,7 +23,7 @@ const ThemeToogle = ({ color }: { color?: string }) => {
 					<Moon size={20} className={`hidden dark:flex ${color}`} />
 					<Sun size={20} className={`active-theme dark:hidden ${color}`} />
 				</MenubarTrigger>
-				<MenubarContent className="absolute -right-12 mt-3 min-w-[120px] rounded border">
+				<MenubarContent className="absolute right-0 md:left-1/2 md:-translate-x-1/2 mt-3 min-w-[120px] rounded border">
 					{themes.map((theme) => (
 						<MenubarItem
 							key={theme.value}

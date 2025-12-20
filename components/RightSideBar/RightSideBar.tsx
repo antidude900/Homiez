@@ -5,7 +5,7 @@ const RightSideBar = () => {
 	return (
 		<div className="relative min-h-screen border-l border-l-border pt-2">
 			<div className="px-2">
-				<ChatSearchHeader />
+				<ChatSearchHeader fullScreenOption={true} />
 			</div>
 			<ConversationList />
 		</div>

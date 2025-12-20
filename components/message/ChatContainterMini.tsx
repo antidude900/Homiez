@@ -10,9 +10,10 @@ import {
 import { useChat } from "@/context/ChatContext";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ChatContainer } from "./ChatContainer";
-import { Fullscreen, X } from "lucide-react";
-import Link from "next/link";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useCall } from "@/context/CallContext";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function ChatContainerMini({
 	workOnDefault = false,
@@ -20,7 +21,10 @@ export default function ChatContainerMini({
 	workOnDefault?: boolean;
 }) {
 	const { selectedConversation, setSelectedConversation } = useChat();
+	const { callState } = useCall();
 	const [displayEnable, setDisplayEnable] = useState(false);
+	const pathname = usePathname();
+	const router = useRouter();
 
 	useEffect(() => {
 		const checkMobile = () => {
@@ -36,37 +40,32 @@ export default function ChatContainerMini({
 	return (
 		<Dialog
 			open={selectedConversation.userId != "" && displayEnable}
-			onOpenChange={() =>
+			modal={callState === "idle"}
+			onOpenChange={() => {
 				setSelectedConversation({
 					_id: "",
 					userId: "",
 					name: "",
 					username: "",
 					userProfilePic: "",
-				})
-			}
+				});
+				if (pathname.startsWith("/chat")) {
+					router.push(`/chat`);
+				}
+			}}
 		>
-			<DialogContent className="max-w-[95vw] w-full md:max-w-[50vw] [&>button:last-of-type]:hidden p-0 overflow-hidden">
+			<DialogContent className="max-w-[95vw] w-full md:max-w-[50vw] [&>button:last-of-type]:hidden p-0 overflow-hidden rounded-md">
 				<VisuallyHidden>
 					<DialogTitle>Chat Window</DialogTitle>
 				</VisuallyHidden>
 
 				<div className="h-[80vh] overflow-hidden">
-					<ChatContainer />
+					<ChatContainer fullScreenOption={workOnDefault} />
 				</div>
 
-				<div className="absolute right-2 top-2 flex items-center gap-2">
-					<Link
-						href="/chat"
-						className="rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700"
-					>
-						<Fullscreen className="h-5 w-5" />
-					</Link>
-
+				<div className="absolute right-0 top-0 flex items-center">
 					<DialogClose asChild>
-						<button className="rounded-full p-2 hover:bg-gray-200 dark:hover:bg-gray-700">
-							<X className="h-5 w-5" />
-						</button>
+						<X className="h-4 w-4 stroke-muted-foreground hover:stroke-destructive" />
 					</DialogClose>
 				</div>
 			</DialogContent>

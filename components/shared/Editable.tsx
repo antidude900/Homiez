@@ -177,8 +177,8 @@ const Editable = ({
 							type="text"
 							placeholder=". . . ."
 							value={value}
-							className={`outline-none bg-background transition-all rounded border border-blue-400 ${className} ring-2 ring-blue-100 px-2 ${
-								type === "bio" && "h-[50px] w-full"
+							className={`w-[95%] outline-none bg-background transition-all rounded border border-blue-400 ${className} ring-2 ring-blue-100 px-2 ${
+								type === "bio" && "h-[50px]"
 							}`}
 							size={Math.min(value.length + 2, 37)}
 							onChange={(e) =>
@@ -203,6 +203,12 @@ const Editable = ({
 							type === "bio" && "h-[50px]"
 						} max-w-fit break-all flex justify-center items-center relative mx-4`}
 						onClick={() => {
+							setIsEditable(true);
+							if (inputRef.current) {
+								inputRef.current.focus();
+							}
+						}}
+						onTouchEnd={() => {
 							setIsEditable(true);
 							if (inputRef.current) {
 								inputRef.current.focus();

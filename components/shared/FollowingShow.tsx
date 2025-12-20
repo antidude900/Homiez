@@ -68,7 +68,6 @@ export function FollowingShow({
 	useEffect(() => {
 		if (userId === otherUserId) {
 			setFollowings(context.followings);
-	
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [context.followings]);
@@ -78,14 +77,14 @@ export function FollowingShow({
 			<DialogTrigger asChild>
 				<span className="cursor-pointer">{children}</span>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className="max-w-[95vw] w-full md:max-w-[500px] overflow-hidden">
 				<DialogTitle className="text-[20px] absolute top-2 left-2 font-bold">
 					Followings
 				</DialogTitle>
 				{followings === null || userId === null ? (
 					<div>Loading...</div>
 				) : (
-					<div className="mt-10 space-y-2">
+					<div className="mt-10 space-y-4 max-h-[70vh] overflow-y-auto">
 						{followings.length === 0 ? (
 							<p className="text-sm text-muted-foreground">
 								No Followings yet.
@@ -94,18 +93,23 @@ export function FollowingShow({
 							followings.map((following) => (
 								<div
 									key={following.username}
-									className="flex justify-between w-full"
+									className="flex justify-between w-full min-w-0"
 								>
-									<div className="flex items-center gap-3">
+									<div className="flex items-center gap-3 mr-2 min-w-0">
 										<Avatar className="">
 											<AvatarImage src={following.picture} />
 											<AvatarFallback className="bg-green-700">
 												{following.name[0]}
 											</AvatarFallback>
 										</Avatar>
-										<Link href={`/user/${following.username}`} className="">
-											<p className="text-sm font-semibold">{following.name}</p>
-											<p className="text-xs text-muted-foreground">
+										<Link
+											href={`/user/${following.username}`}
+											className="min-w-0"
+										>
+											<p className="text-sm font-semibold truncate">
+												{following.name}
+											</p>
+											<p className="text-xs text-muted-foreground truncate">
 												@{following.username}
 											</p>
 										</Link>

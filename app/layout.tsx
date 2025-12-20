@@ -6,7 +6,11 @@ import { UserProvider } from "@/context/UserContext";
 import { SocketContextProvider } from "@/context/SocketContext";
 import { ChatProvider } from "@/context/ChatContext";
 import { FollowingProvider } from "@/context/FollowingContext";
+import { CallContextProvider } from "@/context/CallContext";
 import NextTopLoader from "nextjs-toploader";
+import { CallRoom } from "@/components/Call/CallRoom";
+import { IncomingCallNotification } from "@/components/Call/IncomingCallNotification";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function RootLayout({
 	children,
@@ -37,13 +41,22 @@ export default function RootLayout({
 						enableSystem
 						disableTransitionOnChange
 					>
-						<UserProvider>
-							<FollowingProvider>
-								<ChatProvider>
-									<SocketContextProvider>{children}</SocketContextProvider>
-								</ChatProvider>
-							</FollowingProvider>
-						</UserProvider>
+						<TooltipProvider>
+							<UserProvider>
+								<FollowingProvider>
+									<ChatProvider>
+										<SocketContextProvider>
+											<CallContextProvider>
+												{children}
+
+												<CallRoom />
+												<IncomingCallNotification />
+											</CallContextProvider>
+										</SocketContextProvider>
+									</ChatProvider>
+								</FollowingProvider>
+							</UserProvider>
+						</TooltipProvider>
 
 						<ToastContainer hideProgressBar position="bottom-right" />
 					</ThemeProvider>

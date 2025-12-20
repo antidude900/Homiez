@@ -33,7 +33,7 @@ const PopUp = ({
 					<DialogDescription></DialogDescription>
 				</DialogHeader>
 
-				<DialogFooter className="flex justify-between">
+				<DialogFooter className="gap-2">
 					<Button
 						onClick={onDiscard}
 						className="bg-destructive"

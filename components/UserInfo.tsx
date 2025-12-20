@@ -194,9 +194,7 @@ const UserInfo = ({
 								side="bottom"
 								className="max-w-[350px] text-center cursor-default"
 							>
-								<p>
-									Hover on the specific profile info to toggle an Edit Button
-								</p>
+								<p>Click on the specific profile info you want to edit</p>
 								<p>(Also works in the profile card on the left side)</p>
 							</TooltipContent>
 						</Tooltip>

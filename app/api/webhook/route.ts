@@ -1,7 +1,11 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { createUser, deleteUser } from "@/lib/actions/user.action";
+import {
+	createUser,
+	deleteUser,
+	followUnfollowUser,
+} from "@/lib/actions/user.action";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -65,8 +69,16 @@ export async function POST(req: Request) {
 			email: email_addresses[0].email_address,
 			bio: `Hello, I'm ${first_name} ${last_name}🙏`,
 			picture: image_url,
-			following: ["67ddb30e9c6546aeeeb12867"],
 		});
+
+		// Add new user to the default user's followers
+		if (mongoUser && mongoUser._id) {
+			await followUnfollowUser({
+				userId: "67ddb30e9c6546aeeeb12867",
+				followingId: mongoUser._id,
+				path: "/",
+			});
+		}
 
 		return NextResponse.json({ message: "OK", user: mongoUser });
 	}

@@ -12,10 +12,10 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 	}
 
 	return (
-		<div className="flex min-h-screen">
+		<div className="flex h-screen">
 			<div className="w-full md:max-w-[33%] flex-none sticky top-0 h-screen border-r border-border overflow-y-auto">
 				<div className="pt-4 px-2">
-					<ChatSearchHeader fullScreenOption={false} />
+					<ChatSearchHeader />
 				</div>
 
 				<ConversationList />

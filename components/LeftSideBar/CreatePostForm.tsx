@@ -154,7 +154,7 @@ export default function CreatePostForm() {
 							<p className="text-sm font-medium text-destructive">{error}</p>
 						)}
 					</div>
-					<DialogFooter>
+					<DialogFooter className="gap-2">
 						<Button
 							type="button"
 							className="bg-destructive"

@@ -8,7 +8,6 @@ export interface CreateUserParams {
 	email: string;
 	bio: string;
 	picture: string;
-	following: string[];
 }
 
 export interface FollowUnfollowUserParams {

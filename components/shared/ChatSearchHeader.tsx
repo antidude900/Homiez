@@ -21,7 +21,7 @@ type UserSearchResult = {
 };
 
 const ChatSearchHeader = ({
-	fullScreenOption = true,
+	fullScreenOption = false,
 }: {
 	fullScreenOption?: boolean;
 }) => {

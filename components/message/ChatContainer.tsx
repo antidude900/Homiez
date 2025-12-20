@@ -7,10 +7,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getConversation, getMessages } from "@/lib/actions/message.action";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useSocket } from "@/context/SocketContext";
-import { MessagesSquare } from "lucide-react";
+import { Fullscreen, MessagesSquare, Phone, Video } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { Skeleton } from "../ui/skeleton";
 import { useRouter, usePathname, useParams } from "next/navigation";
+import { useCall } from "@/context/CallContext";
+import Link from "next/link";
+import ToolTipWrapper from "../shared/ToolTipWrapper";
 
 type Message = {
 	_id: string;
@@ -18,7 +21,11 @@ type Message = {
 	text: string;
 };
 
-export const ChatContainer = () => {
+export const ChatContainer = ({
+	fullScreenOption = false,
+}: {
+	fullScreenOption?: boolean;
+}) => {
 	const {
 		selectedConversation,
 		messages,
@@ -29,6 +36,7 @@ export const ChatContainer = () => {
 	const pathname = usePathname();
 	const params = useParams<{ conversationId?: string[] }>();
 	const conversationId = params.conversationId?.[0];
+	const { initiateCall } = useCall();
 
 	const currentMessages = useMemo(
 		() => messages[selectedConversation.userId] || [],
@@ -134,17 +142,65 @@ export const ChatContainer = () => {
 				</div>
 			) : (
 				<div className="flex flex-col bg-gray-200 dark:bg-gray-800 rounded-md p-2 h-full">
-					<div className="flex items-center gap-2 w-full p-2 min-h-[60px] flex-shrink-0">
-						<div>
-							<Avatar className="w-10 h-10">
-								<AvatarImage src={selectedConversation.userProfilePic} />
-								<AvatarFallback>CN</AvatarFallback>
-							</Avatar>
-							{isOnline && (
-								<span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-[0.5px] border-white rounded-full"></span>
+					<div className="flex items-center justify-between w-full h-[10%] p-2">
+						<div className="flex items-center gap-2 flex-1 min-w-0">
+							<div className="relative">
+								<Avatar className="w-10 h-10">
+									<AvatarImage src={selectedConversation.userProfilePic} />
+									<AvatarFallback>CN</AvatarFallback>
+								</Avatar>
+								{isOnline && (
+									<span className="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 border-[0.5px] border-white rounded-full"></span>
+								)}
+							</div>
+							<div className="text-black dark:text-white truncate">
+								{selectedConversation.name}
+							</div>
+						</div>
+
+						<div className="flex gap-3 ml-4">
+							<ToolTipWrapper description={isOnline ? "" : "User not Online!"}>
+								<Phone
+									onClick={() =>
+										isOnline &&
+										initiateCall(
+											selectedConversation.userId,
+											selectedConversation.name,
+											"voice"
+										)
+									}
+									className={`w-5 h-5 ${
+										isOnline
+											? "hover:stroke-primary cursor-pointer"
+											: "opacity-40 cursor-not-allowed"
+									}`}
+								></Phone>
+							</ToolTipWrapper>
+
+							<ToolTipWrapper description={isOnline ? "" : "User not Online!"}>
+								<Video
+									onClick={() =>
+										isOnline &&
+										initiateCall(
+											selectedConversation.userId,
+											selectedConversation.name,
+											"video"
+										)
+									}
+									className={`w-5 h-5 ${
+										isOnline
+											? "hover:stroke-primary cursor-pointer"
+											: "opacity-40 cursor-not-allowed"
+									}`}
+								/>
+							</ToolTipWrapper>
+
+							{fullScreenOption && (
+								<Link href="/chat">
+									<Fullscreen className="h-5 w-5 hover:stroke-primary cursor-pointer" />
+								</Link>
 							)}
 						</div>
-						<div className="truncate min-w-0">{selectedConversation.name}</div>
 					</div>
 
 					<hr className="border-t border-gray-300 dark:border-gray-700" />
