@@ -173,33 +173,36 @@ export const CallContextProvider = ({ children }: { children: ReactNode }) => {
 		const pc = peerConnectionRef.current;
 
 		// ---- AUDIO ----
-		try {
-			setIsAudioToggling(true);
-
-			const audioStream = await navigator.mediaDevices.getUserMedia({
-				audio: {
-					echoCancellation: true,
-					noiseSuppression: true,
-					autoGainControl: true,
-					sampleRate: 48000,
-					channelCount: 1,
-				},
-				video: false,
-			});
-
-			const audioTrack = audioStream.getAudioTracks()[0];
-			if (audioTrack) {
-				stream.addTrack(audioTrack);
-
-				setIsAudioEnabled(true);
-				setIsAudioError(false);
+		if (type === "voice"){
+			try {
+				setIsAudioToggling(true);
+			
+				const audioStream = await navigator.mediaDevices.getUserMedia({
+					audio: {
+						echoCancellation: true,
+						noiseSuppression: true,
+						autoGainControl: true,
+						sampleRate: 48000,
+						channelCount: 1,
+					},
+					video: false,
+				});
+			
+				const audioTrack = audioStream.getAudioTracks()[0];
+				if (audioTrack) {
+					stream.addTrack(audioTrack);
+				
+					setIsAudioEnabled(true);
+					setIsAudioError(false);
+				}
+			} catch (err) {
+				console.error("Audio failed:", err);
+				setIsAudioError(true);
+			} finally {
+				setIsAudioToggling(false);
 			}
-		} catch (err) {
-			console.error("Audio failed:", err);
-			setIsAudioError(true);
-		} finally {
-			setIsAudioToggling(false);
 		}
+
 
 		// ---- VIDEO ----
 		if (type === "video") {
