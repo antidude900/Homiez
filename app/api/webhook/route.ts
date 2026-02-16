@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 		// Add new user to the default user's followers
 		if (mongoUser && mongoUser._id) {
 			await followUnfollowUser({
-				userId: "67ddb30e9c6546aeeeb12867",
+				userId: "6992cbc05ee0067d17c4ee10",
 				followingId: mongoUser._id,
 				path: "/",
 			});
